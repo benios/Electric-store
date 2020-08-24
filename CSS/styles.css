@@ -59,4 +59,9 @@ body{
 	 text-overflow: normal;
 	 white-space: normal;
 }
-
+.invalid{
+  box-shadow: 0 0 5px rgb(231, 21, 39);
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid rgb(231, 21, 39);
+}
