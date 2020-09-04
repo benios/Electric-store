@@ -49,7 +49,8 @@ body{
    margin-top: 1rem;
    font-size: 0.5rem;
    border-style: solid;
-   border-width: medium;
+   border-color: rgb(136, 134, 134);
+   border-width: thin;
    border-radius: 0.3em;
    overflow: hidden;
    text-overflow: ellipsis;
