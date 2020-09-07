@@ -5,6 +5,7 @@ function closeWindow() {
 }
 // closing window
 document.querySelector(".cross").addEventListener("click", closeWindow);
+
 // validating username and password
 function validateCheck() {
 	var userValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;

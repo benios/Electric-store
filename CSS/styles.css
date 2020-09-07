@@ -66,3 +66,15 @@ body{
   margin: 5px 1px 3px 0px;
   border: 1px solid rgb(231, 21, 39);
 }
+.cards-styling{
+  padding-left: 0;
+  padding-right: 0;
+}
+.head-padding{
+  padding-bottom: 20px;
+
+}
+.select-position{
+  margin:100px 140px auto auto;
+  width: 180px;
+}
