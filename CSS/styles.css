@@ -67,14 +67,24 @@ body{
   border: 1px solid rgb(231, 21, 39);
 }
 .cards-styling{
-  padding-left: 0;
-  padding-right: 0;
+ margin-left: 10px; 
+ margin-right: 10px; 
 }
-.head-padding{
-  padding-bottom: 20px;
+.feedback-style{
+  text-align: end;
+}
 
+.img-style {
+  height: 185px;
+  width: 185px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top:10px;
 }
-.select-position{
-  margin:100px 140px auto auto;
+.select-style{
+  margin:100px 5% auto auto;
   width: 180px;
+}
+.row-style{
+ margin-top:50px;
 }
