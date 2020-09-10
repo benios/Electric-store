@@ -1,58 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תרגיל HTML & CSS</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תרגיל HTML & CSS</title>
 
-    <!-- Google fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Rubik&display=swap" rel="stylesheet">
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Rubik&display=swap" rel="stylesheet">
 
-    <!-- css stylesheets -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="CSS\styles.css">
-    
-    <!-- bootstrap scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <!-- css stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="CSS\styles.css">
 
+  
 </head>
 
 <body class="text-center">
-    <!-- navbar -->
-    <nav class="navbar fixed-top navbar-dark bg-dark">
-           
-            <button type="button" class="btn btn-dark btn-sm button3">button3</button>
-           
-            <button type="button" class="btn btn-dark btn-sm button">button2</button>
-            <button type="button" class="btn btn-dark btn-sm button">button1</button>
-            <img class="logo" src="images/logo.png" alt="logo">
-           
-      </nav>
-      <!-- sign-in -->
-      <div class="signin">
-        <form class="form-signin" onsubmit="return validateCheck()" novalidate>
-            <button type="button" class="btn btn-sm cross">X</button>
-            <div class="top-pad">
-                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-2 col-form-label">User</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="user" placeholder="Username">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-10">
-                      <input type="password" class="form-control" id="userPassword">
-                    </div>
-                  </div>
-                <p class="p-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                <button class="btn btn-lg btn-secondary btn-block" type="submit">Sign in</button>
+  <!-- navbar -->
+  <nav class="navbar fixed-top navbar-dark bg-dark">
+    <button type="button" class="btn btn-dark btn-sm button3">כפתור3</button>
+    <button type="button" class="btn btn-dark btn-sm button">כפתור2</button>
+    <button type="button" class="btn btn-dark btn-sm button" data-toggle="modal"
+      data-target="#loginModal">התחבר</button>
+    <img class="logo" src="images/logo.png" alt="logo">
+  </nav>
+
+  <!-- signin -->
+  
+    <div class="modal" id="loginModal" tabindex="-1">
+      <form class="form-signin" id="myModal" novalidate>
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" id="head-position">
+            <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 class="modal-title mr-3">התחברות</h5>
+          </div>
+          <div class="modal-body">
+            <!-- username -->
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <input dir="rtl" type="text" class="form-control" id="user" onkeyup="clearValidation('user')">
+                <div class="valid-feedback feedback-style">!נראה טוב</div>
+                <div class="invalid-feedback feedback-style">.שגיאה!! על השם להכיל אותיות קטנות באנגלית,מספרים,_
+                  או-,וללא רווחים</div>
+              </div>
+              <label for="user" class="col-sm-2 col-form-label">שם משתמש</label>
             </div>
-          </form>
+            <!-- password -->
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <input dir="rtl" type="password" class="form-control" id="userPassword" onkeyup="clearValidation('userPassword')">
+                <div class="valid-feedback feedback-style">!נראה טוב</div>
+                <div class="invalid-feedback feedback-style">.שגיאה!! על הסיסמא להכיל לפחות 8 תווים וללא רווחים</div>
+              </div>
+              <label for="userPassword" class="col-sm-2 col-form-label">סיסמא</label>
+            </div>
+
+            <!-- footer -->
+            <div class="modal-footer">
+              <p class="p-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+                in culpa qui officia deserunt mollit anim id est laborum.</p>
+              <button class="btn btn-lg btn-secondary btn-block" onclick="return validateCheck()">התחבר</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <script src="js/index.js" charset="UTF-8" ></script>
+    </form>
+    </div>
+  
+
+
+
+  <div>
+    <div class="input-group mb-3 d-flex flex-row-reverse select-style">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">:מיין לפי</label>
+      </div>
+      <select class="custom-select" dir="rtl" id="inputGroupSelect01">
+        <option selected>בחר...</option>
+        <option value="1">גודל</option>
+        <option value="2">שם</option>
+        <option value="3">תאריך</option>
+      </select>
+    </div>
+    <div class="row text-center mx-5 mt-5">
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מזגן</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/aircon.jpg" alt="מזגן">
+          <div class="card-body">
+            <p> שלוש שנות אחריות</p>
+            <p>A:דירוג אנרגטי</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>טלוויזיה</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/tv.jpeg" alt="טלוויזיה">
+          <div class="card-body">
+            <p> אחריות לשנה שלמה</p>
+            <p dir="rtl">65 אינץ'</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מקרר</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/refrigerator.jpeg" alt="מקרר">
+          <div class="card-body">
+            <p dir="rtl"> אחריות לשנה שלמה</p>
+            <p dir="rtl">נפח: 700 ליטר</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row text-center  mx-5">
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מזגן</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/aircon.jpg" alt="מזגן">
+          <div class="card-body">
+            <p> שלוש שנות אחריות</p>
+            <p>A:דירוג אנרגטי</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>טלוויזיה</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/tv.jpeg" alt="טלוויזיה">
+          <div class="card-body">
+            <p> אחריות לשנה שלמה</p>
+            <p dir="rtl">65 אינץ'</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מקרר</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/refrigerator.jpeg" alt="מקרר">
+          <div class="card-body">
+            <p dir="rtl"> אחריות לשנה שלמה</p>
+            <p dir="rtl">נפח: 700 ליטר</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row text-center  mx-5" style="margin-top:10px;">
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מזגן</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/aircon.jpg" alt="מזגן">
+          <div class="card-body">
+            <p> שלוש שנות אחריות</p>
+            <p>A:דירוג אנרגטי</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>טלוויזיה</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/tv.jpeg" alt="טלוויזיה">
+          <div class="card-body">
+            <p> אחריות לשנה שלמה</p>
+            <p dir="rtl">65 אינץ'</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>מקרר</h5>
+          </div>
+          <img class="card-img-top img-style" src="images/refrigerator.jpeg" alt="מקרר">
+          <div class="card-body">
+            <p dir="rtl"> אחריות לשנה שלמה</p>
+            <p dir="rtl">נפח: 700 ליטר</p>
+            <a href="#" class="btn btn-dark">לקנייה</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- pagination -->
+  <nav aria-label="Page navigation example" style="padding-top:50px;">
+    <ul class="pagination justify-content-center d-flex flex-row-reverse">
+      <li class="page-item"><a class="page-link text-dark" href="#">הקודם</a></li>
+      <li class="page-item"><a class="page-link text-dark" href="#">1</a></li>
+      <li class="page-item"><a class="page-link text-dark" href="#">2</a></li>
+      <li class="page-item"><a class="page-link text-dark" href="#">3</a></li>
+      <li class="page-item"><a class="page-link text-dark" href="#">הבא</a></li>
+    </ul>
+  </nav>
+ <!-- bootstrap scripts -->
+ <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+ integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+ crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+ integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+ crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+ integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+ crossorigin="anonymous"></script>
+  <script src="js/index.js" charset="UTF-8"></script>
 </body>
+
 </html>
