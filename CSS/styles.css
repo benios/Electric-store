@@ -33,18 +33,10 @@ body {
 	padding: 10px;
 	border-radius: 1%;
 }
-.cross {
-	background-color: transparent;
-	border: none;
-	position: absolute;
-	right: 1rem;
-}
-.cross:hover {
-	transform: scale(1.5);
+
 }
 .top-pad {
-	padding-top: 30px;
-}
+	padding-top: 30px;}
 .p-text {
 	margin-top: 1rem;
 	font-size: 0.5rem;
@@ -85,6 +77,4 @@ body {
 	margin: 100px 5% auto auto;
 	width: 180px;
 }
-.row-style {
-	margin-top: 50px;
-}
+

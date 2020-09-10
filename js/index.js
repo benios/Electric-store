@@ -7,7 +7,7 @@ function validateCheck() {
 	var passwordValue = passwordElement.value;
 	var isUsernameValid = userValidationRegEx.test(userName);
 	if (isUsernameValid && passwordValue.length >= 8) {
-		$("#myModal").modal("hide");
+		$("#loginModal").modal("hide");
 	} else {
 		if (isUsernameValid) {
 			userElement.classList.add("is-valid");
@@ -28,14 +28,18 @@ function validateCheck() {
 }
 
 //  clearing the connectiion window
+function clearValidation(fieldId, shouldClearInput) {
+	let fieldElement=document.getElementById(fieldId);
+	fieldElement.classList.remove("is-invalid");
+	fieldElement.classList.remove("is-valid");
+	if (shouldClearInput) {
+		fieldElement.value = "";
+	}
+}
 
 function clearWindow() {
-	var passwordElement = document.getElementById("userPassword");
-	var userElement = document.getElementById("user");
-	passwordElement.value = "";
-	userElement.value = "";
-	userElement.classList.remove("is-invalid");
-	userElement.classList.remove("is-valid");
-	passwordElement.classList.remove("is-invalid");
-	passwordElement.classList.remove("is-valid");
-}
+	clearValidation('userPassword',true);
+	clearValidation('user',true);
+  }
+
+  $('#loginModal').on('hide.bs.modal', clearWindow)
