@@ -77,4 +77,17 @@ body {
 	margin: 100px 5% auto auto;
 	width: 180px;
 }
+.row{
+	background: white;
+	border-radius: 30px;
+}
+.row.no-gutters {
+	margin-right: 0;
+	margin-left: 0;
+  }
+  .row.no-gutters > [class^="col-"],
+  .row.no-gutters > [class*=" col-"] {
+	padding-right: 0;
+	padding-left: 0;
+  }
 
