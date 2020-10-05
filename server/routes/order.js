@@ -9,6 +9,6 @@ router.post('/', controller.createOrder);
 
 router.get('/orders/:orderId', controller.getOrder);
 
-router.get('/usersOrders/:usersOrders', controller.getOrdersByUsername);
+router.get('/usersOrders/:user', controller.getOrdersByUsername);
 
 module.exports = router;

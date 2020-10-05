@@ -1,8 +1,7 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const orderModel = require('../model/order');
-const utils = require('../utils/utils');
+const emailNotification = require('../services/Email_services');
 
 const app = express();
 
@@ -12,14 +11,6 @@ const logger = new Logger('app');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-const transporter = nodemailer.createTransport({
-  service: 'GMAIL',
-  auth: {
-    user: 'kingmonkey409@gmail.com',
-    pass: 'Yos112233',
-  },
-});
 
 const getAllOrders = (req, res) => {
   const ordersList = orderModel.getAllOrders();
@@ -36,44 +27,33 @@ const createOrder = (req, res) => {
     userName: body.userName,
     product: body.product,
     date: new Date(),
-    id: utils.idGeneretor.generateId(),
   };
 
   logger.info('creating an order', order);
 
-  if (body.userName === null || body.userName === '') {
+  if (!body.userName) {
     logger.error('username field is empty', order);
     return res.send('username field is empty');
   }
-  if (body.product === null || body.product === '') {
+  if (!body.product) {
     logger.error('product field is empty', order);
     return res.send('product field is empty');
   }
   orderModel.createOrder(order);
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);
-
-  const mailOptions = {
-    from: 'kingmonkey409@gmail.com',
-    to: 'yosziad88@gmail.com',
-    subject: 'A new order has been created',
-    text: `order details: ${strOrder}`,
-  };
-
-  transporter.sendMail(mailOptions, (error2, info) => {
-    if (error2) {
-      logger.error(error2);
-    } else {
-      logger.info(`Email sent: ${info.response}`);
-    }
-  });
-
+  emailNotification.EmailNotification(strOrder);
   return res.send('Orders were created');
 };
 
 const getOrder = (req, res) => {
   const id = Number(req.params.orderId);
   const order = orderModel.getOrder(id);
+  if (!order) {
+    return res.status(404).json({
+      message: 'order id does not exist',
+    });
+  }
   logger.info(`order with ${id} id was fetched`, order);
   return res.status(200).json({
     message: 'Order details',
@@ -81,9 +61,14 @@ const getOrder = (req, res) => {
   });
 };
 const getOrdersByUsername = (req, res) => {
-  const username = req.params.usersOrders;
+  const username = req.params.user;
   logger.info('fetching users orders');
   const usersOrders = orderModel.getOrdersByUsername(username);
+  if (!usersOrders) {
+    return res.status(404).json({
+      message: 'username does not exist',
+    });
+  }
   logger.info(`orders of username:${username}has been fetched`, usersOrders);
   return res.status(200).json({
     message: `orders of username:${username}has been fetched`,

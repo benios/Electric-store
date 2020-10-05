@@ -1,15 +1,29 @@
+const utils = require('../services/utils');
+
 const ordersList = [];
 
 const getAllOrders = () => (ordersList);
 
-const getOrder = (id) => ordersList.find((order) => order.id === id);
+const getOrder = (id) => {
+  if (ordersList.some((e) => e.id === id)) {
+    return ordersList.find((order) => order.id === id);
+  }
+  return false;
+};
 
-const createOrder = (order) => ordersList.push(order);
+const createOrder = (order) => {
+  const id = utils.idGeneretor.generateId();
+  order.id = id;
+  ordersList.push(order);
+};
 
 const getOrdersByUsername = (username) => {
-  const usersOrders = ordersList.filter((order) => order.userName === username);
-  const sortedOrders = usersOrders.sort((a, b) => (Date.parse(b.date) - Date.parse(a.date)));
-  return sortedOrders;
+  if (ordersList.some((e) => e.id === username)) {
+    const usersOrders = ordersList.filter((order) => order.userName === username);
+    usersOrders.sort((a, b) => (b.date - a.date));
+    return usersOrders;
+  }
+  return false;
 };
 
 module.exports = {

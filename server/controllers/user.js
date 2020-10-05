@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const userModel = require('../model/user');
-const utils = require('../utils/utils');
 
 const app = express();
 
@@ -31,7 +30,6 @@ const createUser = (req, res) => {
     lastName: req.body.lastName,
     address: req.body.address,
     age: req.body.age,
-    id: utils.idGeneretor.generateId(),
   };
 
   logger.info('handling create a user request', user);
@@ -40,25 +38,26 @@ const createUser = (req, res) => {
   const isUserNameValid = userNameValidationRegEx.test(user.userName);
   if (!isUserNameValid) {
     logger.error('Either userName or password field is incorrect');
+    return res.send('Either userName or password field is incorrect');
   }
-  if (user.password < 8) {
+  if (!user.password || (user.password).length < 8) {
     logger.error('Either userName or password field is incorrect');
     return res.send('Either userName or password field is incorrect');
   }
-  if (user.firstName === null || user.firstName === '') {
+  if (!user.firstName) {
     logger.error('firstName field is empty');
     return res.send('firstName field is empty');
   }
-  if (user.lastName === null || user.lastName === '') {
+  if (!user.lastName) {
     logger.error('lastName field is empty', user);
     return res.send('lastName field is empty');
   }
-  if (user.address === null || user.address === '') {
+  if (!user.address) {
     logger.error('address field is empty');
     return res.send('address field is empty');
   }
 
-  if (Number.isNaN(user.age)) {
+  if (!(typeof (user.age) === 'number') || !(user.age >= 0)) {
     logger.error('age field is not a number', user);
     return res.send('age field is not a number');
   }

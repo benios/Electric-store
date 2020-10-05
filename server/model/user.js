@@ -1,7 +1,12 @@
+const utils = require('../services/utils');
+
 const usersList = [];
 
-const createUser = (user) => usersList.push(user);
-
+const createUser = (user) => {
+  const id = utils.idGeneretor.generateId();
+  user.id = id;
+  usersList.push(user);
+};
 const getUser = (id) => usersList.find((user) => user.id === id);
 
 const deleteUser = (id) => {
