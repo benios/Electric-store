@@ -7,14 +7,12 @@ const getProductById = (id) => products.find((product) => product.id === id);
 const createProduct = (product) => products.push(product);
 
 const updateProduct = (product) => {
-  const oldProduct = (element) => element.id === product.id;
-  const index = products.findIndex(oldProduct);
+  const index = products.findIndex((element) => element.id === product.id);
   products[index] = product;
 };
 
 const deleteProduct = (id) => {
-  const Product = (element) => element.id === id;
-  const index = products.findIndex(Product);
+  const index = products.findIndex((element) => element.id === id);
   products.splice(index, 1);
 };
 
