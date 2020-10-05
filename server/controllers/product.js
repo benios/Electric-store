@@ -30,11 +30,11 @@ const createProduct = (req, res) => {
     logger.error('name field is empty', product);
     return res.send('name field is empty');
   }
-  if (!isNaN(product.price)) {
+  if (Number.isNaN(product.price)) {
     logger.error('price field is not a number', product);
     return res.send('price field is not a number');
   }
-  if (!isNaN(product.quantity)) {
+  if (Number.isNaN(product.quantity)) {
     logger.error('Quantity field is not a number', product);
     return res.send('Quantity field is not a number');
   }

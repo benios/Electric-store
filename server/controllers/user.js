@@ -24,7 +24,6 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const error = {};
   const user = {
     userName: req.body.userName,
     password: req.body.password,
@@ -59,7 +58,7 @@ const createUser = (req, res) => {
     return res.send('address field is empty');
   }
 
-  if (!isNaN(user.age)) {
+  if (Number.isNaN(user.age)) {
     logger.error('age field is not a number', user);
     return res.send('age field is not a number');
   }
