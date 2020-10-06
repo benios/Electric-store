@@ -26,7 +26,7 @@ const createOrder = (req, res) => {
   const order = {
     userName: body.userName,
     product: body.product,
-    date: new Date(),
+    date: Date.now(),
   };
 
   logger.info('creating an order', order);

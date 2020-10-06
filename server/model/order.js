@@ -17,7 +17,7 @@ const createOrder = (order) => {
 };
 
 const getOrdersByUsername = (username) => {
-  if (ordersList.some((e) => e.id === username)) {
+  if (ordersList.some((e) => e.userName === username)) {
     const usersOrders = ordersList.filter((order) => order.userName === username);
     usersOrders.sort((a, b) => (b.date - a.date));
     return usersOrders;
