@@ -4,20 +4,25 @@ const Logger = require('./logger_services');
 
 const logger = new Logger('app');
 
-const EmailNotification = (details) => {
-  const transporter = nodemailer.createTransport({
-    service: 'GMAIL',
-    auth: {
-      user: 'kingmonkey409@gmail.com',
-      pass: 'Yos112233',
-    },
-  });
+const transporter = nodemailer.createTransport({
+  service: 'GMAIL',
+  auth: {
+    user: 'kingmonkey409@gmail.com',
+    pass: 'Yos112233',
+  },
+});
 
+const SERVICE_EMAIL_ADDRESS = {
+  from: 'kingmonkey409@gmail.com',
+  to: 'ziadeyusef@gmail.com',
+};
+
+const emailNotification = (details, subject, text) => {
   const mailOptions = {
-    from: 'kingmonkey409@gmail.com',
-    to: 'ziadeyusef@gmail.com',
-    subject: 'A new order has been created',
-    text: `order details: ${details}`,
+    from: SERVICE_EMAIL_ADDRESS.from,
+    to: SERVICE_EMAIL_ADDRESS.to,
+    subject,
+    text: `${text} :${details}`,
   };
 
   transporter.sendMail(mailOptions, (error2, info) => {
@@ -29,4 +34,4 @@ const EmailNotification = (details) => {
   });
 };
 
-module.exports = { EmailNotification };
+module.exports = { emailNotification };

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const orderModel = require('../model/order');
-const emailNotification = require('../services/Email_services');
+const emailNotification = require('../services/email_services');
 
 const app = express();
 
@@ -42,7 +42,9 @@ const createOrder = (req, res) => {
   orderModel.createOrder(order);
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);
-  emailNotification.EmailNotification(strOrder);
+  const subject = 'New order';
+  const text = 'A new order has been created';
+  emailNotification.emailNotification(strOrder, subject, text);
   return res.send('Orders were created');
 };
 
