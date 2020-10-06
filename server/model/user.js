@@ -1,11 +1,10 @@
-const utils = require('../services/utils');
+const utils = require('../utils/utils');
 
 const usersList = [];
 
 const createUser = (user) => {
   const id = utils.idGeneretor.generateId();
-  user.id = id;
-  usersList.push(user);
+  usersList.push(...user, id);
 };
 const getUser = (id) => usersList.find((user) => user.id === id);
 

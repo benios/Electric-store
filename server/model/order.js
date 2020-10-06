@@ -1,4 +1,4 @@
-const utils = require('../services/utils');
+const utils = require('../utils/utils');
 
 const ordersList = [];
 

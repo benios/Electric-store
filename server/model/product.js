@@ -1,4 +1,4 @@
-const utils = require('../services/utils');
+const utils = require('../utils/utils');
 
 const products = [];
 
@@ -13,8 +13,7 @@ const getProductById = (id) => {
 
 const createProduct = (product) => {
   const id = utils.idGeneretor.generateId();
-  product.id = id;
-  products.push(product);
+  products.push(...product, id);
 };
 
 const updateProduct = (product) => {
