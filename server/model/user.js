@@ -6,11 +6,8 @@ const createUser = (user) => {
   const id = utils.idGenerator.generateId();
   usersList.push({ ...user, id });
 };
-const getUser = (id) => {
-  if (usersList.some((e) => e.id === id)) {
-    return usersList.find((user) => user.id === id);
-  }
-  return false;
+const getUser = (id) => usersList.find((user) => user.id === id);
+
 };
 
 const deleteUser = (id) => {

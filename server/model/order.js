@@ -4,12 +4,7 @@ const ordersList = [];
 
 const getAllOrders = () => (ordersList);
 
-const getOrder = (id) => {
-  if (ordersList.some((e) => e.id === id)) {
-    return ordersList.find((order) => order.id === id);
-  }
-  return false;
-};
+const getOrder = (id) => ordersList.find((order) => order.id === id);
 
 const createOrder = (order) => {
   const id = utils.idGenerator.generateId();
@@ -17,12 +12,9 @@ const createOrder = (order) => {
 };
 
 const getOrdersByUsername = (username) => {
-  if (ordersList.some((e) => e.userName === username)) {
-    const usersOrders = ordersList.filter((order) => order.userName === username);
-    usersOrders.sort((a, b) => (b.date - a.date));
-    return usersOrders;
-  }
-  return false;
+  const usersOrders = ordersList.filter((order) => order.userName === username);
+  usersOrders.sort((a, b) => (b.date - a.date));
+  return usersOrders;
 };
 
 module.exports = {

@@ -14,10 +14,10 @@ const newProductValidation = (product) => {
   if (!product.name) {
     throw new Error('name field is empty');
   }
-  if (!(typeof (product.price) === 'number') || !(product.price >= 0)) {
+  if ((typeof (product.price) !== 'number') || (product.price < 0)) {
     throw new Error('price field is not a number');
   }
-  if (!(typeof (product.quantity) === 'number') || !(product.quantity >= 0)) {
+  if ((typeof (product.quantity) !== 'number') || (product.quantity < 0)) {
     throw new Error('Quantity field is not a number');
   }
   if (!product.pictureUrl) {
@@ -101,16 +101,15 @@ const updateProduct = (req, res) => {
 
 const deleteProduct = (req, res) => {
   const id = Number(req.params.productId);
-  const deletedProduct = productModel.deleteProduct(id);
-  if (!deletedProduct) {
+  const didProductDeleted = productModel.deleteProduct(id);
+  if (!didProductDeleted) {
     return res.status(404).json({
       message: 'product id does not exist, deleting the product failed',
     });
   }
-  logger.info('Deleted product!', deletedProduct);
+  logger.info('Deleted product!');
   return res.status(200).json({
     message: 'Deleted product!',
-    deletedProduct,
   });
 };
 

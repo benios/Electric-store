@@ -31,7 +31,7 @@ const newUserValidation = (user) => {
   if (!user.address) {
     throw new Error('address field is empty');
   }
-  if (!!(typeof (user.age) === 'number') || !(user.age >= 0)) {
+  if ((typeof (user.age) !== 'number') || (user.age < 0)) {
     throw new Error('address field is empty');
   }
 };
@@ -78,16 +78,15 @@ const createUser = (req, res) => {
 
 const deleteUser = (req, res) => {
   const id = Number(req.params.userId);
-  const deletedUser = userModel.deleteUser(id);
-  if (!deletedUser) {
+  const didUserDeleted = userModel.deleteUser(id);
+  if (!didUserDeleted) {
     return res.status(404).json({
       message: 'User id does not exist, deleting the User failed',
     });
   }
-  logger.info('User deleted!', deletedUser);
+  logger.info('User deleted!');
   return res.status(200).json({
     message: 'User deleted!',
-    deletedUser,
   });
 };
 
