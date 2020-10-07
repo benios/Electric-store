@@ -2,15 +2,23 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const orderModel = require('../model/order');
 const emailNotification = require('../services/email_services');
+const Logger = require('../services/logger_services');
 
 const app = express();
-
-const Logger = require('../services/logger_services');
 
 const logger = new Logger('app');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const newOrderValidation = (order) => {
+  if (!order.userName) {
+    throw new Error('username field is empty');
+  }
+  if (!order.product) {
+    throw new Error('product field is empty');
+  }
+};
 
 const getAllOrders = (req, res) => {
   const ordersList = orderModel.getAllOrders();
@@ -31,14 +39,13 @@ const createOrder = (req, res) => {
 
   logger.info('creating an order', order);
 
-  if (!body.userName) {
-    logger.error('username field is empty', order);
-    return res.send('username field is empty');
+  try {
+    newOrderValidation(order);
+  } catch (err) {
+    logger.error(err, order);
+    return res.status(400).send('Error: creating a new order failed');
   }
-  if (!body.product) {
-    logger.error('product field is empty', order);
-    return res.send('product field is empty');
-  }
+
   orderModel.createOrder(order);
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);

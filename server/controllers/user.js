@@ -1,19 +1,49 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const userModel = require('../model/user');
+const Logger = require('../services/logger_services');
 
 const app = express();
-
-const Logger = require('../services/logger_services');
 
 const logger = new Logger('app');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const newUserValidation = (user) => {
+  const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
+  const isUserNameValid = userNameValidationRegEx.test(user.userName);
+  if (!isUserNameValid) {
+    throw new Error('username is invalid');
+  }
+  if (!user.password) {
+    throw new Error('password field is empty');
+  }
+  if ((user.password).length < 8) {
+    throw new Error('password field should have 8 or more digits and characters');
+  }
+  if (!user.firstName) {
+    throw new Error('firstname field is empty');
+  }
+  if (!user.lastName) {
+    throw new Error('lastName field is empty');
+  }
+  if (!user.address) {
+    throw new Error('address field is empty');
+  }
+  if (!!(typeof (user.age) === 'number') || !(user.age >= 0)) {
+    throw new Error('address field is empty');
+  }
+};
+
 const getUser = (req, res) => {
   const id = Number(req.params.userId);
   const user = userModel.getUser(id);
+  if (!user) {
+    return res.status(404).json({
+      message: 'user id does not exist',
+    });
+  }
   logger.setLogData(user);
   logger.info('You passed a user ID');
   return res.status(200).json({
@@ -34,33 +64,13 @@ const createUser = (req, res) => {
 
   logger.info('handling create a user request', user);
 
-  const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
-  const isUserNameValid = userNameValidationRegEx.test(user.userName);
-  if (!isUserNameValid) {
-    logger.error('Either userName or password field is incorrect');
-    return res.send('Either userName or password field is incorrect');
-  }
-  if (!user.password || (user.password).length < 8) {
-    logger.error('Either userName or password field is incorrect');
-    return res.send('Either userName or password field is incorrect');
-  }
-  if (!user.firstName) {
-    logger.error('firstName field is empty');
-    return res.send('firstName field is empty');
-  }
-  if (!user.lastName) {
-    logger.error('lastName field is empty', user);
-    return res.send('lastName field is empty');
-  }
-  if (!user.address) {
-    logger.error('address field is empty');
-    return res.send('address field is empty');
+  try {
+    newUserValidation(user);
+  } catch (err) {
+    logger.error(err, user);
+    return res.status(400).send('Error: creating a new user failed');
   }
 
-  if (!(typeof (user.age) === 'number') || !(user.age >= 0)) {
-    logger.error('age field is not a number', user);
-    return res.send('age field is not a number');
-  }
   userModel.createUser(user);
   logger.info('user created successfully', user);
   return res.send('user created successfully');
@@ -69,6 +79,11 @@ const createUser = (req, res) => {
 const deleteUser = (req, res) => {
   const id = Number(req.params.userId);
   const deletedUser = userModel.deleteUser(id);
+  if (!deletedUser) {
+    return res.status(404).json({
+      message: 'User id does not exist, deleting the User failed',
+    });
+  }
   logger.info('User deleted!', deletedUser);
   return res.status(200).json({
     message: 'User deleted!',

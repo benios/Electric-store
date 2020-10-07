@@ -19,7 +19,7 @@ app.use('/user', userRoutes);
 app.use((_req, res) => {
   const error = new Error('not found');
   error.status = 404;
-  res.status(error.status || 500);
+  res.status(error.status).send();
   logger.error('not found');
 });
 

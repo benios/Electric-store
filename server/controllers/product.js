@@ -1,15 +1,32 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const productModel = require('../model/product');
+const Logger = require('../services/logger_services');
 
 const app = express();
-
-const Logger = require('../services/logger_services');
 
 const logger = new Logger('app');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const newProductValidation = (product) => {
+  if (!product.name) {
+    throw new Error('name field is empty');
+  }
+  if (!(typeof (product.price) === 'number') || !(product.price >= 0)) {
+    throw new Error('price field is not a number');
+  }
+  if (!(typeof (product.quantity) === 'number') || !(product.quantity >= 0)) {
+    throw new Error('Quantity field is not a number');
+  }
+  if (!product.pictureUrl) {
+    throw new Error('pictureUrl field is empty');
+  }
+  if (!product.description) {
+    throw new Error('description field is empty');
+  }
+};
 
 const createProduct = (req, res) => {
   const product = {
@@ -23,29 +40,16 @@ const createProduct = (req, res) => {
 
   logger.info('handling create a product request', product);
 
-  if (!product.name) {
-    logger.error('name field is empty', product);
-    return res.send('name field is empty');
+  try {
+    newProductValidation(product);
+  } catch (err) {
+    logger.error(err, product);
+    return res.status(400).send('Error: creating a new product failed');
   }
-  if (!(typeof (product.price) === 'number') || !(product.price >= 0)) {
-    logger.error('price field is not a number', product);
-    return res.send('price field is not a number');
-  }
-  if (!(typeof (product.quantity) === 'number') || !(product.quantity >= 0)) {
-    logger.error('Quantity field is not a number', product);
-    return res.send('Quantity field is not a number');
-  }
-  if (!product.pictureUrl) {
-    logger.error('pictureUrl field is empty', product);
-    return res.send('pictureUrl field is empty');
-  }
-  if (!product.description) {
-    logger.error('description field is empty', product);
-    return res.send('description field is empty');
-  }
+
   productModel.createProduct(product);
-  logger.info('added product seccessfully', product);
-  return res.send('added product seccessfully');
+  logger.info('added product successfully', product);
+  return res.send('added product successfully');
 };
 
 const getProducts = (req, res) => {
@@ -73,7 +77,6 @@ const getProductById = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  const id = Number(req.params.productId);
   const product = {
     name: req.body.name,
     price: req.body.price,
@@ -81,7 +84,7 @@ const updateProduct = (req, res) => {
     pictureUrl: req.body.pictureUrl,
     description: req.body.description,
     date: new Date(),
-    id,
+    id: Number(req.params.productId),
   };
   const isIdValid = productModel.updateProduct(product);
   if (!isIdValid) {

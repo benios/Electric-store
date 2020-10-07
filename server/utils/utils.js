@@ -1,4 +1,4 @@
-const idGeneretor = {
+const idGenerator = {
   lastId: 0,
   generateId() {
     this.lastId += 1;
@@ -6,4 +6,4 @@ const idGeneretor = {
   },
 };
 
-module.exports = { idGeneretor };
+module.exports = { idGenerator };

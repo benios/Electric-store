@@ -12,8 +12,8 @@ const getProductById = (id) => {
 };
 
 const createProduct = (product) => {
-  const id = utils.idGeneretor.generateId();
-  products.push(...product, id);
+  const id = utils.idGenerator.generateId();
+  products.push({ ...product, id });
 };
 
 const updateProduct = (product) => {

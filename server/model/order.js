@@ -12,7 +12,7 @@ const getOrder = (id) => {
 };
 
 const createOrder = (order) => {
-  const id = utils.idGeneretor.generateId();
+  const id = utils.idGenerator.generateId();
   ordersList.push({ ...order, id });
 };
 
