@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const orderModel = require('../model/order');
+const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
 
@@ -21,21 +21,37 @@ const newOrderValidation = (order) => {
 };
 
 const getAllOrders = (req, res) => {
-  const ordersList = orderModel.getAllOrders();
-  logger.info('Orders were fetched', ordersList);
-  return res.status(200).json({
-    message: 'Orders were fetched',
-    ordersList,
-  });
+  Order.find()
+    .exec()
+    .then((foundOrders) => {
+      if (!foundOrders) {
+        return res.status(404).json({
+          message: 'There are no orders to fetch',
+        });
+      }
+      logger.info('Fetching all orders');
+      return res.status(200).json({
+        message: 'Orders details',
+        foundOrders,
+      });
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        message: err,
+      });
+    });
 };
 
 const createOrder = (req, res) => {
   const { body } = req;
-  const order = {
+  const order = new Order({
     userName: body.userName,
     product: body.product,
     date: Date.now(),
-  };
+  });
+
+  order.save();
 
   logger.info('creating an order', order);
 
@@ -46,7 +62,6 @@ const createOrder = (req, res) => {
     return res.status(400).send('Error: creating a new order failed');
   }
 
-  orderModel.createOrder(order);
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);
   const subject = 'New order';
@@ -56,38 +71,56 @@ const createOrder = (req, res) => {
 };
 
 const getOrder = (req, res) => {
-  const id = Number(req.params.orderId);
-  const order = orderModel.getOrder(id);
-  if (!order) {
-    return res.status(404).json({
-      message: 'order id does not exist',
+  const id = req.params.orderId;
+  Order.findById(id)
+    .exec()
+    .then((foundOrder) => {
+      if (!foundOrder) {
+        return res.status(404).json({
+          message: 'order id does not exist',
+        });
+      }
+      logger.info(`order with ${id} id was fetched`, foundOrder);
+      return res.status(200).json({
+        message: 'Order details',
+        foundOrder,
+      });
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        message: err,
+      });
     });
-  }
-  logger.info(`order with ${id} id was fetched`, order);
-  return res.status(200).json({
-    message: 'Order details',
-    order,
-  });
 };
+
 const getOrdersByUsername = (req, res) => {
   const username = req.params.user;
-  logger.info('fetching users orders');
-  const usersOrders = orderModel.getOrdersByUsername(username);
-  if (!usersOrders) {
-    return res.status(404).json({
-      message: 'username does not exist',
+  Order.find({ userName: username }).sort([['date', -1]])
+    .exec()
+    .then((foundOrders) => {
+      if (!foundOrders) {
+        return res.status(404).json({
+          message: 'There are no orders to fetch',
+        });
+      }
+      logger.info('Fetching all orders');
+      return res.status(200).json({
+        message: 'Orders details',
+        foundOrders,
+      });
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        message: err,
+      });
     });
-  }
-  logger.info(`orders of username:${username}has been fetched`, usersOrders);
-  return res.status(200).json({
-    message: `orders of username:${username}has been fetched`,
-    usersOrders,
-  });
 };
 
 module.exports = {
   getOrder,
-  createOrder,
   getAllOrders,
   getOrdersByUsername,
+  createOrder,
 };

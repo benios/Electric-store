@@ -1,7 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const userModel = require('../model/user');
+const bcrypt = require('bcrypt');
+const User = require('../model/user');
 const Logger = require('../services/logger_services');
+
+const saltRounds = 10;
 
 const app = express();
 
@@ -10,16 +13,16 @@ const logger = new Logger('app');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const newUserValidation = (user) => {
+const newUserValidation = (user, password) => {
   const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
   const isUserNameValid = userNameValidationRegEx.test(user.userName);
   if (!isUserNameValid) {
     throw new Error('username is invalid');
   }
-  if (!user.password) {
+  if (!password) {
     throw new Error('password field is empty');
   }
-  if ((user.password).length < 8) {
+  if ((password).length < 8) {
     throw new Error('password field should have 8 or more digits and characters');
   }
   if (!user.firstName) {
@@ -36,62 +39,88 @@ const newUserValidation = (user) => {
   }
 };
 
-const getUser = (req, res) => {
-  const id = Number(req.params.userId);
-  const user = userModel.getUser(id);
-  if (!user) {
-    return res.status(404).json({
-      message: 'user id does not exist',
+const loginUser = (req, res) => {
+  const username = req.body.userName;
+  const { password } = req.body;
+
+  User.findOne({ userName: username })
+    .exec()
+    .then((foundUser) => {
+      if (!foundUser) {
+        return res.status(404).json({
+          message: 'User id does not exist',
+        });
+      }
+      bcrypt.compare(password, foundUser.password, (error, result) => {
+        if (result === true) {
+          logger.info('logged in successfully', foundUser);
+          return res.status(200).json({
+            message: 'User details',
+            foundUser,
+          });
+        }
+        return res.status(500).json({
+          message: error,
+        });
+      });
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        message: err,
+      });
     });
-  }
-  logger.setLogData(user);
-  logger.info('You passed a user ID');
-  return res.status(200).json({
-    message: 'You passed a user ID',
-    user,
-  });
 };
 
 const createUser = (req, res) => {
-  const user = {
-    userName: req.body.userName,
-    password: req.body.password,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    address: req.body.address,
-    age: req.body.age,
-  };
+  bcrypt.hash(req.body.password, saltRounds, (error, hash) => {
+    const user = new User({
+      userName: req.body.userName,
+      password: hash,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      address: req.body.address,
+      age: req.body.age,
+    });
+    logger.info('handling create a user request', user);
 
-  logger.info('handling create a user request', user);
-
-  try {
-    newUserValidation(user);
-  } catch (err) {
-    logger.error(err, user);
-    return res.status(400).send('Error: creating a new user failed');
-  }
-
-  userModel.createUser(user);
-  logger.info('user created successfully', user);
-  return res.send('user created successfully');
+    try {
+      newUserValidation(user, req.body.password);
+    } catch (err) {
+      logger.error(err, user);
+      return res.status(400).send('Error: creating a new user failed');
+    }
+    user.save();
+    logger.info('user created successfully', user);
+    return res.send('user created successfully');
+  });
 };
 
 const deleteUser = (req, res) => {
-  const id = Number(req.params.userId);
-  const didUserDeleted = userModel.deleteUser(id);
-  if (!didUserDeleted) {
-    return res.status(404).json({
-      message: 'User id does not exist, deleting the User failed',
+  const id = req.params.userId;
+  User.remove({ _id: id })
+    .exec()
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({
+          message: 'Failed to find and delete the user',
+        });
+      }
+      logger.info(`A user with ${id} id was deleted`, result);
+      return res.status(200).json({
+        message: 'successfully deleted the user',
+      });
+    })
+    .catch((err) => {
+      logger.error(err);
+      return res.status(500).json({
+        message: err,
+      });
     });
-  }
-  logger.info('User deleted!');
-  return res.status(200).json({
-    message: 'User deleted!',
-  });
 };
 
 module.exports = {
   deleteUser,
   createUser,
-  getUser,
+  loginUser,
 };
