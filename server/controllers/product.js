@@ -51,98 +51,94 @@ const createProduct = (req, res) => {
   return res.send('added product successfully');
 };
 
-const getProducts = (req, res) => {
-  Product.find()
-    .exec()
-    .then((foundProducts) => {
-      if (!foundProducts) {
-        return res.status(404).json({
-          message: 'There are no products to fetch',
-        });
-      }
-      logger.info('Fetching all products');
-      return res.status(200).json({
-        message: 'Products details',
-        foundProducts,
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+const getProducts = async (req, res) => {
+  let foundProducts;
+  try {
+    foundProducts = await Product.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
+  }
+  if (!foundProducts) {
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'Products details',
+    foundProducts,
+  });
 };
 
-const getProductById = (req, res) => {
+const getProductById = async (req, res) => {
   const id = req.params.productId;
-  Product.findById(id)
-    .exec()
-    .then((foundProduct) => {
-      if (!foundProduct) {
-        return res.status(404).json({
-          message: 'Product id does not exist',
-        });
-      }
-      logger.info(`Product with ${id} id was fetched`, foundProduct);
-      return res.status(200).json({
-        message: 'Product details',
-        foundProduct,
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+  let foundProduct;
+  try {
+    foundProduct = await Product.findById(id).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
+  }
+  if (!foundProduct) {
+    return res.status(404).json({
+      message: 'Product id does not exist',
+    });
+  }
+  logger.info(`Product with ${id} id was fetched`, foundProduct);
+  return res.status(200).json({
+    message: 'Product details',
+    foundProduct,
+  });
 };
 
-const updateProduct = (req, res) => {
+const updateProduct = async (req, res) => {
   const id = req.params.productId;
   const props = req.body;
-  Product.update({ _id: id }, props)
-    .exec()
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          message: 'Failed to find and update the product',
-        });
-      }
-      logger.info(`Product with ${id} id was updated`, result);
-      return res.status(200).json({
-        message: 'successfully updated the product',
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+  let result;
+  try {
+    result = await Product.update({ _id: id }, props).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
+  }
+  if (!result) {
+    return res.status(404).json({
+      message: 'Failed to find and update the product',
+    });
+  }
+  logger.info(`Product with ${id} id was updated`, result);
+  return res.status(200).json({
+    message: 'successfully updated the product',
+  });
 };
 
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
   const id = req.params.productId;
-  Product.remove({ _id: id })
-    .exec()
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          message: 'Failed to find and delete the product',
-        });
-      }
-      logger.info(`Product with ${id} id was deleted`, result);
-      return res.status(200).json({
-        message: 'successfully deleted the product',
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+  let result;
+  try {
+    result = await Product.remove({ _id: id }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
+  }
+  if (!result) {
+    return res.status(404).json({
+      message: 'Failed to find and delete the product',
+    });
+  }
+  logger.info(`Product with ${id} id was deleted`, result);
+  return res.status(200).json({
+    message: 'successfully deleted the product',
+  });
 };
 
 module.exports = {

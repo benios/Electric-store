@@ -20,27 +20,33 @@ const newOrderValidation = (order) => {
   }
 };
 
-const getAllOrders = (req, res) => {
-  Order.find()
-    .exec()
-    .then((foundOrders) => {
-      if (!foundOrders) {
-        return res.status(404).json({
-          message: 'There are no orders to fetch',
-        });
-      }
-      logger.info('Fetching all orders');
-      return res.status(200).json({
-        message: 'Orders details',
-        foundOrders,
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+const userPermission = (username, orderUser) => {
+  if (username !== orderUser) {
+    throw new Error('Permission denied!');
+  }
+};
+
+const getAllOrders = async (req, res) => {
+  let foundOrders;
+  try {
+    foundOrders = await Order.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
     });
+  }
+
+  if (!foundOrders) {
+    return res.status(404).json({
+      message: 'There are no orders to fetch',
+    });
+  }
+  logger.info('Fetching all orders');
+  return res.status(200).json({
+    message: 'Orders details',
+    foundOrders,
+  });
 };
 
 const createOrder = (req, res) => {
@@ -70,52 +76,66 @@ const createOrder = (req, res) => {
   return res.send('Orders were created');
 };
 
-const getOrder = (req, res) => {
+const getOrder = async (req, res) => {
   const id = req.params.orderId;
-  Order.findById(id)
-    .exec()
-    .then((foundOrder) => {
-      if (!foundOrder) {
-        return res.status(404).json({
-          message: 'order id does not exist',
-        });
-      }
-      logger.info(`order with ${id} id was fetched`, foundOrder);
-      return res.status(200).json({
-        message: 'Order details',
-        foundOrder,
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+  const orderUser = req.userData.username;
+  let foundOrder;
+  try {
+    foundOrder = await Order.findById(id).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
     });
+  }
+  if (!foundOrder) {
+    return res.status(404).json({
+      message: 'order id does not exist',
+    });
+  }
+  try {
+    userPermission(foundOrder.userName, orderUser);
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send(err.message);
+  }
+  logger.info(`order with ${id} id was fetched`, foundOrder);
+  return res.status(200).json({
+    message: 'Order details',
+    foundOrder,
+  });
 };
 
-const getOrdersByUsername = (req, res) => {
+const getOrdersByUsername = async (req, res) => {
   const username = req.params.user;
-  Order.find({ userName: username }).sort([['date', -1]])
-    .exec()
-    .then((foundOrders) => {
-      if (!foundOrders) {
-        return res.status(404).json({
-          message: 'There are no orders to fetch',
-        });
-      }
-      logger.info('Fetching all orders');
-      return res.status(200).json({
-        message: 'Orders details',
-        foundOrders,
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
+  const orderUser = req.userData.username;
+
+  try {
+    userPermission(username, orderUser);
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send(err.message);
+  }
+
+  let foundOrders;
+  try {
+    foundOrders = await Order.find({ userName: username }).sort([['date', -1]]).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
+  }
+  if (!foundOrders) {
+    return res.status(404).json({
+      message: 'There are no orders to fetch',
+    });
+  }
+  logger.info('Fetching all orders');
+  return res.status(200).json({
+    message: 'Orders details',
+    foundOrders,
+  });
 };
 
 module.exports = {

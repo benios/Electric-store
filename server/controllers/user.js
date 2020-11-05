@@ -1,8 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const Logger = require('../services/logger_services');
+const role = require('../helpers/role');
 
 const saltRounds = 10;
 
@@ -13,16 +17,16 @@ const logger = new Logger('app');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const newUserValidation = (user, password) => {
+const newUserValidation = (user) => {
   const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
   const isUserNameValid = userNameValidationRegEx.test(user.userName);
   if (!isUserNameValid) {
     throw new Error('username is invalid');
   }
-  if (!password) {
+  if (!user.password) {
     throw new Error('password field is empty');
   }
-  if ((password).length < 8) {
+  if ((user.password).length < 8) {
     throw new Error('password field should have 8 or more digits and characters');
   }
   if (!user.firstName) {
@@ -39,84 +43,129 @@ const newUserValidation = (user, password) => {
   }
 };
 
-const loginUser = (req, res) => {
-  const username = req.body.userName;
-  const { password } = req.body;
-
-  User.findOne({ userName: username })
-    .exec()
-    .then((foundUser) => {
-      if (!foundUser) {
-        return res.status(404).json({
-          message: 'User id does not exist',
-        });
-      }
-      bcrypt.compare(password, foundUser.password, (error, result) => {
-        if (result === true) {
-          logger.info('logged in successfully', foundUser);
-          return res.status(200).json({
-            message: 'User details',
-            foundUser,
-          });
-        }
-        return res.status(500).json({
-          message: error,
-        });
-      });
-    })
-    .catch((err) => {
-      logger.error(err);
-      return res.status(500).json({
-        message: err,
-      });
-    });
+const deletePermission = (id, userId) => {
+  if (id !== userId) {
+    throw new Error('Permission denied!');
+  }
 };
 
-const createUser = (req, res) => {
-  bcrypt.hash(req.body.password, saltRounds, (error, hash) => {
-    const user = new User({
-      userName: req.body.userName,
-      password: hash,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      address: req.body.address,
-      age: req.body.age,
+const loginUser = async (req, res) => {
+  const username = req.body.userName;
+  const { password } = req.body;
+  let foundUser;
+  try {
+    foundUser = await User.findOne({ userName: username }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
-    logger.info('handling create a user request', user);
+  }
 
-    try {
-      newUserValidation(user, req.body.password);
-    } catch (err) {
-      logger.error(err, user);
-      return res.status(400).send('Error: creating a new user failed');
-    }
-    user.save();
-    logger.info('user created successfully', user);
-    return res.send('user created successfully');
+  if (!foundUser) {
+    return res.status(401).json({
+      message: 'Incorrect username or password',
+    });
+  }
+  let result;
+  try {
+    result = await bcrypt.compare(password, foundUser.password);
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+  if (result === true) {
+    const token = jwt.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+    logger.info('logged in successfully', foundUser);
+    return res.status(200).json({
+      message: 'User details',
+      foundUser,
+      token,
+    });
+  }
+  return res.status(401).json({
+    message: 'Incorrect username or password',
   });
 };
 
-const deleteUser = (req, res) => {
-  const id = req.params.userId;
-  User.remove({ _id: id })
-    .exec()
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          message: 'Failed to find and delete the user',
-        });
-      }
-      logger.info(`A user with ${id} id was deleted`, result);
-      return res.status(200).json({
-        message: 'successfully deleted the user',
-      });
-    })
-    .catch((err) => {
+const createUser = async (req, res) => {
+  const currUser = {
+    _id: new mongoose.Types.ObjectId(),
+    userName: req.body.userName,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    address: req.body.address,
+    age: req.body.age,
+    role: role.User,
+  };
+  logger.info('handling create a user request', currUser);
+  let isUserExist;
+  try {
+    isUserExist = await User.findOne({ userName: currUser.userName }).exec();
+  } catch (error) {
+    logger.error(error);
+    return res.status(400).send(error.message);
+  }
+  if (isUserExist !== null) {
+    logger.error('Username exists');
+    return res.status(409).send('Username exists, please try a different username');
+  }
+  try {
+    newUserValidation(currUser);
+  } catch (err) {
+    logger.error(err, currUser);
+    return res.status(400).send(err.message);
+  }
+
+  bcrypt.hash(req.body.password, saltRounds, async (error, hash) => {
+    const user = new User({ ...currUser, password: hash });
+    try {
+      await user.save();
+    } catch (err) {
       logger.error(err);
       return res.status(500).json({
-        message: err,
+        message: err.message,
       });
+    }
+    const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+    logger.info('user created successfully', user);
+    return res.status(200).json({
+      message: 'user created successfully',
+      user,
+      token,
     });
+  });
+};
+
+const deleteUser = async (req, res) => {
+  const id = req.params.userId;
+  const { userId } = req.userData;
+  try {
+    deletePermission(id, userId);
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send(err.message);
+  }
+  let result;
+  try {
+    result = await User.deleteOne({ _id: id }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
+    });
+  }
+  if (!result) {
+    return res.status(404).json({
+      message: 'Failed to find and delete the user',
+    });
+  }
+  logger.info(`A user with ${id} id was deleted`, result);
+  return res.status(200).json({
+    message: 'successfully deleted the user',
+  });
 };
 
 module.exports = {
