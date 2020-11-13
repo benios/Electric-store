@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
+const userPermission = require('../middleware/user-permission');
 
 const app = express();
 
@@ -20,12 +21,6 @@ const newOrderValidation = (order) => {
   }
 };
 
-const userPermission = (username, orderUser) => {
-  if (username !== orderUser) {
-    throw new Error('Permission denied!');
-  }
-};
-
 const getAllOrders = async (req, res) => {
   let foundOrders;
   try {
@@ -38,6 +33,7 @@ const getAllOrders = async (req, res) => {
   }
 
   if (!foundOrders) {
+    logger.error('There are no orders to fetch');
     return res.status(404).json({
       message: 'There are no orders to fetch',
     });
@@ -49,15 +45,13 @@ const getAllOrders = async (req, res) => {
   });
 };
 
-const createOrder = (req, res) => {
+const createOrder = async (req, res) => {
   const { body } = req;
   const order = new Order({
     userName: body.userName,
     product: body.product,
     date: Date.now(),
   });
-
-  order.save();
 
   logger.info('creating an order', order);
 
@@ -67,7 +61,12 @@ const createOrder = (req, res) => {
     logger.error(err, order);
     return res.status(400).send('Error: creating a new order failed');
   }
-
+  try {
+    await order.save();
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send('Error: creating a new order failed');
+  }
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);
   const subject = 'New order';
@@ -89,6 +88,7 @@ const getOrder = async (req, res) => {
     });
   }
   if (!foundOrder) {
+    logger.error('order id does not exist');
     return res.status(404).json({
       message: 'order id does not exist',
     });
@@ -127,6 +127,7 @@ const getOrdersByUsername = async (req, res) => {
     });
   }
   if (!foundOrders) {
+    logger.error('There are no orders to fetch');
     return res.status(404).json({
       message: 'There are no orders to fetch',
     });

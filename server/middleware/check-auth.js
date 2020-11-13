@@ -1,12 +1,17 @@
 const jwt = require('jsonwebtoken');
+const Logger = require('../services/logger_services');
+
+const logger = new Logger('app');
 
 function authRole(role) {
   return (req, res, next) => {
     if (req.userData.role === role || req.userData.role === 'Admin') {
       return next();
     }
-    res.status(401);
-    return res.send('Not allowed');
+    logger.error('Not allowed');
+    return res.status(401).json({
+      message: 'Not allowed',
+    });
   };
 }
 
@@ -17,6 +22,7 @@ function authUser(req, res, next) {
     req.userData = decoded;
     return next();
   } catch (err) {
+    logger.error('Auth failed');
     return res.status(500).json({
       message: 'Auth failed',
     });

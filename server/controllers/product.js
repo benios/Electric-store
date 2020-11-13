@@ -28,7 +28,7 @@ const newProductValidation = (product) => {
   }
 };
 
-const createProduct = (req, res) => {
+const createProduct = async (req, res) => {
   const product = new Product({
     name: req.body.name,
     price: req.body.price,
@@ -46,7 +46,14 @@ const createProduct = (req, res) => {
     logger.error(err, product);
     return res.status(400).send('Error: creating a new product failed');
   }
-  product.save();
+  try {
+    await product.save();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
   logger.info('added product successfully', product);
   return res.send('added product successfully');
 };
@@ -62,6 +69,7 @@ const getProducts = async (req, res) => {
     });
   }
   if (!foundProducts) {
+    logger.error('There are no products to fetch');
     return res.status(404).json({
       message: 'There are no products to fetch',
     });
@@ -85,6 +93,7 @@ const getProductById = async (req, res) => {
     });
   }
   if (!foundProduct) {
+    logger.error('Product id does not exist');
     return res.status(404).json({
       message: 'Product id does not exist',
     });
@@ -109,6 +118,7 @@ const updateProduct = async (req, res) => {
     });
   }
   if (!result) {
+    logger.error('Failed to find and update the product');
     return res.status(404).json({
       message: 'Failed to find and update the product',
     });
@@ -131,6 +141,7 @@ const deleteProduct = async (req, res) => {
     });
   }
   if (!result) {
+    logger.error('Failed to find and delete the product');
     return res.status(404).json({
       message: 'Failed to find and delete the product',
     });

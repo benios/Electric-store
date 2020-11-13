@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,8 +8,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const Logger = require('../services/logger_services');
 const role = require('../helpers/role');
-
-const saltRounds = 10;
+const userPermission = require('../middleware/user-permission');
 
 const app = express();
 
@@ -43,12 +43,6 @@ const newUserValidation = (user) => {
   }
 };
 
-const deletePermission = (id, userId) => {
-  if (id !== userId) {
-    throw new Error('Permission denied!');
-  }
-};
-
 const loginUser = async (req, res) => {
   const username = req.body.userName;
   const { password } = req.body;
@@ -63,6 +57,7 @@ const loginUser = async (req, res) => {
   }
 
   if (!foundUser) {
+    logger.error('Incorrect username or password');
     return res.status(401).json({
       message: 'Incorrect username or password',
     });
@@ -84,12 +79,14 @@ const loginUser = async (req, res) => {
       token,
     });
   }
+  logger.error('Incorrect username or password');
   return res.status(401).json({
     message: 'Incorrect username or password',
   });
 };
 
 const createUser = async (req, res) => {
+  let isUserExist;
   const currUser = {
     _id: new mongoose.Types.ObjectId(),
     userName: req.body.userName,
@@ -101,7 +98,12 @@ const createUser = async (req, res) => {
     role: role.User,
   };
   logger.info('handling create a user request', currUser);
-  let isUserExist;
+  try {
+    newUserValidation(currUser);
+  } catch (err) {
+    logger.error(err, currUser);
+    return res.status(400).send(err.message);
+  }
   try {
     isUserExist = await User.findOne({ userName: currUser.userName }).exec();
   } catch (error) {
@@ -113,37 +115,39 @@ const createUser = async (req, res) => {
     return res.status(409).send('Username exists, please try a different username');
   }
   try {
-    newUserValidation(currUser);
-  } catch (err) {
-    logger.error(err, currUser);
-    return res.status(400).send(err.message);
-  }
-
-  bcrypt.hash(req.body.password, saltRounds, async (error, hash) => {
-    const user = new User({ ...currUser, password: hash });
-    try {
-      await user.save();
-    } catch (err) {
-      logger.error(err);
-      return res.status(500).json({
-        message: err.message,
+    bcrypt.hash(req.body.password, process.env.SALT_ROUNDS, async (error, hash) => {
+      const user = new User({ ...currUser, password: hash });
+      try {
+        await user.save();
+      } catch (err) {
+        logger.error(err);
+        return res.status(500).json({
+          message: err.message,
+        });
+      }
+      const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+      logger.info('user created successfully', user);
+      return res.status(200).json({
+        message: 'user created successfully',
+        user,
+        token,
       });
-    }
-    const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
-    logger.info('user created successfully', user);
-    return res.status(200).json({
-      message: 'user created successfully',
-      user,
-      token,
     });
-  });
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  logger.error('Creating user failed!!');
+  return res.status(400).send('Creating user failed!!');
 };
 
 const deleteUser = async (req, res) => {
   const id = req.params.userId;
   const { userId } = req.userData;
   try {
-    deletePermission(id, userId);
+    userPermission(id, userId);
   } catch (err) {
     logger.error(err);
     return res.status(400).send(err.message);
@@ -158,6 +162,7 @@ const deleteUser = async (req, res) => {
     });
   }
   if (!result) {
+    logger.error('Failed to find and delete the user');
     return res.status(404).json({
       message: 'Failed to find and delete the user',
     });
