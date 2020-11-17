@@ -93,12 +93,23 @@ const getOrder = async (req, res) => {
       message: 'order id does not exist',
     });
   }
+
+  let isPermission = false;
   try {
-    userPermission(foundOrder.userName, orderUser);
+    isPermission = userPermission.userPermission(foundOrder.userName, orderUser);
   } catch (err) {
     logger.error(err);
-    return res.status(400).send(err.message);
+    return res.status(500).json({
+      message: err,
+    });
   }
+  if (!isPermission) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
+  }
+
   logger.info(`order with ${id} id was fetched`, foundOrder);
   return res.status(200).json({
     message: 'Order details',
@@ -110,11 +121,20 @@ const getOrdersByUsername = async (req, res) => {
   const username = req.params.user;
   const orderUser = req.userData.username;
 
+  let isPermission = false;
   try {
-    userPermission(username, orderUser);
+    isPermission = userPermission.userPermission(username, orderUser);
   } catch (err) {
     logger.error(err);
-    return res.status(400).send(err.message);
+    return res.status(500).json({
+      message: err,
+    });
+  }
+  if (!isPermission) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
   }
 
   let foundOrders;

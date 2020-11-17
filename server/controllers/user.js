@@ -115,7 +115,7 @@ const createUser = async (req, res) => {
     return res.status(409).send('Username exists, please try a different username');
   }
   try {
-    bcrypt.hash(req.body.password, process.env.SALT_ROUNDS, async (error, hash) => {
+    bcrypt.hash(req.body.password, +(process.env.SALT_ROUNDS), async (error, hash) => {
       const user = new User({ ...currUser, password: hash });
       try {
         await user.save();
@@ -139,19 +139,27 @@ const createUser = async (req, res) => {
       message: err.message,
     });
   }
-  logger.error('Creating user failed!!');
-  return res.status(400).send('Creating user failed!!');
 };
 
 const deleteUser = async (req, res) => {
   const id = req.params.userId;
   const { userId } = req.userData;
+  let isPermission = false;
   try {
-    userPermission(id, userId);
+    isPermission = userPermission.userPermission(id, userId);
   } catch (err) {
     logger.error(err);
-    return res.status(400).send(err.message);
+    return res.status(500).json({
+      message: err,
+    });
   }
+  if (!isPermission) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
+  }
+
   let result;
   try {
     result = await User.deleteOne({ _id: id }).exec();
