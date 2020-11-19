@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 const Logger = require('../services/logger_services');
 const role = require('../helpers/role');
-const userPermission = require('../middleware/user-permission');
 
 const app = express();
 
@@ -143,23 +142,6 @@ const createUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   const id = req.params.userId;
-  const { userId } = req.userData;
-  let isPermission = false;
-  try {
-    isPermission = userPermission.userPermission(id, userId);
-  } catch (err) {
-    logger.error(err);
-    return res.status(500).json({
-      message: err,
-    });
-  }
-  if (!isPermission) {
-    logger.error('Permission denied');
-    return res.status(400).json({
-      message: 'Permission denied',
-    });
-  }
-
   let result;
   try {
     result = await User.deleteOne({ _id: id }).exec();

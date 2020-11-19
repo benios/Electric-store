@@ -29,7 +29,44 @@ function authUser(req, res, next) {
   }
 }
 
+function userPermissionByID(req, res, next) {
+  const { userId } = req.userData;
+  const id = req.params.userId;
+  if (id !== userId) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
+  }
+  logger.info('Permission granted');
+  return next();
+}
+
+function userPermissionByUsername(req, res, next) {
+  const username = req.params.user;
+  const orderUser = req.userData.username;
+  if (username !== orderUser) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
+  }
+  logger.info('Permission granted');
+  return next();
+}
+
+function userPermissionByOrderId(username, orderUser) {
+  if (username !== orderUser) {
+    return false;
+  }
+  logger.info('Permission granted');
+  return true;
+}
+
 module.exports = {
   authRole,
   authUser,
+  userPermissionByID,
+  userPermissionByUsername,
+  userPermissionByOrderId,
 };

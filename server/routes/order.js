@@ -11,6 +11,6 @@ router.post('/', checkAuth.authUser, checkAuth.authRole(role.User), controller.c
 
 router.get('/orders/:orderId', checkAuth.authUser, checkAuth.authRole(role.User), controller.getOrder);
 
-router.get('/usersOrders/:user', checkAuth.authUser, checkAuth.authRole(role.User), controller.getOrdersByUsername);
+router.get('/usersOrders/:user', checkAuth.authUser, checkAuth.authRole(role.User), checkAuth.userPermissionByUsername, controller.getOrdersByUsername);
 
 module.exports = router;

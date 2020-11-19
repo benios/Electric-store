@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
-const userPermission = require('../middleware/user-permission');
+const checkAuth = require('../middleware/check-auth');
 
 const app = express();
 
@@ -87,16 +87,10 @@ const getOrder = async (req, res) => {
       message: err,
     });
   }
-  if (!foundOrder) {
-    logger.error('order id does not exist');
-    return res.status(404).json({
-      message: 'order id does not exist',
-    });
-  }
-
+  logger.info(`order with ${id} id was found`, foundOrder);
   let isPermission = false;
   try {
-    isPermission = userPermission.userPermission(foundOrder.userName, orderUser);
+    isPermission = checkAuth.userPermissionByOrderId(foundOrder.userName, orderUser);
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
@@ -119,23 +113,6 @@ const getOrder = async (req, res) => {
 
 const getOrdersByUsername = async (req, res) => {
   const username = req.params.user;
-  const orderUser = req.userData.username;
-
-  let isPermission = false;
-  try {
-    isPermission = userPermission.userPermission(username, orderUser);
-  } catch (err) {
-    logger.error(err);
-    return res.status(500).json({
-      message: err,
-    });
-  }
-  if (!isPermission) {
-    logger.error('Permission denied');
-    return res.status(400).json({
-      message: 'Permission denied',
-    });
-  }
 
   let foundOrders;
   try {
