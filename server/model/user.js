@@ -1,26 +1,16 @@
-const utils = require('../utils/utils');
+const mongoose = require('mongoose');
 
-const usersList = [];
+const userSchema = new mongoose.Schema({
+  id: mongoose.Schema.Types.ObjectId,
+  userName: { type: String, required: true, index: true },
+  password: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  address: { type: String, required: true },
+  age: { type: Number, required: true },
+  role: { type: String, required: true },
+});
 
-const createUser = (user) => {
-  const id = utils.idGenerator.generateId();
-  usersList.push({ ...user, id });
-};
-const getUser = (id) => usersList.find((user) => user.id === id);
+const User = mongoose.model('User', userSchema);
 
-};
-
-const deleteUser = (id) => {
-  if (usersList.some((e) => e.id === id)) {
-    const index = usersList.findIndex((element) => element.id === id);
-    usersList.splice(index, 1);
-    return true;
-  }
-  return false;
-};
-
-module.exports = {
-  deleteUser,
-  createUser,
-  getUser,
-};
+module.exports = User;

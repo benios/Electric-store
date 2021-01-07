@@ -1,25 +1,11 @@
-const utils = require('../utils/utils');
+const mongoose = require('mongoose');
 
-const ordersList = [];
+const orderSchema = new mongoose.Schema({
+  userName: { type: String, required: true, index: true },
+  product: { type: String, required: true },
+  date: { type: Number, required: true },
+});
 
-const getAllOrders = () => (ordersList);
+const Order = mongoose.model('Order', orderSchema);
 
-const getOrder = (id) => ordersList.find((order) => order.id === id);
-
-const createOrder = (order) => {
-  const id = utils.idGenerator.generateId();
-  ordersList.push({ ...order, id });
-};
-
-const getOrdersByUsername = (username) => {
-  const usersOrders = ordersList.filter((order) => order.userName === username);
-  usersOrders.sort((a, b) => (b.date - a.date));
-  return usersOrders;
-};
-
-module.exports = {
-  getAllOrders,
-  getOrder,
-  createOrder,
-  getOrdersByUsername,
-};
+module.exports = Order;

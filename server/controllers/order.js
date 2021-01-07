@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const orderModel = require('../model/order');
+const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
+const checkAuth = require('../middleware/check-auth');
 
 const app = express();
 
@@ -20,22 +21,37 @@ const newOrderValidation = (order) => {
   }
 };
 
-const getAllOrders = (req, res) => {
-  const ordersList = orderModel.getAllOrders();
-  logger.info('Orders were fetched', ordersList);
+const getAllOrders = async (req, res) => {
+  let foundOrders;
+  try {
+    foundOrders = await Order.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
+    });
+  }
+
+  if (!foundOrders) {
+    logger.error('There are no orders to fetch');
+    return res.status(404).json({
+      message: 'There are no orders to fetch',
+    });
+  }
+  logger.info('Fetching all orders');
   return res.status(200).json({
-    message: 'Orders were fetched',
-    ordersList,
+    message: 'Orders details',
+    foundOrders,
   });
 };
 
-const createOrder = (req, res) => {
+const createOrder = async (req, res) => {
   const { body } = req;
-  const order = {
+  const order = new Order({
     userName: body.userName,
     product: body.product,
     date: Date.now(),
-  };
+  });
 
   logger.info('creating an order', order);
 
@@ -45,8 +61,12 @@ const createOrder = (req, res) => {
     logger.error(err, order);
     return res.status(400).send('Error: creating a new order failed');
   }
-
-  orderModel.createOrder(order);
+  try {
+    await order.save();
+  } catch (err) {
+    logger.error(err);
+    return res.status(400).send('Error: creating a new order failed');
+  }
   logger.info('Orders were created', order);
   const strOrder = JSON.stringify(order);
   const subject = 'New order';
@@ -55,39 +75,70 @@ const createOrder = (req, res) => {
   return res.send('Orders were created');
 };
 
-const getOrder = (req, res) => {
-  const id = Number(req.params.orderId);
-  const order = orderModel.getOrder(id);
-  if (!order) {
-    return res.status(404).json({
-      message: 'order id does not exist',
+const getOrder = async (req, res) => {
+  const id = req.params.orderId;
+  const orderUser = req.userData.username;
+  let foundOrder;
+  try {
+    foundOrder = await Order.findById(id).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
     });
   }
-  logger.info(`order with ${id} id was fetched`, order);
+  logger.info(`order with ${id} id was found`, foundOrder);
+  let isPermission = false;
+  try {
+    isPermission = checkAuth.userPermissionByOrderId(foundOrder.userName, orderUser);
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
+    });
+  }
+  if (!isPermission) {
+    logger.error('Permission denied');
+    return res.status(400).json({
+      message: 'Permission denied',
+    });
+  }
+
+  logger.info(`order with ${id} id was fetched`, foundOrder);
   return res.status(200).json({
     message: 'Order details',
-    order,
+    foundOrder,
   });
 };
-const getOrdersByUsername = (req, res) => {
+
+const getOrdersByUsername = async (req, res) => {
   const username = req.params.user;
-  logger.info('fetching users orders');
-  const usersOrders = orderModel.getOrdersByUsername(username);
-  if (!usersOrders) {
-    return res.status(404).json({
-      message: 'username does not exist',
+
+  let foundOrders;
+  try {
+    foundOrders = await Order.find({ userName: username }).sort([['date', -1]]).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.info(`orders of username:${username}has been fetched`, usersOrders);
+  if (!foundOrders) {
+    logger.error('There are no orders to fetch');
+    return res.status(404).json({
+      message: 'There are no orders to fetch',
+    });
+  }
+  logger.info('Fetching all orders');
   return res.status(200).json({
-    message: `orders of username:${username}has been fetched`,
-    usersOrders,
+    message: 'Orders details',
+    foundOrders,
   });
 };
 
 module.exports = {
   getOrder,
-  createOrder,
   getAllOrders,
   getOrdersByUsername,
+  createOrder,
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const productModel = require('../model/product');
+const Product = require('../model/product');
 const Logger = require('../services/logger_services');
 
 const app = express();
@@ -28,15 +28,15 @@ const newProductValidation = (product) => {
   }
 };
 
-const createProduct = (req, res) => {
-  const product = {
+const createProduct = async (req, res) => {
+  const product = new Product({
     name: req.body.name,
     price: req.body.price,
     quantity: req.body.quantity,
     pictureUrl: req.body.pictureUrl,
     description: req.body.description,
     date: Date.now(),
-  };
+  });
 
   logger.info('handling create a product request', product);
 
@@ -46,70 +46,109 @@ const createProduct = (req, res) => {
     logger.error(err, product);
     return res.status(400).send('Error: creating a new product failed');
   }
-
-  productModel.createProduct(product);
+  try {
+    await product.save();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
   logger.info('added product successfully', product);
   return res.send('added product successfully');
 };
 
-const getProducts = (req, res) => {
-  const allProducts = productModel.getProducts();
-  logger.info('fetching the products', allProducts);
+const getProducts = async (req, res) => {
+  let foundProducts;
+  try {
+    foundProducts = await Product.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
   return res.status(200).json({
-    message: 'fetching the products',
-    allProducts,
+    message: 'Products details',
+    foundProducts,
   });
 };
 
-const getProductById = (req, res) => {
-  const id = Number(req.params.productId);
-  const product = productModel.getProductId(id);
-  if (!product) {
-    return res.status(404).json({
-      message: 'product id does not exist',
+const getProductById = async (req, res) => {
+  const id = req.params.productId;
+  let foundProduct;
+  try {
+    foundProduct = await Product.findById(id).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.info(`fetching product with id: ${id}`, product);
+  if (!foundProduct) {
+    logger.error('Product id does not exist');
+    return res.status(404).json({
+      message: 'Product id does not exist',
+    });
+  }
+  logger.info(`Product with ${id} id was fetched`, foundProduct);
   return res.status(200).json({
-    message: `fetching product with id: ${id}`,
-    product,
+    message: 'Product details',
+    foundProduct,
   });
 };
 
-const updateProduct = (req, res) => {
-  const product = {
-    name: req.body.name,
-    price: req.body.price,
-    quantity: req.body.quantity,
-    pictureUrl: req.body.pictureUrl,
-    description: req.body.description,
-    date: new Date(),
-    id: Number(req.params.productId),
-  };
-  const isIdValid = productModel.updateProduct(product);
-  if (!isIdValid) {
-    return res.status(404).json({
-      message: 'product id does not exist, updating the product failed',
+const updateProduct = async (req, res) => {
+  const id = req.params.productId;
+  const props = req.body;
+  let result;
+  try {
+    result = await Product.update({ _id: id }, props).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.info('Updated product!', product);
+  if (!result) {
+    logger.error('Failed to find and update the product');
+    return res.status(404).json({
+      message: 'Failed to find and update the product',
+    });
+  }
+  logger.info(`Product with ${id} id was updated`, result);
   return res.status(200).json({
-    message: 'Updated product!',
-    product,
+    message: 'successfully updated the product',
   });
 };
 
-const deleteProduct = (req, res) => {
-  const id = Number(req.params.productId);
-  const didProductDeleted = productModel.deleteProduct(id);
-  if (!didProductDeleted) {
-    return res.status(404).json({
-      message: 'product id does not exist, deleting the product failed',
+const deleteProduct = async (req, res) => {
+  const id = req.params.productId;
+  let result;
+  try {
+    result = await Product.remove({ _id: id }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.info('Deleted product!');
+  if (!result) {
+    logger.error('Failed to find and delete the product');
+    return res.status(404).json({
+      message: 'Failed to find and delete the product',
+    });
+  }
+  logger.info(`Product with ${id} id was deleted`, result);
   return res.status(200).json({
-    message: 'Deleted product!',
+    message: 'successfully deleted the product',
   });
 };
 

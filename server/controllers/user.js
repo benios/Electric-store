@@ -1,7 +1,13 @@
+/* eslint-disable no-underscore-dangle */
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const userModel = require('../model/user');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../model/user');
 const Logger = require('../services/logger_services');
+const role = require('../helpers/role');
 
 const app = express();
 
@@ -36,62 +42,129 @@ const newUserValidation = (user) => {
   }
 };
 
-const getUser = (req, res) => {
-  const id = Number(req.params.userId);
-  const user = userModel.getUser(id);
-  if (!user) {
-    return res.status(404).json({
-      message: 'user id does not exist',
+const loginUser = async (req, res) => {
+  const username = req.body.userName;
+  const { password } = req.body;
+  let foundUser;
+  try {
+    foundUser = await User.findOne({ userName: username }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.setLogData(user);
-  logger.info('You passed a user ID');
-  return res.status(200).json({
-    message: 'You passed a user ID',
-    user,
+
+  if (!foundUser) {
+    logger.error('Incorrect username or password');
+    return res.status(401).json({
+      message: 'Incorrect username or password',
+    });
+  }
+  let result;
+  try {
+    result = await bcrypt.compare(password, foundUser.password);
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+  if (result === true) {
+    const token = jwt.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+    logger.info('logged in successfully', foundUser);
+    return res.status(200).json({
+      message: 'User details',
+      foundUser,
+      token,
+    });
+  }
+  logger.error('Incorrect username or password');
+  return res.status(401).json({
+    message: 'Incorrect username or password',
   });
 };
 
-const createUser = (req, res) => {
-  const user = {
+const createUser = async (req, res) => {
+  let isUserExist;
+  const currUser = {
+    _id: new mongoose.Types.ObjectId(),
     userName: req.body.userName,
     password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     address: req.body.address,
     age: req.body.age,
+    role: role.User,
   };
-
-  logger.info('handling create a user request', user);
-
+  logger.info('handling create a user request', currUser);
   try {
-    newUserValidation(user);
+    newUserValidation(currUser);
   } catch (err) {
-    logger.error(err, user);
-    return res.status(400).send('Error: creating a new user failed');
+    logger.error(err, currUser);
+    return res.status(400).send(err.message);
   }
-
-  userModel.createUser(user);
-  logger.info('user created successfully', user);
-  return res.send('user created successfully');
-};
-
-const deleteUser = (req, res) => {
-  const id = Number(req.params.userId);
-  const didUserDeleted = userModel.deleteUser(id);
-  if (!didUserDeleted) {
-    return res.status(404).json({
-      message: 'User id does not exist, deleting the User failed',
+  try {
+    isUserExist = await User.findOne({ userName: currUser.userName }).exec();
+  } catch (error) {
+    logger.error(error);
+    return res.status(400).send(error.message);
+  }
+  if (isUserExist !== null) {
+    logger.error('Username exists');
+    return res.status(409).send('Username exists, please try a different username');
+  }
+  try {
+    bcrypt.hash(req.body.password, +(process.env.SALT_ROUNDS), async (error, hash) => {
+      const user = new User({ ...currUser, password: hash });
+      try {
+        await user.save();
+      } catch (err) {
+        logger.error(err);
+        return res.status(500).json({
+          message: err.message,
+        });
+      }
+      const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+      logger.info('user created successfully', user);
+      return res.status(200).json({
+        message: 'user created successfully',
+        user,
+        token,
+      });
+    });
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
     });
   }
-  logger.info('User deleted!');
+};
+
+const deleteUser = async (req, res) => {
+  const id = req.params.userId;
+  let result;
+  try {
+    result = await User.deleteOne({ _id: id }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err,
+    });
+  }
+  if (!result) {
+    logger.error('Failed to find and delete the user');
+    return res.status(404).json({
+      message: 'Failed to find and delete the user',
+    });
+  }
+  logger.info(`A user with ${id} id was deleted`, result);
   return res.status(200).json({
-    message: 'User deleted!',
+    message: 'successfully deleted the user',
   });
 };
 
 module.exports = {
   deleteUser,
   createUser,
-  getUser,
+  loginUser,
 };
