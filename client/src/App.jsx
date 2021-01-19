@@ -1,21 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import "./assests/css/style.css";
-import "./App.css";
+import React, { useState , useRef} from "react";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CustomTheme from './assests/CustomTheme';
+
 
 //importing pages
 import Signup from "./components/pages/Signup";
-import Login from "./components/pages/Login";
-import RightSide from "./components/pages/RightSide";
+import Login from "./components/pages/Login/Login";
 
-function App() {
-  const [isLoginActive, setisLoginActive] = useState(true);
+
+// Configure JSS
+const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+
+
+
+const App = () => {
+	const [isLoginActive, setisLoginActive] = useState(true);
+
+	const changeState = (event) => {
+		if (isLoginActive) {
+			setisLoginActive(false);
+		} else {
+			setisLoginActive(true);
+		}
+	};
 
 	return (
-		<Router>
-			<Route exact={true} path="/signup" component={Signup} />
-			<Route exact={true} path="/login" component={Login} />
-		</Router>
+		<ThemeProvider theme={CustomTheme}>
+			<StylesProvider jss={jss}>
+			<BrowserRouter>
+				<Route exact={true} path="/login">
+					<Login />
+				</Route>
+				<Route exact={true} path="/signup">
+					<Signup />
+				</Route>
+		</BrowserRouter>
+		</StylesProvider>
+		</ThemeProvider>
+		
 	);
 }
 
