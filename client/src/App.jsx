@@ -8,7 +8,7 @@ import CustomTheme from './assests/CustomTheme';
 
 
 //importing pages
-import Signup from "./components/pages/Signup";
+import Signup from "./components/pages/Login/Signup";
 import Login from "./components/pages/Login/Login";
 
 

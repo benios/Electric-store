@@ -12,7 +12,8 @@ import PersonIcon from "@material-ui/icons/Person";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import Button from "@material-ui/core/Button";
 import { FaGoogle } from 'react-icons/fa';
-import './Login.scss'
+import './Login.scss';
+
 
 
 import loginImg from "../../../assests/images/logo.jpg";
@@ -40,18 +41,18 @@ const Login = () => {
 							alt="login"
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "50px" }}>
+					<Grid item xs={12} className="login-title">
 						<h1>ברוכים הבאים!</h1>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "20px" }}>
+					<Grid item xs={12} className="login-form">
 						<TextField
 							id="input-with-icon-textfield"
 							label="שם משתמש"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<PersonIcon />
@@ -60,15 +61,15 @@ const Login = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="login-form">
 						<TextField
 							id="input-with-icon-textfield"
 							label="סיסמא"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<LockOpenIcon />
@@ -80,45 +81,38 @@ const Login = () => {
 					<Grid
 						item
 						xs={12}
-						style={{
-							textAlign: "end",
-							marginTop: "10px",
-							paddingLeft: "27%",
-							fontSize: "50%",
-						}}
+						className="small-link"
 					>
 						<Link to="">שכחת את הסיסמא?</Link>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "20px" }}>
+					<Grid item xs={12} className="login-form">
 						<Button
-							style={{ backgroundColor: "rgb(1, 72, 164)", color: "#ffff" ,width: '100px', borderRadius: '40px'}}
+							className="submit-button"
 							variant="contained"
 						>
 							התחבר
 						</Button>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<h5>או התחבר באמצעות</h5>
 					</Grid>
-          <Grid container spacing={3} style={{  marginTop: "10px" }}>
+          <Grid container spacing={3} className="button-container">
           
-					<Grid item xs={6} style={{ textAlign: "end", marginTop: "2px" }}>
+					<Grid item xs={6} className="right-button">
 						<Button
 							variant="contained"
-              style={{ backgroundColor: "rgb(57, 92, 146)", color: "#ffff"}}
 							startIcon={<FacebookIcon />}
 						>פייסבוק</Button>
 					</Grid>
 
-          <Grid item xs={6} style={{ textAlign: "start", marginTop: "2px"}}>
+          <Grid item xs={6} className="left-button">
 						<Button
 							variant="contained"
-              style={{ backgroundColor: "rgb(241, 68, 54)",width: '100px', color: "#ffff" }}
 							startIcon={<FaGoogle/>}
 						>גוגל</Button>
 					</Grid>
           </Grid>
-          <Grid item xs={12} style={{ textAlign: "center", marginTop: "2px" }}>
+          <Grid item xs={12} className="signup-link">
          <h5>אין לך משתמש? <Link to="signup">הרשם כאן</Link></h5>
 					</Grid>
 				</Grid>

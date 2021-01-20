@@ -11,6 +11,7 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import Button from "@material-ui/core/Button";
 import { ImLocation } from 'react-icons/im';
 import { GiPlayerTime } from 'react-icons/gi'
+import './Login.scss'
 
 
 const Signup = () => {
@@ -24,31 +25,23 @@ const Signup = () => {
 				alignItems="center"
 				maxWidth="sm"
 				spacing={3}
-				style={{}}
 			>
 				<Grid
 					item
-					style={{
-						backgroundColor: "#ffff",
-						height: "90vh",
-						marginTop: "50px",
-						boxShadow: "0px 0px 12px 2px rgba(15, 15, 15, 0.2)",
-						borderRadius: "30px",
-						width: '500px',
-					}}
+					className="login-container"
 				>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "50px" }}>
+					<Grid item xs={12} className="login-title">
 						<h1>בוא נתחיל!</h1>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "40px" }}>
+					<Grid item xs={12} className="signup-form">
 						<TextField
 							id="input-with-icon-textfield"
 							label="שם משתמש"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<PersonIcon />
@@ -57,15 +50,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="סיסמא"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<LockOpenIcon />
@@ -74,15 +67,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="אשר סיסמא"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<LockOpenIcon />
@@ -91,15 +84,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="שם פרטי"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<PersonIcon />
@@ -108,15 +101,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="שם משפחה"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<PersonIcon />
@@ -125,15 +118,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="כתובת"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<ImLocation />
@@ -142,15 +135,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "15px" }}>
+					<Grid item xs={12} className="small-text">
 						<TextField
 							id="input-with-icon-textfield"
 							label="גיל"
-							style={{ color: "rgb(0, 123, 252)" }}
+							className="text-field"
 							InputProps={{
 								startAdornment: (
 									<InputAdornment
-										style={{ color: "rgb(0, 123, 252)" }}
+										className="text-field"
 										position="start"
 									>
 										<GiPlayerTime />
@@ -159,16 +152,15 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} style={{ textAlign: "center", marginTop: "40px" }}>
+					<Grid item xs={12} className="signup-form">
 						<Button
-							style={{ backgroundColor: "rgb(1, 72, 164)", color: "#ffff" ,width: '100px', borderRadius: '40px'}}
 							variant="contained"
 						>
 							הרשם
 						</Button>
 					</Grid>
 					
-          <Grid item xs={12} style={{ textAlign: "center", marginTop: "2px" }}>
+          <Grid item xs={12} className="signup-link">
          <h5>יש לך כבר משתמש? <Link to="login">התחבר כאן</Link></h5>
 					</Grid>
 				</Grid>
