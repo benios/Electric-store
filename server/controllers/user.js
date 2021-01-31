@@ -2,9 +2,12 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('express-jwt');
+const jsonwebtoken = require('jsonwebtoken');
+const passport = require('passport');
 const User = require('../model/user');
 const Logger = require('../services/logger_services');
 const role = require('../helpers/role');
@@ -13,8 +16,10 @@ const app = express();
 
 const logger = new Logger('app');
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(jwt({ secret: process.env.JWT_KEY, algorithms: ['HS256'] }));
 
 const newUserValidation = (user) => {
   const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
@@ -38,7 +43,7 @@ const newUserValidation = (user) => {
     throw new Error('address field is empty');
   }
   if ((typeof (user.age) !== 'number') || (user.age < 0)) {
-    throw new Error('address field is empty');
+    throw new Error('age is not a number');
   }
 };
 
@@ -70,8 +75,9 @@ const loginUser = async (req, res) => {
     });
   }
   if (result === true) {
-    const token = jwt.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+    const token = jsonwebtoken.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
     logger.info('logged in successfully', foundUser);
+    res.cookie('token', token, { httpOnly: true });
     return res.status(200).json({
       message: 'User details',
       foundUser,
@@ -124,8 +130,10 @@ const createUser = async (req, res) => {
           message: err.message,
         });
       }
-      const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+
+      const token = jsonwebtoken.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
       logger.info('user created successfully', user);
+      res.cookie('token', token, { httpOnly: true });
       return res.status(200).json({
         message: 'user created successfully',
         user,

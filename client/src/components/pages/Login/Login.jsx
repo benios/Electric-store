@@ -1,24 +1,63 @@
-import React from "react";
-import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
-import noop from "lodash/noop";
+import React, { useState, useCallback } from "react";
+import { Link, useHistory } from "react-router-dom";
+import API from "../../../utils/api";
+import doesCookieExist from "../../../utils/doesCookieExist";
+import { GoogleLogin } from "react-google-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import FacebookIcon from '@material-ui/icons/Facebook';
+import FacebookIcon from "@material-ui/icons/Facebook";
 import PersonIcon from "@material-ui/icons/Person";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import Button from "@material-ui/core/Button";
-import { FaGoogle } from 'react-icons/fa';
-import './Login.scss';
-
-
+import { FaGoogle } from "react-icons/fa";
+import "./Login.scss";
 
 import loginImg from "../../../assests/images/logo.jpg";
 
 const Login = () => {
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+
+	const onUsernameChange = useCallback((e) => {
+		setUsername(e.target.value);
+	}, []);
+	const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
+
+	let history = useHistory();
+
+	const responseFacebook = useCallback((response) => {
+		setError("");
+		if(response.accessToken){
+			history.push("/");
+		} else {
+			setError("התחברות דרך חשבון הפייסבוק נכשלה");
+		}
+	},[history]);
+
+	const responseGoogle = useCallback((response) => {
+		setError("");
+		if(response.accessToken){
+			history.push("/");
+		} else {
+			setError("התחברות דרך חשבון הגוגל נכשלה");
+		}
+	},[history]);
+
+	const onSubmit = useCallback(async () => {
+		setError("");
+		await API.login(username, password);
+		const token = doesCookieExist("token");
+		if (token) {
+			history.push("/");
+		} else {
+			setError("שם משתמש או סיסמא שגויים");
+		}
+	}, [history, password, username]);
+
 	return (
 		<React.Fragment>
 			<CssBaseline />
@@ -30,16 +69,9 @@ const Login = () => {
 				maxWidth="sm"
 				spacing={3}
 			>
-				<Grid
-					item
-					className="login-container"
-				>
+				<Grid item className="login-container">
 					<Grid item className="image-container" xs={12}>
-						<img
-							className="image-logo"
-							src={loginImg}
-							alt="login"
-						/>
+						<img className="image-logo" src={loginImg} alt="login" />
 					</Grid>
 					<Grid item xs={12} className="login-title">
 						<h1>ברוכים הבאים!</h1>
@@ -49,12 +81,11 @@ const Login = () => {
 							id="input-with-icon-textfield"
 							label="שם משתמש"
 							className="text-field"
+							value={username}
+							onChange={onUsernameChange}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment
-										className="text-field"
-										position="start"
-									>
+									<InputAdornment className="text-field" position="start">
 										<PersonIcon />
 									</InputAdornment>
 								),
@@ -66,29 +97,29 @@ const Login = () => {
 							id="input-with-icon-textfield"
 							label="סיסמא"
 							className="text-field"
+							type="password"
+							value={password}
+							onChange={onPasswordChange}
+							error={error.length > 0}
+							helperText={error.length > 0 ? error : " "}
 							InputProps={{
 								startAdornment: (
-									<InputAdornment
-										className="text-field"
-										position="start"
-									>
+									<InputAdornment className="text-field" position="start">
 										<LockOpenIcon />
 									</InputAdornment>
 								),
 							}}
 						/>
 					</Grid>
-					<Grid
-						item
-						xs={12}
-						className="small-link"
-					>
+					<Grid item xs={12} className="small-link">
 						<Link to="">שכחת את הסיסמא?</Link>
 					</Grid>
 					<Grid item xs={12} className="login-form">
 						<Button
 							className="submit-button"
 							variant="contained"
+							type="submit"
+							onClick={onSubmit}
 						>
 							התחבר
 						</Button>
@@ -96,24 +127,48 @@ const Login = () => {
 					<Grid item xs={12} className="small-text">
 						<h5>או התחבר באמצעות</h5>
 					</Grid>
-          <Grid container spacing={3} className="button-container">
-          
-					<Grid item xs={6} className="right-button">
-						<Button
-							variant="contained"
-							startIcon={<FacebookIcon />}
-						>פייסבוק</Button>
-					</Grid>
+					<Grid container spacing={3} className="button-container">
+						<Grid item xs={6} className="right-button">
+							<FacebookLogin
+								appId="459409765218583"
+								autoLoad={false}
+								callback={responseFacebook}
+								render={(renderProps) => (
+									<Button
+										variant="contained"
+										startIcon={<FacebookIcon /> }
+										onClick={renderProps.onClick}
+									>
+										פייסבוק
+									</Button>
+								)}
+							/>
+						</Grid>
 
-          <Grid item xs={6} className="left-button">
-						<Button
-							variant="contained"
-							startIcon={<FaGoogle/>}
-						>גוגל</Button>
+						<Grid item xs={6} className="left-button">
+							<GoogleLogin
+								clientId="872457891209-424nmtgtqf0c99ui4qs9n6rsplncmtj9.apps.googleusercontent.com"
+								render={(renderProps) => (
+									<Button
+										variant="contained"
+										startIcon={<FaGoogle />}
+										onClick={renderProps.onClick}
+										disabled={renderProps.disabled}
+									>
+										גוגל
+									</Button>
+								)}
+								buttonText="Login"
+								onSuccess={responseGoogle}
+								onFailure={responseGoogle}
+								cookiePolicy={"single_host_origin"}
+							/>
+						</Grid>
 					</Grid>
-          </Grid>
-          <Grid item xs={12} className="signup-link">
-         <h5>אין לך משתמש? <Link to="signup">הרשם כאן</Link></h5>
+					<Grid item xs={12} className="signup-link">
+						<h5>
+							אין לך משתמש? <Link to="signup">הרשם כאן</Link>
+						</h5>
 					</Grid>
 				</Grid>
 			</Grid>

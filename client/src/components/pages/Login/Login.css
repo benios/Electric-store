@@ -1,0 +1,110 @@
+.MuiGrid-spacing-xs-3 .login-container {
+  box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.2);
+  background-color: white;
+  height: 90vh;
+  border-radius: 30px;
+  width: 35%;
+}
+
+@media only screen and (max-width: 600px) {
+  .MuiGrid-spacing-xs-3 .login-container {
+    height: 100vh;
+    box-shadow: none;
+    width: 100%;
+  }
+}
+
+.MuiGrid-spacing-xs-3 .login-container.MuiGrid-item {
+  margin-top: 50px;
+}
+
+@media only screen and (min-width: 960px) {
+  .MuiGrid-spacing-xs-3 .login-container.MuiGrid-item {
+    padding-top: 25px;
+  }
+}
+
+.MuiGrid-spacing-xs-3 .login-container .image-container {
+  text-align: center;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .image-container .image-logo {
+  height: 25vh;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .login-title {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .login-form {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .text-field {
+  color: #007bfc;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .small-link {
+  text-align: end;
+  margin-top: 10px;
+  padding-left: 27%;
+  font-size: 50%;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .submit-button {
+  background-color: #0148a4;
+  color: white;
+  width: 100px;
+  border-radius: 40px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .small-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .button-container {
+  margin-top: 10px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .right-button {
+  text-align: end;
+  margin-top: 2px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .right-button Button {
+  background-color: #395c92;
+  width: 100px;
+  color: white;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .left-button {
+  text-align: start;
+  margin-top: 2px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .left-button Button {
+  background-color: #f14436;
+  width: 100px;
+  color: white;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .signup-link {
+  text-align: center;
+  margin-top: 2px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .signup-form {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.MuiGrid-spacing-xs-3 .login-container .signup-form button {
+  background-color: #0148a4;
+  color: white;
+  width: 100px;
+  border-radius: 40px;
+}
+/*# sourceMappingURL=Login.css.map */
