@@ -45,10 +45,7 @@ function SearchLocationInput(props) {
 
 	useEffect(() => {
 		loadScript(
-			`https://maps.googleapis.com/maps/api/js?key=${
-				process.env.REACT_APP_GOOGLE_API_KEY ||
-				"AIzaSyCULdMG511AXWOnlcSkBhlVo_CuEhh4wmo"
-			}&libraries=places`,
+			`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
 			() => handleScriptLoad(setQuery, autoCompleteRef)
 		);
 	}, []);
