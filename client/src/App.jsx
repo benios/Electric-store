@@ -1,14 +1,10 @@
-import React from "react";
-import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
-import { create } from 'jss';
-import rtl from 'jss-rtl';
-import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CustomTheme from './assests/CustomTheme';
+import React from 'react';
+import { BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 
 //importing pages
 import Signup from "./components/pages/Signup/Signup";
 import Login from "./components/pages/Login/Login";
+import Home from "./components/pages/Home/Home";
 
 
 // Configure JSS
@@ -22,7 +18,7 @@ const App = () => {
 			<BrowserRouter>
 			<Switch>
 			<Route exact={true} path="/">
-					<h1>hello</h1>
+					<Home />
 				</Route>
 				<Route exact={true} path="/login">
 					<Login />

@@ -16,6 +16,7 @@ import { FaGoogle } from "react-icons/fa";
 import "./Login.scss";
 
 import loginImg from "../../../assests/images/logo.jpg";
+require('dotenv').config();
 
 const Login = () => {
 	const [username, setUsername] = useState("");
@@ -130,7 +131,7 @@ const Login = () => {
 					<Grid container spacing={3} className="button-container">
 						<Grid item xs={6} className="right-button">
 							<FacebookLogin
-								appId="459409765218583"
+								appId={process.env.FACEBOOK_API_KEY}
 								autoLoad={false}
 								callback={responseFacebook}
 								render={(renderProps) => (
@@ -147,7 +148,7 @@ const Login = () => {
 
 						<Grid item xs={6} className="left-button">
 							<GoogleLogin
-								clientId="872457891209-424nmtgtqf0c99ui4qs9n6rsplncmtj9.apps.googleusercontent.com"
+								clientId={process.env.GOOGLE_API_KEY}
 								render={(renderProps) => (
 									<Button
 										variant="contained"

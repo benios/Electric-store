@@ -1,0 +1,33 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+
+
+.home-styling{
+  background-color: white;
+  font-family: 'Secular One', sans-serif;
+  .Item-banner-container{
+    .right-side{
+      height: 100vh;
+      font-weight: 100;
+    }
+    .title{
+
+    }
+  }
+  
+}
+.root {
+  flex-grow: 1;
+  .appbar-style{
+    &.MuiAppBar-colorPrimary{
+      background-color: transparent;
+    }
+    &.MuiPaper-elevation4{
+      box-shadow: none;
+    }
+  }
+  .title {
+    flex-grow: 1;
+  }
+}

@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
+.home-styling {
+  background-color: white;
+  font-family: 'Secular One', sans-serif;
+}
+
+.home-styling .Item-banner-container .right-side {
+  height: 100vh;
+  font-weight: 100;
+}
+
+.root {
+  flex-grow: 1;
+}
+
+.root .appbar-style.MuiAppBar-colorPrimary {
+  background-color: transparent;
+}
+
+.root .appbar-style.MuiPaper-elevation4 {
+  box-shadow: none;
+}
+
+.root .title {
+  flex-grow: 1;
+}
+/*# sourceMappingURL=Home.css.map */
