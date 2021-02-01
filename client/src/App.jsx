@@ -1,5 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Redirect} from "react-router-dom";
+import React from "react";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
+import { create } from 'jss';
+import rtl from 'jss-rtl';
+import { StylesProvider, jssPreset } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CustomTheme from './assests/CustomTheme';
 
 //importing pages
 import Signup from "./components/pages/Signup/Signup";
