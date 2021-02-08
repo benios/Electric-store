@@ -1,15 +1,78 @@
 @import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
 .home-styling {
   background-color: white;
-  font-family: 'Secular One', sans-serif;
+  color: #363636;
+  font-family: "Secular One", sans-serif;
+}
+
+.home-styling .Item-banner-container {
+  height: 90vh;
+}
+
+.home-styling .Item-banner-container .appbar-container {
+  top: 0px;
+  z-index: 99;
+}
+
+.home-styling .Item-banner-container .left-side {
+  display: flex;
+  padding-left: 50px;
+  height: 100%;
+  background-color: #72c1f4;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-styling .Item-banner-container .left-side .big-image {
+  position: absolute;
+  top: 70px;
+  background-color: transparent;
+  width: 620px;
+  height: 460px;
 }
 
 .home-styling .Item-banner-container .right-side {
-  height: 100vh;
   font-weight: 100;
+  padding-right: 50px;
+}
+
+.home-styling .Item-banner-container .right-side Button {
+  margin-top: 10px;
+  height: 50px;
+  background-color: #72c1f4;
+  width: 200px;
+  color: white;
+}
+
+.home-styling .Item-banner-container .title {
+  margin-bottom: 0px;
+}
+
+.home-styling .Item-banner-container .title.MuiTypography-h1 {
+  font-family: "Secular One", sans-serif;
 }
 
 .root {
+  flex-grow: 1;
+  z-index: 99;
+}
+
+.root .appbar-style {
+  color: #363636;
+  font-family: "Secular One", sans-serif;
+}
+
+.root .appbar-style .MuiButton-root {
+  font-family: "Secular One", sans-serif;
+}
+
+.root .appbar-style .logo {
+  width: 50px;
+  height: 50px;
+  padding: 0px 30px;
+}
+
+.root .appbar-style .space {
   flex-grow: 1;
 }
 
@@ -21,7 +84,19 @@
   box-shadow: none;
 }
 
-.root .title {
-  flex-grow: 1;
+.user-menu .user-menu-container {
+  background-color: #7aa9e2;
+  width: 150px;
+  height: 200px;
+}
+
+.user-menu .user-menu-container .signin {
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-menu .user-menu-container .signin .signin-btn {
+  height: 30px;
 }
 /*# sourceMappingURL=Home.css.map */

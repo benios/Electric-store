@@ -1,0 +1,11 @@
+{
+    "version": 3,
+    "mappings": "AAGA,AACE,mBADiB,CACjB,cAAc,CAAC;EACb,gBAAgB,EAAE,WAAW;CAC9B",
+    "sources": [
+        "Carousel.scss",
+        "../../../styles/config.scss",
+        "../../../styles/colors.scss"
+    ],
+    "names": [],
+    "file": "Carousel.css"
+}

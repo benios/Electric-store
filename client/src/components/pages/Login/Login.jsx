@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import dotenv from  'dotenv'
 import { Link, useHistory } from "react-router-dom";
 import API from "../../../utils/api";
 import doesCookieExist from "../../../utils/doesCookieExist";
@@ -16,12 +17,13 @@ import { FaGoogle } from "react-icons/fa";
 import "./Login.scss";
 
 import loginImg from "../../../assests/images/logo.jpg";
-require('dotenv').config();
 
 const Login = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+
+	console.log(`is is: ${process.env}`)
 
 	const onUsernameChange = useCallback((e) => {
 		setUsername(e.target.value);
@@ -131,7 +133,7 @@ const Login = () => {
 					<Grid container spacing={3} className="button-container">
 						<Grid item xs={6} className="right-button">
 							<FacebookLogin
-								appId={process.env.FACEBOOK_API_KEY}
+								appId={process.env.REACT_APP_FACEBOOK_API_KEY}
 								autoLoad={false}
 								callback={responseFacebook}
 								render={(renderProps) => (
@@ -148,7 +150,7 @@ const Login = () => {
 
 						<Grid item xs={6} className="left-button">
 							<GoogleLogin
-								clientId={process.env.GOOGLE_API_KEY}
+								clientId={process.env.REACT_APP_GOOGLE_API_KEY}
 								render={(renderProps) => (
 									<Button
 										variant="contained"

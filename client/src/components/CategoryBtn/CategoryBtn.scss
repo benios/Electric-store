@@ -1,0 +1,15 @@
+@import "../..//styles/config.scss";
+@import "../../styles/colors.scss";
+
+.category-btn-group {
+  background-color: white;
+  box-shadow: 0.5px -0.5px 5px 0.5px $blue-join-button;
+	.category-btn {
+    .MuiButton-label{
+      display: flex;
+      flex-direction: column;
+    }
+		width: 150px;
+    height: 150px;
+  }
+}

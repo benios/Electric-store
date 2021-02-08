@@ -1,0 +1,19 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+.carousel-container {
+  .carousel-item {
+    background-color: transparent;
+      .banner-img {
+        width: 900px;
+      }
+      .banner-text {
+        color: $dark-text;
+        font-family: "Secular One", sans-serif;
+        background-color: transparent;
+        .txt-highlight{
+          color: $text-highlight;
+        }
+      }
+  }
+}

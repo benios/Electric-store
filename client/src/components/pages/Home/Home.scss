@@ -1,33 +1,102 @@
-@import '../../../styles/config.scss';
-@import '../../../styles/colors.scss';
-@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+@import "../../../styles/config.scss";
+@import "../../../styles/colors.scss";
+@import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
 
+.home-styling {
+	background-color: #f9f9f9;
+	color: $dark-text;
+	font-family: "Secular One", sans-serif;
+	.Item-banner-container {
+		height: 100vh;
+		position: relative;
+		.category-btn-container{
+			position: absolute;
+			bottom: 0px;
+		}
+		.appbar-container {
+			top: 0px;
+			z-index: 99;
+		}
+		.left-side {
+			display: flex;
+			height: 100%;
+			background-color: $blue-join-button;
+			justify-content: center;
+			align-items: center;
+			.big-image {
+				position: absolute;
+				top: 70px;
+				background-color: transparent;
+				width: 620px;
+				height: 460px;
+			}
+		}
 
-.home-styling{
-  background-color: white;
-  font-family: 'Secular One', sans-serif;
-  .Item-banner-container{
-    .right-side{
-      height: 100vh;
-      font-weight: 100;
-    }
-    .title{
-
-    }
-  }
-  
+		.right-side {
+			font-weight: 100;
+			padding-right: 50px;
+			Button {
+				margin-top: 10px;
+				height: 50px;
+				background-color: $blue-join-button;
+				width: 200px;
+				color: white;
+			}
+		}
+		.title {
+			margin-bottom: 0px;
+			&.MuiTypography-h1 {
+				font-family: "Secular One", sans-serif;
+			}
+		}
+	}
 }
 .root {
-  flex-grow: 1;
-  .appbar-style{
-    &.MuiAppBar-colorPrimary{
-      background-color: transparent;
-    }
-    &.MuiPaper-elevation4{
-      box-shadow: none;
-    }
-  }
-  .title {
-    flex-grow: 1;
-  }
+	flex-grow: 1;
+	z-index: 99;
+
+	.appbar-style {
+		.MuiButton-root {
+			font-family: "Secular One", sans-serif;
+			color: $dark-text;
+		}
+		.logo {
+			width: 50px;
+			height: 50px;
+			padding: 0px 30px;
+		}
+		.space {
+			flex-grow: 1;
+		}
+		color: $dark-text;
+		font-family: "Secular One", sans-serif;
+		background-color: transparent;	
+		&.scrolled-down {
+			background: linear-gradient(90deg,  $blue-join-button 50%, white 50%);
+		}
+	}
+	
+}
+
+.user-menu {
+	.user-menu-container {
+    background-color: $blue-popover;
+		width: 150px;
+		height: 200px;
+		.signin {
+			padding: 5px;
+			display: flex;
+			flex-direction: column;
+			.signin-btn {
+				height: 60px;
+				margin-bottom: 10px;
+			}
+		}
+		.menu-list {
+			display:flex;
+			justify-content: center;
+			color:white;
+			margin-top: 0px;
+		}
+	}
 }
