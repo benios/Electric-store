@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from '@material-ui/core/Button';
@@ -7,6 +8,13 @@ import Categorybtn from '../CategoryBtn/CategoryBtn'
 import "../pages/Home/Home.scss";
 
 const ItemBanner = (props) => {
+
+	const history = useHistory();
+
+	const onSignup = useCallback(() => {
+		history.push("/signup");
+	}, [history]);
+
 	return (
 			<Grid container direction="row" alignItems="center" justify="center" className="Item-banner-container">
 				<Grid item md={6} className="right-side">
@@ -16,7 +24,7 @@ const ItemBanner = (props) => {
 					<Typography variant="subtitle1" gutterBottom>
 						בואו להנות מהמוצרים הנמכרים של השנה במכירים מיוחדים
 					</Typography>
-            <Button variant="contained" color="primary" disableElevation>
+            <Button variant="contained" color="primary" onClick={onSignup} disableElevation>
               להצטרפות לחץ כאן
             </Button>
 				</Grid>

@@ -1,0 +1,34 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+
+.category-page{
+  background-color: $white-grey;
+  .grid-container{
+    display: flex;
+    justify-content: space-evenly;
+    &.MuiGrid-spacing-xs-2{
+      margin-top: 50px;
+      width: 100%;
+    }
+    .card-container{
+      display: flex;
+      justify-content: center;
+      
+    }
+  }
+  .scroll-btn {
+    position: relative;
+    z-index: 99;
+    .scroll-btn-right{
+        position: absolute;
+        right: 5px;
+        top: 130px;
+    }
+    .scroll-btn-left{
+        position: absolute;
+        left: 5px;
+        top: 130px;
+    }
+}
+}

@@ -11,6 +11,8 @@ router.get('/', controller.getProducts);
 
 router.get('/:productId', controller.getProductById);
 
+router.get('/categories/:category', controller.getProductByCategory);
+
 router.patch('/:productId', checkAuth.authUser, checkAuth.authRole(role.Admin), controller.updateProduct);
 
 router.delete('/:productId', checkAuth.authUser, checkAuth.authRole(role.Admin), controller.deleteProduct);

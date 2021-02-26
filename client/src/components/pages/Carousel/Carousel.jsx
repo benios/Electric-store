@@ -29,13 +29,6 @@ function WelcomeCarousel()
 {
     var items = [
         {
-            title: "בואו להנות מחויית 4K עם מסכי smart tv הנמכרים של השנה",
-            src: "/img/banner-white.png",
-            alt: "the first banner",
-            content: "מסכי smart tv 4K החל מ ",
-            price: "2300 ₪"
-        },
-        {
             title: "",
             src: "/img/banner-cam.png",
             alt: "camera banner",

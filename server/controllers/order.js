@@ -14,10 +14,10 @@ app.use(bodyParser.json());
 
 const newOrderValidation = (order) => {
   if (!order.userName) {
-    throw new Error('username field is empty');
+    throw new Error('username not found');
   }
-  if (!order.product) {
-    throw new Error('product field is empty');
+  if (!order.products) {
+    throw new Error('products not found');
   }
 };
 
@@ -49,7 +49,7 @@ const createOrder = async (req, res) => {
   const { body } = req;
   const order = new Order({
     userName: body.userName,
-    product: body.product,
+    products: body.products,
     date: Date.now(),
   });
 
@@ -113,7 +113,6 @@ const getOrder = async (req, res) => {
 
 const getOrdersByUsername = async (req, res) => {
   const username = req.params.user;
-
   let foundOrders;
   try {
     foundOrders = await Order.find({ userName: username }).sort([['date', -1]]).exec();

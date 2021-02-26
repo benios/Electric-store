@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -9,16 +10,21 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import "./ProductCard.scss";
 
-const Productcard = ({ img, price, title }) => {
+const Productcard = ({ productId, img, price, title, alt }) => {
+	const history = useHistory();
+
+	const onProduct = () =>{
+		history.push(`/products/${productId}`);
+	}
 	return (
-		<Card className="product-card">
+		<Card className="product-card" onClick={onProduct}>
 			<CardActionArea>
 				<CardMedia
 					component="img"
-					alt="tv"
+					alt={alt}
 					height="140"
 					image={img}
-					title="tv"
+					title={alt}
 				/>
 				<CardContent className="card-content">
 					<Typography gutterBottom variant="h5" component="h2" >

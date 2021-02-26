@@ -1,0 +1,70 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+.product-page{
+  background-color: $dark-text;
+  height: 90vh;
+  padding-top: 100px;
+  .right-side{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .price{
+      margin-top: 0;
+      padding-left: 5px;
+    }
+    .title{
+      margin-bottom: 0;
+    }
+    .description{
+      margin-top: 50px;
+      width: 50%;
+      color:$white-grey;
+      height: 40vh;
+    }
+    .add-to-cart-container{
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      color: $white-grey;
+      .add-btn{
+        min-width: 30px;
+        height: 50%;
+        border-color: $white-grey;
+        color: $white-grey;
+      }
+      .quantity{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: auto 5px;
+        width: 50px;
+        .MuiInputBase-input{
+          color: $white-grey;
+        }
+        .MuiOutlinedInput-notchedOutline{
+          border-color: $white-grey;
+          
+        }
+      }
+    }
+    .add-to-cart{
+      margin-top: 20px;
+      width: 50%;
+    }
+  }
+  .left-side{
+    height: 600%;
+    width:60%;
+  }
+  .error-msg{
+    margin-top: 20px;
+    color: $text-highlight;
+  }
+  .space {
+    flex-grow: 0.23;
+  }
+  .space-small {
+    flex-grow: 0.1;
+  }
+}

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from "react";
-import dotenv from  'dotenv'
 import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import API from "../../../utils/api";
 import doesCookieExist from "../../../utils/doesCookieExist";
+import currentUserAction from '../../../store/actions/currentUserAction';
 import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -23,7 +24,7 @@ const Login = () => {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 
-	console.log(`is is: ${process.env}`)
+	const dispatch = useDispatch();
 
 	const onUsernameChange = useCallback((e) => {
 		setUsername(e.target.value);
@@ -52,14 +53,15 @@ const Login = () => {
 
 	const onSubmit = useCallback(async () => {
 		setError("");
-		await API.login(username, password);
+		let currentUser = await API.login(username, password);
+		dispatch(currentUserAction(currentUser));
 		const token = doesCookieExist("token");
 		if (token) {
 			history.push("/");
 		} else {
 			setError("שם משתמש או סיסמא שגויים");
 		}
-	}, [history, password, username]);
+	}, [dispatch, history, password, username]);
 
 	return (
 		<React.Fragment>
@@ -178,9 +180,5 @@ const Login = () => {
 		</React.Fragment>
 	);
 };
-
-Login.defaultProps = {};
-
-Login.propTypes = {};
 
 export default Login;

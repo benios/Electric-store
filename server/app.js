@@ -1,7 +1,8 @@
-require('dotenv').config();
+require('dotenv').config({path:"./.env"});
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('passport');
@@ -18,9 +19,10 @@ app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use(session({
-  secret: process.env.JWT_KEY,
+  secret: process.env.JWT_KEY || "my_secret",
   resave: false,
   saveUninitialized: true,
 }));

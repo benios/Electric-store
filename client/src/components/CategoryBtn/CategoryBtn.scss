@@ -3,7 +3,7 @@
 
 .category-btn-group {
   background-color: white;
-  box-shadow: 0.5px -0.5px 5px 0.5px $blue-join-button;
+  
 	.category-btn {
     .MuiButton-label{
       display: flex;
@@ -11,5 +11,13 @@
     }
 		width: 150px;
     height: 150px;
+    @media only screen and (max-width: $md) {
+      width: 100px;
+      height: 100px;
+    }
+    @media only screen and (max-width: $md) {
+      width: 70px;
+      height: 85px;
+    }
   }
 }

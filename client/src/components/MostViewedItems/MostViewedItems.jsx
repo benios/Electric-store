@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import ProductCard from '../ProductCard/ProductCard';
-import IconButton from "@material-ui/core/IconButton";
 import useWindowDimensions from '../../assests/hooks/useWindowDimensions';
 import Fab from '@material-ui/core/Fab';
 import './MostViewedItems.scss'
@@ -95,7 +94,7 @@ const items=[
 },
 ];
 
-const MostViewedItems = () => {
+const MostViewedItems = ({title}) => {
 
   const { width } = useWindowDimensions();
 
@@ -114,7 +113,7 @@ const MostViewedItems = () => {
   return (
     <Container maxWidth={false} className="hot-products-container">
       <Grid item xs={12} className="slider-title">
-        המוצרים החמים
+        {title}
       </Grid>
       <Grid item xs={12} className="scroll-btn">
       <Fab onClick={scrollRight} className="scroll-btn-right" color='secondary' size="medium">
@@ -137,10 +136,8 @@ const MostViewedItems = () => {
   );
 };
 
-MostViewedItems.defaultProps = {
-};
-
 MostViewedItems.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default MostViewedItems;

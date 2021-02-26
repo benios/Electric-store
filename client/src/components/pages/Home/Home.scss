@@ -6,8 +6,10 @@
 	background-color: #f9f9f9;
 	color: $dark-text;
 	font-family: "Secular One", sans-serif;
-	.Item-banner-container {
-		height: 100vh;
+	.Item-banner-container {	
+		@media only screen and (min-width: $md) {
+			height: 100vh;
+		}
 		position: relative;
 		.category-btn-container{
 			position: absolute;
@@ -23,6 +25,10 @@
 			background-color: $blue-join-button;
 			justify-content: center;
 			align-items: center;
+			@media only screen and (max-width: $md) {
+				height: 80vh;
+				padding-top: 0px;
+			}
 			.big-image {
 				position: absolute;
 				top: 70px;
@@ -33,6 +39,18 @@
 		}
 
 		.right-side {
+			@media only screen and (max-width: $md) {
+				margin-top: 100px;
+				height: 90vh;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+			@media only screen and (max-width: $sm) {
+				margin-top: 65px;
+				height: 90vh;
+				padding-right: 10px;
+			}
 			font-weight: 100;
 			padding-right: 50px;
 			Button {
@@ -48,32 +66,86 @@
 			&.MuiTypography-h1 {
 				font-family: "Secular One", sans-serif;
 			}
+			@media only screen and (max-width: $sm) {
+				&.MuiTypography-h1 {
+					font-size: 4rem;
+				}
+			}
 		}
 	}
 }
+
+//Header
 .root {
 	flex-grow: 1;
 	z-index: 99;
-
 	.appbar-style {
+		@media only screen and (max-width: $md) {
+			.MuiButton-root {
+				font-size: 0.5rem;
+			}
+			.MuiIconButton-root{
+				font-size: 1rem;
+			}
+		}
+		@media only screen and (max-width: $md) {
+			.MuiToolbar-gutters{
+				padding-right: 0px;
+			}
+			.appbar-button {
+				&.MuiButton-root{
+					min-width: 40px;
+				}
+			}
+		}
+
+		.search-container {
+			background-color: $search-background-color;
+			border-radius: 40px;
+			display: flex;
+			 &:hover {
+			 	background-color: $search-background-color-hover;
+			 }
+			.MuiInputBase-input{
+				padding-right: 10px;
+				@media only screen and (max-width: $sm) {
+					font-size: 0.8rem;
+				}	
+			}
+		}
 		.MuiButton-root {
 			font-family: "Secular One", sans-serif;
-			color: $dark-text;
 		}
 		.logo {
 			width: 50px;
 			height: 50px;
 			padding: 0px 30px;
+			@media only screen and (max-width: $md) {
+				width: 30px;
+				height: 30px;
+				padding: 0px 0px;
+			}
 		}
 		.space {
 			flex-grow: 1;
 		}
+		.badge{
+			.MuiBadge-anchorOriginTopRightRectangle{
+    		top: 90%;
+    		padding: 0 4px;
+			}
+		}
 		color: $dark-text;
 		font-family: "Secular One", sans-serif;
-		background-color: transparent;	
+		background-color: transparent;
+		@media only screen and (max-width: $md) {
+			background-color: $blue-join-button;
+		}	
+		@media only screen and (min-width: $md) {
 		&.scrolled-down {
-			background: linear-gradient(90deg,  $blue-join-button 50%, white 50%);
+			background: $blue-join-button;
 		}
+	}
 	}
 	
 }
@@ -97,6 +169,24 @@
 			justify-content: center;
 			color:white;
 			margin-top: 0px;
+		}
+	}
+}
+
+.category-menu {
+	.user-menu-container {
+    background-color: $blue-join-button;
+		width: 120px;
+		height: 200px;
+		.menu-list {
+			display:flex;
+			flex-direction: column;
+			color:white;
+			margin-top: 0px;
+			.MenuItem{
+				display:flex;
+				justify-content: space-between;
+			}
 		}
 	}
 }
