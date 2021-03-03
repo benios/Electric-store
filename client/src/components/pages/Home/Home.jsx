@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import get from 'lodash/get';
+import get from "lodash/get";
 import Header from "../../partials/Header";
 import ItemBanner from "../../partials/ItemBanner";
 import MostViewedItems from "../../MostViewedItems/MostViewedItems";
@@ -8,7 +8,7 @@ import "./Home.scss";
 
 const Home = () => {
 
-	const categoryTitle = useSelector(state => get(state, 'category.title', {}), shallowEqual);
+	const categoryTitle = useSelector(state => get(state, "category.title", {}), shallowEqual);
 	useEffect(() => {
 		console.log(categoryTitle);
 	}, [categoryTitle]);

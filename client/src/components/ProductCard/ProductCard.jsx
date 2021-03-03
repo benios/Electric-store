@@ -15,7 +15,8 @@ const Productcard = ({ productId, img, price, title, alt }) => {
 
 	const onProduct = () =>{
 		history.push(`/products/${productId}`);
-	}
+	};
+	
 	return (
 		<Card className="product-card" onClick={onProduct}>
 			<CardActionArea>
@@ -45,9 +46,11 @@ const Productcard = ({ productId, img, price, title, alt }) => {
 };
 
 Productcard.propTypes = {
+	productId: PropTypes.number.isRequired,
 	img: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 	price: PropTypes.number.isRequired,
+	alt: PropTypes.string.isRequired,
 };
 
 export default Productcard;

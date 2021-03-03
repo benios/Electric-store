@@ -1,0 +1,15 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+.orders-page{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family:"Secular One", sans-serif;
+  .orders-title{
+    &.MuiTypography-root{
+      margin-top: 100px;
+      font-family:"Secular One", sans-serif;
+    }
+  }
+}

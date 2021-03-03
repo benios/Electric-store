@@ -36,21 +36,21 @@ const Categorybtn = () => {
 	
 	return (
 		<Grid container className="category-btn-group" direction="row">
-				<Button className="category-btn" onClick={onTvCategory}>
-					<TvIcon fontSize="large" color="primary" />
-          <Typography variant="button" display="block" gutterBottom>
-					  טלוויזיות
-				  </Typography>
-				</Button>
+			<Button className="category-btn" onClick={onTvCategory}>
+				<TvIcon fontSize="large" color="primary" />
+				<Typography variant="button" display="block" gutterBottom>
+					טלוויזיות
+				</Typography>
+			</Button>
 			<Divider orientation="vertical" flexItem />
 			<Button className="category-btn" onClick={onPhoneCategory}>
 				<PhoneAndroidIcon
 					fontSize="large"
 					color="primary"
 				/>
-        <Typography variant="button" display="block" gutterBottom>
-					  פלאפונים
-				  </Typography>
+				<Typography variant="button" display="block" gutterBottom>
+					פלאפונים
+				</Typography>
 			</Button>
 			<Divider orientation="vertical" flexItem />
 			<Button className="category-btn" onClick={onCamCategory}>
@@ -58,16 +58,16 @@ const Categorybtn = () => {
 					fontSize="large"
 					color="primary"
 				/>
-        <Typography variant="button" display="block" gutterBottom>
-					  מצלמות
-				  </Typography>
+				<Typography variant="button" display="block" gutterBottom>
+					מצלמות
+				</Typography>
 			</Button>
 			<Divider orientation="vertical" flexItem />
 			<Button className="category-btn" onClick={onPrintCategory}>
 				<PrintIcon fontSize="large" color="primary" />
-        <Typography variant="button" display="block" gutterBottom>
-					  מדפסות
-				  </Typography>
+				<Typography variant="button" display="block" gutterBottom>
+					מדפסות
+				</Typography>
 			</Button>
 			<Divider orientation="vertical" flexItem />
 			<Button className="category-btn" onClick={onConsoleCategory}>
@@ -75,9 +75,9 @@ const Categorybtn = () => {
 					fontSize="large"
 					color="primary"
 				/>
-        <Typography variant="button" display="block" gutterBottom>
-					  קונסולות
-				  </Typography>
+				<Typography variant="button" display="block" gutterBottom>
+					קונסולות
+				</Typography>
 			</Button>
 		</Grid>
 	);

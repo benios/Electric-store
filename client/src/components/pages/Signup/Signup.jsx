@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import API from "../../../utils/api";
@@ -53,7 +54,7 @@ const Signup = () => {
 		const isUserNameValid = userNameValidationRegEx.test(username);
 		if (!isUserNameValid) {
 			setUsernameError(
-				`שם המשתמש יכול להכיל אך ורק אותיות קטנות באנגלית, מספרים,- או _`
+				"שם המשתמש יכול להכיל אך ורק אותיות קטנות באנגלית, מספרים,- או _"
 			);
 			return (isError = true);
 		} else {

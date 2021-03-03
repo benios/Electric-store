@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import API from "../../../utils/api";
 import doesCookieExist from "../../../utils/doesCookieExist";
-import currentUserAction from '../../../store/actions/currentUserAction';
+import currentUserAction from "../../../store/actions/currentUserAction";
 import { GoogleLogin } from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -63,6 +63,10 @@ const Login = () => {
 		}
 	}, [dispatch, history, password, username]);
 
+	const onHome = useCallback(() => {
+		history.push("/");
+	}, [history]);
+
 	return (
 		<React.Fragment>
 			<CssBaseline />
@@ -76,7 +80,9 @@ const Login = () => {
 			>
 				<Grid item className="login-container">
 					<Grid item className="image-container" xs={12}>
-						<img className="image-logo" src={loginImg} alt="login" />
+						<Button onClick={onHome}>
+							<img className="image-logo" src={loginImg} alt="login" />
+						</Button>
 					</Grid>
 					<Grid item xs={12} className="login-title">
 						<h1>ברוכים הבאים!</h1>

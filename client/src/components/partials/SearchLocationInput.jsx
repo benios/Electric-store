@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-require('dotenv').config();
-
 
 let autoComplete;
 
@@ -46,6 +44,7 @@ function SearchLocationInput(props) {
 
 	useEffect(() => {
 		loadScript(
+			// eslint-disable-next-line no-undef
 			`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
 			() => handleScriptLoad(setQuery, autoCompleteRef)
 		);
@@ -54,7 +53,7 @@ function SearchLocationInput(props) {
 	return (
 		<div className="search-location-input">
 			<input
-        {...props}
+				{...props}
 				ref={autoCompleteRef}
 				onChange={(event) => setQuery(event.target.value)}
 				value={query}

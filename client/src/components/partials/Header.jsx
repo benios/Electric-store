@@ -25,7 +25,7 @@ import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import PrintIcon from "@material-ui/icons/Print";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 
-const Header = (props) => {
+const Header = () => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [categoryPopList, setCategoryPopList] = React.useState(null);
 	const cartItems = useSelector(
@@ -35,7 +35,7 @@ const Header = (props) => {
 	const [itemNum, setItemNum] = useState(0);
 	
 	useEffect(() => {
-		setItemNum(cartItems.length)
+		setItemNum(cartItems.length);
 	}, [cartItems]);
 
 
@@ -251,11 +251,11 @@ const Header = (props) => {
 						<FiUser />
 					</IconButton>
 					
-						<IconButton onClick={onCart}>
+					<IconButton onClick={onCart}>
 						<Badge badgeContent={itemNum} className="badge" color="error">
 							<FiShoppingCart />
-							</Badge>
-						</IconButton>
+						</Badge>
+					</IconButton>
 					
 				</Toolbar>
 			</AppBar>

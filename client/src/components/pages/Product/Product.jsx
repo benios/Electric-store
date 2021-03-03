@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Header from "../../partials/Header";
 import { useDispatch } from "react-redux";
-import cartAction from '../../../store/actions/cartAction'
+import cartAction from "../../../store/actions/cartAction";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { useParams } from "react-router";
@@ -125,13 +125,13 @@ const Product = () => {
 					</Button>
 				</Grid>
 				<Grid item md={6} className="left-side">
-        <CardMedia
-					component="img"
-					alt={product.name}
-					image={product.pictureUrl}
-					title={product.name}
-				/>
-        </Grid>
+					<CardMedia
+						component="img"
+						alt={product.name}
+						image={product.pictureUrl}
+						title={product.name}
+					/>
+				</Grid>
 			</Grid>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import get from "lodash/get";
 import API from "../../../utils/api";
 import Header from "../../partials/Header";
@@ -6,7 +6,7 @@ import { Button, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import useWindowDimensions from "../../../assests/hooks/useWindowDimensions";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import cartAction, {clearCartAction} from '../../../store/actions/cartAction'
+import {clearCartAction} from "../../../store/actions/cartAction";
 import {
 	Table,
 	TableBody,
