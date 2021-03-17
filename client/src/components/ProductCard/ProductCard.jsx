@@ -1,22 +1,22 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import "./ProductCard.scss";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import {
+	Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Typography,
+} from '@material-ui/core';
+import API from '../../utils/api';
+import './ProductCard.scss';
 
-const Productcard = ({ productId, img, price, title, alt }) => {
+const ProductCard = ({
+	productId, img, price, title, alt, views,
+}) => {
 	const history = useHistory();
 
-	const onProduct = () =>{
+	const onProduct = () => {
+		API.viewsUpdate(productId, views);
 		history.push(`/products/${productId}`);
 	};
-	
+
 	return (
 		<Card className="product-card" onClick={onProduct}>
 			<CardActionArea>
@@ -28,7 +28,7 @@ const Productcard = ({ productId, img, price, title, alt }) => {
 					title={alt}
 				/>
 				<CardContent className="card-content">
-					<Typography gutterBottom variant="h5" component="h2" >
+					<Typography gutterBottom variant="h5" component="h2">
 						{title}
 					</Typography>
 					<Typography variant="body2" color="textSecondary" component="p">
@@ -45,12 +45,13 @@ const Productcard = ({ productId, img, price, title, alt }) => {
 	);
 };
 
-Productcard.propTypes = {
+ProductCard.propTypes = {
 	productId: PropTypes.number.isRequired,
 	img: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 	price: PropTypes.number.isRequired,
 	alt: PropTypes.string.isRequired,
+	views: PropTypes.number.isRequired,
 };
 
-export default Productcard;
+export default ProductCard;

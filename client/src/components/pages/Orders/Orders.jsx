@@ -1,9 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState, useCallback } from "react";
-import API from "../../../utils/api";
-import { useSelector, shallowEqual } from "react-redux";
-import get from "lodash/get";
-import Header from "../../partials/Header";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
+import get from 'lodash/get';
 import {
 	Typography,
 	TableBody,
@@ -12,23 +10,25 @@ import {
 	TableContainer,
 	Table,
 	TableHead,
-} from "@material-ui/core";
-import "./Orders.scss";
+} from '@material-ui/core';
+import Header from '../../partials/Header';
+import API from '../../../utils/api';
+import './Orders.scss';
 
-const sumReducer = (sum, orderedProduct) => (sum + (get(orderedProduct, "quantity",0) * get(orderedProduct,"product.price",0)));
+const sumReducer = (sum, orderedProduct) => (sum + (get(orderedProduct, 'quantity', 0) * get(orderedProduct, 'product.price', 0)));
 
 const Orders = () => {
 	const [orders, setOrders] = useState([]);
 
 	const user = useSelector(
-		(state) => get(state, "currentUserReducer.user", {}),
-		shallowEqual
+		(state) => get(state, 'currentUserReducer.user', {}),
+		shallowEqual,
 	);
-  
+
 	const getOrders = useCallback(async (userName) => {
 		const foundOrders = await API.getOrdersByUsername(userName);
 		setOrders(foundOrders);
-	},[]);
+	}, []);
 
 	useEffect(() => {
 		if (user.userName) {
@@ -40,7 +40,8 @@ const Orders = () => {
 		<div className="orders-page">
 			<Header />
 			<Typography variant="h1" className="orders-title">
-				ההזמנות של {user.firstName}
+				ההזמנות של
+				{user.firstName}
 			</Typography>
 			<TableContainer>
 				<Table>
@@ -55,11 +56,11 @@ const Orders = () => {
 					<TableBody>
 						{orders.map((order) => {
 							const date = new Date(order.date);
-							const dateString = date.toLocaleDateString("he-IL", {
-								timeZone: "Asia/Jerusalem",
-								year: "numeric",
-								month: "2-digit",
-								day: "2-digit",
+							const dateString = date.toLocaleDateString('he-IL', {
+								timeZone: 'Asia/Jerusalem',
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
 							});
 							const totalPrice = order.products.reduce(sumReducer, 0);
 

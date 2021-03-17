@@ -1,19 +1,22 @@
-const cartAction = (product, quantity) => {
-	return{
-		type: "ADD_TO_CART",
-		payload: [{
-			product,
-			quantity
-		}]
-	};
-};
+const cartAction = (product, quantity) => ({
+	type: 'ADD_TO_CART',
+	payload: [{
+		product,
+		quantity,
+	}],
+});
 
-const clearCartAction = () => {
-	return{
-		type: "CLEAR_CART",
-	};
-};
+const clearCartAction = () => ({
+	type: 'CLEAR_CART',
+});
+
+const clearProduct = (name) => ({
+	type: 'CLEAR_PRODUCT',
+	payload: {
+		name,
+	},
+});
 
 export default cartAction;
 
-export { clearCartAction };
+export { clearCartAction, clearProduct };

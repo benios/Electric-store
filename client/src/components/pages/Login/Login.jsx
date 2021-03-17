@@ -1,28 +1,28 @@
-import React, { useState, useCallback } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import API from "../../../utils/api";
-import doesCookieExist from "../../../utils/doesCookieExist";
-import currentUserAction from "../../../store/actions/currentUserAction";
-import { GoogleLogin } from "react-google-login";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import PersonIcon from "@material-ui/icons/Person";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import Button from "@material-ui/core/Button";
-import { FaGoogle } from "react-icons/fa";
-import "./Login.scss";
+import React, { useState, useCallback } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import PersonIcon from '@material-ui/icons/Person';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Button from '@material-ui/core/Button';
+import { FaGoogle } from 'react-icons/fa';
+import currentUserAction from '../../../store/actions/currentUserAction';
+import doesCookieExist from '../../../utils/doesCookieExist';
+import API from '../../../utils/api';
+import './Login.scss';
 
-import loginImg from "../../../assests/images/logo.jpg";
+import loginImg from '../../../assests/images/logo.jpg';
 
 const Login = () => {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [error, setError] = useState("");
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [error, setError] = useState('');
 
 	const dispatch = useDispatch();
 
@@ -31,44 +31,44 @@ const Login = () => {
 	}, []);
 	const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
 
-	let history = useHistory();
+	const history = useHistory();
 
 	const responseFacebook = useCallback((response) => {
-		setError("");
-		if(response.accessToken){
-			history.push("/");
+		setError('');
+		if (response.accessToken) {
+			history.push('/');
 		} else {
-			setError("התחברות דרך חשבון הפייסבוק נכשלה");
+			setError('התחברות דרך חשבון הפייסבוק נכשלה');
 		}
-	},[history]);
+	}, [history]);
 
 	const responseGoogle = useCallback((response) => {
-		setError("");
-		if(response.accessToken){
-			history.push("/");
+		setError('');
+		if (response.accessToken) {
+			history.push('/');
 		} else {
-			setError("התחברות דרך חשבון הגוגל נכשלה");
+			setError('התחברות דרך חשבון הגוגל נכשלה');
 		}
-	},[history]);
+	}, [history]);
 
 	const onSubmit = useCallback(async () => {
-		setError("");
-		let currentUser = await API.login(username, password);
+		setError('');
+		const currentUser = await API.login(username, password);
 		dispatch(currentUserAction(currentUser));
-		const token = doesCookieExist("token");
+		const token = doesCookieExist('token');
 		if (token) {
-			history.push("/");
+			history.goBack();
 		} else {
-			setError("שם משתמש או סיסמא שגויים");
+			setError('שם משתמש או סיסמא שגויים');
 		}
 	}, [dispatch, history, password, username]);
 
 	const onHome = useCallback(() => {
-		history.push("/");
+		history.push('/');
 	}, [history]);
 
 	return (
-		<React.Fragment>
+		<>
 			<CssBaseline />
 			<Grid
 				container
@@ -112,7 +112,7 @@ const Login = () => {
 							value={password}
 							onChange={onPasswordChange}
 							error={error.length > 0}
-							helperText={error.length > 0 ? error : " "}
+							helperText={error.length > 0 ? error : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -122,9 +122,7 @@ const Login = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} className="small-link">
-						<Link to="">שכחת את הסיסמא?</Link>
-					</Grid>
+					<Grid item xs={12} className="small-link" />
 					<Grid item xs={12} className="login-form">
 						<Button
 							className="submit-button"
@@ -147,7 +145,7 @@ const Login = () => {
 								render={(renderProps) => (
 									<Button
 										variant="contained"
-										startIcon={<FacebookIcon /> }
+										startIcon={<FacebookIcon />}
 										onClick={renderProps.onClick}
 									>
 										פייסבוק
@@ -172,18 +170,20 @@ const Login = () => {
 								buttonText="Login"
 								onSuccess={responseGoogle}
 								onFailure={responseGoogle}
-								cookiePolicy={"single_host_origin"}
+								cookiePolicy="single_host_origin"
 							/>
 						</Grid>
 					</Grid>
 					<Grid item xs={12} className="signup-link">
 						<h5>
-							אין לך משתמש? <Link to="signup">הרשם כאן</Link>
+							אין לך משתמש
+							?
+							<Link to="signup">הרשם כאן</Link>
 						</h5>
 					</Grid>
 				</Grid>
 			</Grid>
-		</React.Fragment>
+		</>
 	);
 };
 

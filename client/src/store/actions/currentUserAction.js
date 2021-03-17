@@ -1,8 +1,12 @@
-const currentUserAction = (user) => {
-	return {
-		type: "CURRENT_USER",
-		payload:user
-	};
-};
+const currentUserAction = (user) => ({
+	type: 'CURRENT_USER',
+	payload: user,
+});
+
+const clearCurrentUserAction = () => ({
+	type: 'CLEAR_USER',
+});
 
 export default currentUserAction;
+
+export { clearCurrentUserAction };

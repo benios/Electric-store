@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector, shallowEqual } from "react-redux";
-import { useHistory } from "react-router-dom";
-import get from "lodash/get";
-import logo from "../../assests/images/logo.png";
-import Divider from "@material-ui/core/Divider";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import get from 'lodash/get';
 import {
+	Divider,
+	Typography,
 	InputBase,
 	MenuList,
 	MenuItem,
@@ -14,33 +14,59 @@ import {
 	Toolbar,
 	AppBar,
 	Badge,
-} from "@material-ui/core";
-import "../pages/Home/Home.scss";
+} from '@material-ui/core';
+import '../pages/Home/Home.scss';
 
-//icons
-import { FiShoppingCart, FiUser, FiSearch } from "react-icons/fi";
-import TvIcon from "@material-ui/icons/Tv";
-import PhoneAndroidIcon from "@material-ui/icons/PhoneAndroid";
-import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
-import PrintIcon from "@material-ui/icons/Print";
-import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
+// icons
+import { FiShoppingCart, FiUser, FiSearch } from 'react-icons/fi';
+import { FaUserCircle } from 'react-icons/fa';
+import {
+	Tv,
+	PhoneAndroid,
+	PhotoCamera,
+	Print,
+	SportsEsports,
+} from '@material-ui/icons';
+import doesHttpOnlyCookieExist from '../../utils/doesCookieExist';
+import logo from '../../assests/images/logo.png';
+import API from '../../utils/api';
 
 const Header = () => {
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [categoryPopList, setCategoryPopList] = React.useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const [categoryPopList, setCategoryPopList] = useState(null);
+	const [token, setToken] = useState(false);
+
+	const history = useHistory();
+
+	const user = useSelector(
+		(state) => get(state, 'currentUserReducer.user', {}),
+		shallowEqual,
+	);
+
 	const cartItems = useSelector(
-		(state) => get(state, "cartReducer.cartItems", {}),
-		shallowEqual
+		(state) => get(state, 'cartReducer.cartItems', {}),
+		shallowEqual,
 	);
 	const [itemNum, setItemNum] = useState(0);
-	
+
+	useEffect(() => {
+		if (doesHttpOnlyCookieExist('token')) {
+			setToken(true);
+		} else {
+			setToken(false);
+		}
+	}, []);
+
 	useEffect(() => {
 		setItemNum(cartItems.length);
 	}, [cartItems]);
 
-
 	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
+		if (!token) {
+			history.push('/login');
+		} else {
+			setAnchorEl(event.currentTarget);
+		}
 	};
 
 	const handleClose = () => {
@@ -48,42 +74,46 @@ const Header = () => {
 	};
 
 	const open = Boolean(anchorEl);
-	const id = open ? "simple-popover" : undefined;
-	const history = useHistory();
-
+	const id = open ? 'simple-popover' : undefined;
 	const openCategorys = Boolean(categoryPopList);
-	const idCategoryPop = openCategorys ? "simple-popover" : undefined;
+	const idCategoryPop = openCategorys ? 'simple-popover' : undefined;
 
-	const onLogin = useCallback(() => {
-		history.push("/login");
+	const onLogout = useCallback(() => {
+		API.logout();
+		setAnchorEl(null);
+		setToken(false);
+	}, [history]);
+
+	const onOrders = useCallback(() => {
+		history.push('/orders');
 	}, [history]);
 
 	const onCart = useCallback(() => {
-		history.push("/cart");
+		history.push('/cart');
 	}, [history]);
 
 	const onHome = useCallback(() => {
-		history.push("/");
+		history.push('/');
 	}, [history]);
 
 	const onTvCategory = useCallback(() => {
-		history.push("/categories/tv");
+		history.push('/categories/tv');
 	}, [history]);
 
 	const onPhoneCategory = useCallback(() => {
-		history.push("/categories/phone");
+		history.push('/categories/phone');
 	}, [history]);
 
 	const onCamCategory = useCallback(() => {
-		history.push("/categories/camera");
+		history.push('/categories/camera');
 	}, [history]);
 
 	const onConsoleCategory = useCallback(() => {
-		history.push("/categories/console");
+		history.push('/categories/console');
 	}, [history]);
 
 	const onPrintCategory = useCallback(() => {
-		history.push("/categories/print");
+		history.push('/categories/print');
 	}, [history]);
 
 	const onCategories = (event) => {
@@ -95,15 +125,11 @@ const Header = () => {
 	};
 
 	const onAbout = useCallback(() => {
-		history.push("/about");
+		history.push('/about');
 	}, [history]);
 
 	const onContact = useCallback(() => {
-		history.push("/contact");
-	}, [history]);
-
-	const onSignup = useCallback(() => {
-		history.push("/signup");
+		history.push('/contact');
 	}, [history]);
 
 	const categorysMenu = (
@@ -114,38 +140,39 @@ const Header = () => {
 			anchorEl={categoryPopList}
 			onClose={onCategoriesClose}
 			anchorOrigin={{
-				vertical: "bottom",
-				horizontal: "center",
+				vertical: 'bottom',
+				horizontal: 'center',
 			}}
 			transformOrigin={{
-				vertical: "top",
-				horizontal: "center",
+				vertical: 'top',
+				horizontal: 'center',
 			}}
 		>
 			<div className="user-menu-container">
 				<MenuList className="menu-list">
 					<MenuItem className="MenuItem" onClick={onTvCategory}>
-						טלוויזיות <TvIcon fontSize="small" color="white" />
+						טלוויזיות
+						<Tv fontSize="small" color="white" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onPhoneCategory}>
 						פלאפונים
-						<PhoneAndroidIcon fontSize="small" color="white" />
+						<PhoneAndroid fontSize="small" color="white" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onCamCategory}>
 						מצלמות
-						<PhotoCameraIcon fontSize="small" color="white" />
+						<PhotoCamera fontSize="small" color="white" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onPrintCategory}>
 						מדפסות
-						<PrintIcon fontSize="small" color="white" />
+						<Print fontSize="small" color="white" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onConsoleCategory}>
 						קונסולות
-						<SportsEsportsIcon fontSize="small" color="white" />
+						<SportsEsports fontSize="small" color="white" />
 					</MenuItem>
 				</MenuList>
 			</div>
@@ -160,37 +187,35 @@ const Header = () => {
 			anchorEl={anchorEl}
 			onClose={handleClose}
 			anchorOrigin={{
-				vertical: "bottom",
-				horizontal: "center",
+				vertical: 'bottom',
+				horizontal: 'center',
 			}}
 			transformOrigin={{
-				vertical: "top",
-				horizontal: "center",
+				vertical: 'top',
+				horizontal: 'center',
 			}}
 		>
 			<div className="user-menu-container">
 				<div className="signin">
+					<div className="profile">
+						<FaUserCircle className="user-icon" />
+						<Typography variant="h5" className="user-txt">
+							{user.firstName}
+							{' '}
+							{user.lastName}
+						</Typography>
+						<Typography className="user-txt">{user.userName}</Typography>
+					</div>
+					<Button onClick={onOrders} className="order-btn">ההזמנות שלי</Button>
 					<Button
-						size="small"
-						className="signin-btn login-btn"
+						className="signout-btn"
 						variant="contained"
 						color="secondary"
-						onClick={onLogin}
+						onClick={onLogout}
 					>
-						התחבר
-					</Button>
-					<Button
-						size="small"
-						className="signin-btn signup-btn"
-						variant="contained"
-						onClick={onSignup}
-					>
-						הרשם
+						התנתק
 					</Button>
 				</div>
-				<MenuList className="menu-list">
-					<MenuItem>ההזמנות שלי</MenuItem>
-				</MenuList>
 			</div>
 		</Popover>
 	);
@@ -206,22 +231,22 @@ const Header = () => {
 	}, []);
 
 	useEffect(() => {
-		window.addEventListener("scroll", handleScroll);
+		window.addEventListener('scroll', handleScroll);
 		return () => {
-			window.removeEventListener("scroll", handleScroll);
+			window.removeEventListener('scroll', handleScroll);
 		};
 	}, [handleScroll]);
 
 	return (
 		<div className="root">
 			<AppBar
-				className={didScroll ? "appbar-style scrolled-down" : "appbar-style"}
+				className={didScroll ? 'appbar-style scrolled-down' : 'appbar-style'}
 				position="fixed"
 				elevation={didScroll ? 4 : 0}
 			>
 				<Toolbar>
-					<Button size="medium">
-						<img className="logo" src={logo} onClick={onHome} alt="logo" />
+					<Button size="medium" onClick={onHome}>
+						<img className="logo" src={logo} alt="logo" />
 					</Button>
 					<Button
 						size="medium"
@@ -241,7 +266,7 @@ const Header = () => {
 					<div className="search-container">
 						<InputBase
 							placeholder="חיפוש..."
-							inputProps={{ "aria-label": "search" }}
+							inputProps={{ 'aria-label': 'search' }}
 						/>
 						<IconButton>
 							<FiSearch />
@@ -250,13 +275,12 @@ const Header = () => {
 					<IconButton onClick={handleClick}>
 						<FiUser />
 					</IconButton>
-					
+
 					<IconButton onClick={onCart}>
 						<Badge badgeContent={itemNum} className="badge" color="error">
 							<FiShoppingCart />
 						</Badge>
 					</IconButton>
-					
 				</Toolbar>
 			</AppBar>
 			{userMenu}

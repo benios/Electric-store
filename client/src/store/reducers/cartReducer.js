@@ -4,29 +4,37 @@ const defaultState = {
 
 const cartReducer = (state = defaultState, action) => {
 	let itemFound;
-	if(action.payload){
-		itemFound = state.cartItems.find((item) => item.product.name === action.payload[0].product.name);
-		if(itemFound){
-			action.payload[0].quantity = action.payload[0].quantity + itemFound.quantity;
-		}
-	}
-	switch(action.type){
-	case "ADD_TO_CART":
-		if(itemFound){
+	switch (action.type) {
+	case 'ADD_TO_CART':
+		if (action.payload) {
+			itemFound = state.cartItems.find((item) => (
+				item.product.name === action.payload[0].product.name));
+			if (itemFound) {
+				const newQuantity = itemFound.quantity + action.payload[0].quantity;
+				const newProduct = action.payload[0].product;
+				const newCartItem = { product: newProduct, quantity: newQuantity };
+				return {
+					...state,
+					cartItems: state.cartItems.filter((item) => (
+						item.product.name !== itemFound.product.name)).concat(newCartItem),
+				};
+			}
 			return {
 				...state,
-				cartItems: state.cartItems.filter((item) => item.product.name !== action.payload[0].product.name).concat(action.payload)
-			};
-		} else {
-			return {
-				...state,
-				cartItems: state.cartItems.concat(action.payload)
+				cartItems: state.cartItems.concat(action.payload),
 			};
 		}
-	case "CLEAR_CART":
+		return state;
+	case 'CLEAR_CART':
 		return {
 			...state,
-			cartItems: []
+			cartItems: [],
+		};
+
+	case 'CLEAR_PRODUCT':
+		return {
+			...state,
+			cartItems: state.cartItems.filter((item) => item.product.name !== action.payload.name),
 		};
 	default:
 		return state;
@@ -34,5 +42,3 @@ const cartReducer = (state = defaultState, action) => {
 };
 
 export default cartReducer;
-
-

@@ -1,34 +1,34 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import API from "../../../utils/api";
-import SearchLocationInput from "../../partials/SearchLocationInput";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import PersonIcon from "@material-ui/icons/Person";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import Button from "@material-ui/core/Button";
-import { ImLocation } from "react-icons/im";
-import { GiPlayerTime } from "react-icons/gi";
-import "./Signup.scss";
+import React, { useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import PersonIcon from '@material-ui/icons/Person';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Button from '@material-ui/core/Button';
+import { ImLocation } from 'react-icons/im';
+import { GiPlayerTime } from 'react-icons/gi';
+import SearchLocationInput from '../../partials/SearchLocationInput';
+import API from '../../../utils/api';
+import './Signup.scss';
 
 const Signup = () => {
-	const [username, setUsername] = useState("");
-	const [usernameError, setUsernameError] = useState("");
-	const [password, setPassword] = useState("");
-	const [passwordError, setPasswordError] = useState("");
-	const [passwordAgain, setPasswordAgain] = useState("");
-	const [passwordAgainError, setPasswordAgainError] = useState("");
-	const [firstname, setFirstname] = useState("");
-	const [firstnameError, setFirstnameError] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [lastnameError, setLastnameError] = useState("");
-	const [address, setAddress] = useState("");
-	const [addressError, setAddressError] = useState("");
+	const [username, setUsername] = useState('');
+	const [usernameError, setUsernameError] = useState('');
+	const [password, setPassword] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [passwordAgain, setPasswordAgain] = useState('');
+	const [passwordAgainError, setPasswordAgainError] = useState('');
+	const [firstname, setFirstname] = useState('');
+	const [firstnameError, setFirstnameError] = useState('');
+	const [lastname, setLastname] = useState('');
+	const [lastnameError, setLastnameError] = useState('');
+	const [address, setAddress] = useState('');
+	const [addressError, setAddressError] = useState('');
 	const [age, setAge] = useState(0);
-	const [ageError, setAgeError] = useState("");
+	const [ageError, setAgeError] = useState('');
 
 	const handleSelect = useCallback(async (value) => {}, []);
 	const onUsernameChange = useCallback((e) => {
@@ -37,83 +37,82 @@ const Signup = () => {
 	const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
 	const onPasswordChangeAgain = useCallback(
 		(e) => setPasswordAgain(e.target.value),
-		[]
+		[],
 	);
 	const onFirstnameChange = useCallback(
 		(e) => setFirstname(e.target.value),
-		[]
+		[],
 	);
 	const onLastnameChange = useCallback((e) => setLastname(e.target.value), []);
 	const onAddressChange = useCallback((e) => setAddress(e.target.value), []);
 	const onAgeChange = useCallback((e) => setAge(+e.target.value), []);
 
 	const validate = useCallback(() => {
-		console.log(typeof age);
 		let isError = false;
 		const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
 		const isUserNameValid = userNameValidationRegEx.test(username);
 		if (!isUserNameValid) {
 			setUsernameError(
-				"שם המשתמש יכול להכיל אך ורק אותיות קטנות באנגלית, מספרים,- או _"
+				'שם המשתמש יכול להכיל אך ורק אותיות קטנות באנגלית, מספרים,- או _',
 			);
-			return (isError = true);
-		} else {
-			setUsernameError("");
+			isError = true;
+			return isError;
 		}
+		setUsernameError('');
 		if (!password) {
-			setPasswordError("שדה הסיסמא ריק! עליך למלא את כל השדות");
-			return (isError = true);
-		} else {
-			setPasswordError("");
+			setPasswordError('שדה הסיסמא ריק! עליך למלא את כל השדות');
+			isError = true;
+			return isError;
 		}
+		setPasswordError('');
 		if (password.length < 8) {
-			setPasswordError("אורך הסיסמא חייב להיות יותר מ-8 תווים");
-			return (isError = true);
-		} else {
-			setPasswordError("");
+			setPasswordError('אורך הסיסמא חייב להיות יותר מ-8 תווים');
+			isError = true;
+			return isError;
 		}
+		setPasswordError('');
 		if (passwordAgain !== password) {
-			setPasswordAgainError("הסיסמא הראשונה והשניה אינן תואמות");
-			return (isError = true);
-		} else {
-			setPasswordAgainError("");
+			setPasswordAgainError('הסיסמא הראשונה והשניה אינן תואמות');
+			isError = true;
+			return isError;
 		}
+		setPasswordAgainError('');
 		if (!firstname) {
-			setFirstnameError("שדה שם הפרטי ריק! עליך למלא את כל השדות");
-			return (isError = true);
-		} else {
-			setFirstnameError("");
+			setFirstnameError('שדה שם הפרטי ריק! עליך למלא את כל השדות');
+			isError = true;
+			return isError;
 		}
+		setFirstnameError('');
 		if (!lastname) {
-			setLastnameError("שדה שם המשפחה ריק! עליך למלא את כל השדות");
-			return (isError = true);
-		} else {
-			setLastnameError("");
+			setLastnameError('שדה שם המשפחה ריק! עליך למלא את כל השדות');
+			isError = true;
+			return isError;
 		}
+		setLastnameError('');
 		if (!address) {
-			setAddressError("שדה הכתובת ריק! עליך למלא את כל השדות");
-			return (isError = true);
-		} else {
-			setAddressError("");
+			setAddressError('שדה הכתובת ריק! עליך למלא את כל השדות');
+			isError = true;
+			return isError;
 		}
-		if (typeof age !== "number" || age < 0) {
-			setAgeError("שדה הגיל אינו תקין! עליך לרשום את הגיל במספרים");
-			return (isError = true);
-		} else {
-			setAgeError("");
+		setAddressError('');
+		if (typeof age !== 'number' || age < 0) {
+			setAgeError('שדה הגיל אינו תקין! עליך לרשום את הגיל במספרים');
+			isError = true;
+			return isError;
 		}
+		setAgeError('');
 		return isError;
 	}, [address, age, firstname, lastname, password, passwordAgain, username]);
 
 	const onSubmit = useCallback(() => {
-		let err = validate();
+		const err = validate();
 		if (!err) {
 			API.signup(username, password, firstname, lastname, address, age);
 		}
 	}, [address, age, firstname, lastname, password, username, validate]);
 
 	return (
-		<React.Fragment>
+		<>
 			<CssBaseline />
 			<Grid
 				container
@@ -135,7 +134,7 @@ const Signup = () => {
 							onChange={onUsernameChange}
 							className="text-field"
 							error={usernameError.length > 0}
-							helperText={usernameError.length > 0 ? usernameError : " "}
+							helperText={usernameError.length > 0 ? usernameError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -154,7 +153,7 @@ const Signup = () => {
 							onChange={onPasswordChange}
 							className="text-field"
 							error={passwordError.length > 0}
-							helperText={passwordError.length > 0 ? passwordError : " "}
+							helperText={passwordError.length > 0 ? passwordError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -174,7 +173,7 @@ const Signup = () => {
 							className="text-field"
 							error={passwordAgainError.length > 0}
 							helperText={
-								passwordAgainError.length > 0 ? passwordAgainError : " "
+								passwordAgainError.length > 0 ? passwordAgainError : ' '
 							}
 							InputProps={{
 								startAdornment: (
@@ -193,7 +192,7 @@ const Signup = () => {
 							onChange={onFirstnameChange}
 							className="text-field"
 							error={firstnameError.length > 0}
-							helperText={firstnameError.length > 0 ? firstnameError : " "}
+							helperText={firstnameError.length > 0 ? firstnameError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -211,7 +210,7 @@ const Signup = () => {
 							onChange={onLastnameChange}
 							className="text-field"
 							error={lastnameError.length > 0}
-							helperText={lastnameError.length > 0 ? lastnameError : " "}
+							helperText={lastnameError.length > 0 ? lastnameError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -227,7 +226,7 @@ const Signup = () => {
 							label="כתובת"
 							className="text-field"
 							error={addressError.length > 0}
-							helperText={addressError.length > 0 ? addressError : " "}
+							helperText={addressError.length > 0 ? addressError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -246,7 +245,7 @@ const Signup = () => {
 							onChange={onAgeChange}
 							className="text-field"
 							error={ageError.length > 0}
-							helperText={ageError.length > 0 ? ageError : " "}
+							helperText={ageError.length > 0 ? ageError : ' '}
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
@@ -264,12 +263,14 @@ const Signup = () => {
 
 					<Grid item xs={12} className="signup-link">
 						<h5>
-							יש לך כבר משתמש? <Link to="login">התחבר כאן</Link>
+							יש לך כבר משתמש
+							?
+							<Link to="login">התחבר כאן</Link>
 						</h5>
 					</Grid>
 				</Grid>
 			</Grid>
-		</React.Fragment>
+		</>
 	);
 };
 

@@ -1,14 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const Product = require('../model/product');
 const Logger = require('../services/logger_services');
 
-const app = express();
-
 const logger = new Logger('app');
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const newProductValidation = (product) => {
   if (!product.name) {
@@ -67,6 +60,29 @@ const getProducts = async (req, res) => {
   let foundProducts;
   try {
     foundProducts = await Product.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'Products details',
+    foundProducts,
+  });
+};
+
+const getProductByViews = async (req, res) => {
+  let foundProducts;
+  try {
+    foundProducts = await Product.find({}).sort([['views', -1]]).limit(10).exec()
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
@@ -188,4 +204,5 @@ module.exports = {
   getProductById,
   getProducts,
   getProductByCategory,
+  getProductByViews,
 };

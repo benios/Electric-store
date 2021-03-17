@@ -3,12 +3,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
 
 .home-styling {
-	background-color: #f9f9f9;
+	background-color: white;
 	color: $dark-text;
 	font-family: "Secular One", sans-serif;
 	.Item-banner-container {	
 		@media only screen and (min-width: $md) {
-			height: 100vh;
+			height: 90vh;
 		}
 		position: relative;
 		.category-btn-container{
@@ -152,23 +152,58 @@
 
 .user-menu {
 	.user-menu-container {
-    background-color: $blue-popover;
-		width: 150px;
-		height: 200px;
+		background-color: $white-grey;
+		width: 250px;
+		height: 300px;
 		.signin {
-			padding: 5px;
+			padding-left: 5px;
+			padding-right: 5px;
 			display: flex;
 			flex-direction: column;
-			.signin-btn {
-				height: 60px;
-				margin-bottom: 10px;
+			justify-content: space-evenly;
+			align-items: center;
+			height: 100%;
+			.profile{
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				background-color:white;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				border-radius: 6px;;
+				width: 90%;
+				.user-icon {
+					font-size: 4rem;;
+					color: $blue-join-button;
+				}
+				.user-txt {
+					font-family: "Secular One", sans-serif;
+					color: $dark-text;
+				}
 			}
-		}
-		.menu-list {
-			display:flex;
-			justify-content: center;
-			color:white;
-			margin-top: 0px;
+			.order-btn{
+				background-color:white;
+				padding-top: 6px;
+				height: 20%;
+				padding-bottom: 6px;
+				border-radius: 6px;;
+				width: 90%;
+				font-family: "Secular One", sans-serif;
+				color: $dark-text;
+				&:hover{
+					background-color:$white-btn-hover;
+				}
+			}
+			.signout-btn{
+				padding-top: 6px;
+				padding-bottom: 6px;
+				border-radius: 6px;
+				height: 15%;
+				width: 90%;
+				font-family: "Secular One", sans-serif;
+			}
+			
+			
 		}
 	}
 }
@@ -189,4 +224,13 @@
 			}
 		}
 	}
+}
+
+.button-progress{
+	color: green;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -12;
+	margin-left: -12;
 }

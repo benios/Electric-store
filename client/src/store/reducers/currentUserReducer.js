@@ -3,11 +3,16 @@ const defaultState = {
 };
 
 const currentUserReducer = (state = defaultState, action) => {
-	switch(action.type){
-	case "CURRENT_USER":
+	switch (action.type) {
+	case 'CURRENT_USER':
 		return {
 			...state,
-			user: action.payload
+			user: action.payload,
+		};
+	case 'CLEAR_USER':
+		return {
+			...state,
+			user: {},
 		};
 	default:
 		return state;

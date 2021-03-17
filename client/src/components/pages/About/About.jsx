@@ -1,12 +1,10 @@
-import React from "react";
-import Header from "../../partials/Header";
+import React from 'react';
+import Header from '../../partials/Header';
 
-const About = () => {
-	return (
-		<div>
-			<Header />
-		</div>
-	);
-};
+const About = () => (
+	<div>
+		<Header />
+	</div>
+);
 
 export default About;

@@ -1,16 +1,8 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
 const checkAuth = require('../middleware/check-auth');
-
-const app = express();
-
 const logger = new Logger('app');
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const newOrderValidation = (order) => {
   if (!order.userName) {

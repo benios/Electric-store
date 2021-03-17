@@ -4,17 +4,29 @@
 
 .category-page{
   background-color: $white-grey;
+  .new-product-btn{
+    display: flex;
+    justify-content: space-between;
+    font-family: "Secular One", sans-serif;
+    width: 8%;
+    background-color: $button-purple;
+    &:hover{
+      background-color: $button-purple-hover;
+    }
+    color: white;
+    margin-top: 0.5%;
+    margin-right: 1%;
+  }
   .grid-container{
     display: flex;
     justify-content: space-evenly;
     &.MuiGrid-spacing-xs-2{
-      margin-top: 50px;
+      margin-top: 0.5%;
       width: 100%;
     }
     .card-container{
       display: flex;
       justify-content: center;
-      
     }
   }
   .scroll-btn {
@@ -31,4 +43,33 @@
         top: 130px;
     }
 }
+}
+
+//Dialog
+.dialog-container{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  img{
+    width: 100%;
+  }
+  .img-input{
+    display: none;
+  }
+  .dialog-txt-field{
+    width: 100%;
+    font-size: 2rem;
+  }
+}
+.btn-container{
+  .btn{
+    margin-left: 3%;
+  }
+}
+.popover-title{
+  .MuiTypography-h6{
+    font-family: "Secular One", sans-serif;
+    font-size: 2rem;
+    color: $blue-join-button;
+  }
 }

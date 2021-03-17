@@ -1,39 +1,39 @@
-import React, { useCallback  } from "react";
-import Grid from "@material-ui/core/Grid";
-import { useHistory } from "react-router-dom";
-import { Button } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import TvIcon from "@material-ui/icons/Tv";
-import PhoneAndroidIcon from "@material-ui/icons/PhoneAndroid";
-import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
-import PrintIcon from "@material-ui/icons/Print";
-import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
-import "./CategoryBtn.scss";
+import React, { useCallback } from 'react';
+import Grid from '@material-ui/core/Grid';
+import { useHistory } from 'react-router-dom';
+import { Button } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import TvIcon from '@material-ui/icons/Tv';
+import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import PrintIcon from '@material-ui/icons/Print';
+import SportsEsportsIcon from '@material-ui/icons/SportsEsports';
+import './CategoryBtn.scss';
 
 const Categorybtn = () => {
 	const history = useHistory();
 
 	const onTvCategory = useCallback(() => {
-		history.push("/categories/tv");
-	},[history]);
+		history.push('/categories/tv');
+	}, [history]);
 
 	const onPhoneCategory = useCallback(() => {
-		history.push("/categories/phone");
-	},[history]);
+		history.push('/categories/phone');
+	}, [history]);
 
 	const onCamCategory = useCallback(() => {
-		history.push("/categories/camera");
-	},[history]);
+		history.push('/categories/camera');
+	}, [history]);
 
 	const onConsoleCategory = useCallback(() => {
-		history.push("/categories/console");
-	},[history]);
+		history.push('/categories/console');
+	}, [history]);
 
 	const onPrintCategory = useCallback(() => {
-		history.push("/categories/print");
-	},[history]);
-	
+		history.push('/categories/print');
+	}, [history]);
+
 	return (
 		<Grid container className="category-btn-group" direction="row">
 			<Button className="category-btn" onClick={onTvCategory}>

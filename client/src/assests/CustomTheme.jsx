@@ -1,18 +1,17 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from '@material-ui/core/styles';
 
 const CustomTheme = createMuiTheme({
-	direction: "rtl",
+	direction: 'rtl',
 	palette: {
 		primary: {
-			main: "rgb(114, 193, 244)",
-			contrastText: "#fff"
+			main: 'rgb(114, 193, 244)',
+			contrastText: '#fff',
 		},
 		secondary: {
-			main: "#ff6a52",
-			contrastText: "#fff"
-		}
+			main: '#ff6a52',
+			contrastText: '#fff',
+		},
 	},
 });
-
 
 export default CustomTheme;

@@ -1,22 +1,39 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Header from "../../partials/Header";
-import { useDispatch } from "react-redux";
-import cartAction from "../../../store/actions/cartAction";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import { useParams } from "react-router";
-import { Typography, FormControl, OutlinedInput, CardMedia } from "@material-ui/core";
-import API from "../../../utils/api";
-import "./Product.scss";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory, Link } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import { useParams } from 'react-router';
+import {
+	Typography,
+	FormControl,
+	OutlinedInput,
+	CardMedia,
+	Popover,
+	Fade,
+	IconButton,
+} from '@material-ui/core';
+import { AiOutlineClose } from 'react-icons/ai';
+import API from '../../../utils/api';
+import doesCookieExist from '../../../utils/doesCookieExist';
+import './Product.scss';
+
+import loginImg from '../../../assests/images/logo.jpg';
+
+import cartAction from '../../../store/actions/cartAction';
+import Header from '../../partials/Header';
 
 const Product = () => {
 	const [product, setProduct] = useState({});
 	const [quantity, setQuantity] = useState(0);
-	const [error, setError] = useState("");
+	const [error, setError] = useState('');
+	const [isSigned, setIsSigned] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const { productId } = useParams();
+
+	const history = useHistory();
 
 	useEffect(() => {
 		const getProducts = async () => {
@@ -27,18 +44,75 @@ const Product = () => {
 		}
 	}, [productId]);
 
+	const handleClose = () => {
+		setIsSigned(false);
+	};
+
+	const onHome = useCallback(() => {
+		history.push('/');
+	}, [history]);
+
+	const onLogin = useCallback(() => {
+		history.push('/login');
+	}, [history]);
+
+	const open = isSigned;
+	const id = open ? 'simple-popover' : undefined;
+
+	const notSigned = (
+		<Popover
+			id={id}
+			className="product-popover"
+			open={open}
+			anchorEl={isSigned}
+			onClose={handleClose}
+			anchorReference="anchorPosition"
+			anchorPosition={{ top: 200, left: 700 }}
+		>
+			<Fade in={open}>
+				<Grid item className="popover-container">
+					<IconButton
+						onClick={handleClose}
+						className="close-btn"
+					>
+						<AiOutlineClose />
+					</IconButton>
+					<Button onClick={onHome} className="home-btn">
+						<img className="image-logo" src={loginImg} alt="login" />
+					</Button>
+					<Typography variant="h5" className="text">
+						עליך להתחבר לאתר על מנת לבצע הזמנה
+					</Typography>
+					<Button
+						size="small"
+						className="login-btn"
+						variant="contained"
+						onClick={onLogin}
+					>
+						התחבר
+					</Button>
+					<h5>
+						אין לך משתמש
+						?
+						<Link to="../signup">הרשם כאן</Link>
+					</h5>
+				</Grid>
+			</Fade>
+		</Popover>
+	);
+
 	const onQuantityChange = useCallback(
 		(e) => {
 			if (+e.target.value > product.quantity) {
 				setError(
-					`הכמות שבחרת לא נמצאת כרגע בחנות אתה יכול לבחור עד ל${product.quantity} יחידות`
+					`הכמות שבחרת לא נמצאת כרגע בחנות אתה יכול לבחור עד ל${product.quantity} יחידות`,
 				);
 				setQuantity(product.quantity);
 			} else {
 				setQuantity(+e.target.value);
 			}
 		},
-		[product.quantity]
+		[product.quantity],
 	);
 
 	const onQuantityAdd = useCallback(() => {
@@ -58,26 +132,30 @@ const Product = () => {
 	}, [quantity]);
 
 	const onAddToCart = useCallback(() => {
-		dispatch(cartAction(product, quantity));
-	},[dispatch, product, quantity]);
-
-
+		if (doesCookieExist('token')) {
+			dispatch(cartAction(product, quantity));
+		} else {
+			setIsSigned(true);
+		}
+	}, [dispatch, product, quantity]);
 
 	return (
 		<div className="product-page">
 			<Header />
-			<Grid container direction="row" alignItems="center" justify="center">
+			<Grid
+				container
+				direction="row"
+				alignItems="center"
+				justify="center"
+				className={open ? 'blurred' : null}
+			>
 				<Grid item md={6} className="right-side">
-					<Typography
-						variant="h1"
-						className="title"
-						color="primary"
-						gutterBottom
-					>
+					<Typography variant="h1" className="title" gutterBottom>
 						{product.name}
 					</Typography>
-					<Typography variant="h5" color="secondary" className="price">
-						{product.price}.00 ₪
+					<Typography variant="h5" className="price">
+						{product.price}
+						.00 ₪
 					</Typography>
 					<Typography variant="subtitle1" className="description">
 						{product.description}
@@ -86,7 +164,7 @@ const Product = () => {
 						<Typography variant="subtitle1" className="choose-quantity">
 							בחר כמות:
 						</Typography>
-						<div className="space-small"></div>
+						<div className="space-small" />
 						<Button
 							variant="outlined"
 							size="small"
@@ -115,12 +193,16 @@ const Product = () => {
 						>
 							-
 						</Button>
-						<div className="space"></div>
+						<div className="space" />
 					</Grid>
 					<Typography variant="subtitle1" className="error-msg">
 						{error}
 					</Typography>
-					<Button variant="contained" color="primary" className="add-to-cart" onClick={onAddToCart}>
+					<Button
+						variant="contained"
+						className="add-to-cart"
+						onClick={onAddToCart}
+					>
 						הוסף לסל
 					</Button>
 				</Grid>
@@ -133,9 +215,9 @@ const Product = () => {
 					/>
 				</Grid>
 			</Grid>
+			{notSigned}
 		</div>
 	);
 };
-
 
 export default Product;
