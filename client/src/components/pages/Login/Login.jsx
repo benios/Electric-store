@@ -3,14 +3,10 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import PersonIcon from '@material-ui/icons/Person';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import Button from '@material-ui/core/Button';
+import {
+	CssBaseline, Grid, TextField, InputAdornment, Button,
+} from '@material-ui/core';
+import { Facebook, Person, LockOpen } from '@material-ui/icons';
 import { FaGoogle } from 'react-icons/fa';
 import currentUserAction from '../../../store/actions/currentUserAction';
 import doesCookieExist from '../../../utils/doesCookieExist';
@@ -35,6 +31,7 @@ const Login = () => {
 
 	const responseFacebook = useCallback((response) => {
 		setError('');
+		console.log(response);
 		if (response.accessToken) {
 			history.push('/');
 		} else {
@@ -43,6 +40,7 @@ const Login = () => {
 	}, [history]);
 
 	const responseGoogle = useCallback((response) => {
+		console.log(response.googleId);
 		setError('');
 		if (response.accessToken) {
 			history.push('/');
@@ -75,7 +73,6 @@ const Login = () => {
 				direction="column"
 				justify="center"
 				alignItems="center"
-				maxWidth="sm"
 				spacing={3}
 			>
 				<Grid item className="login-container">
@@ -97,7 +94,7 @@ const Login = () => {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
-										<PersonIcon />
+										<Person />
 									</InputAdornment>
 								),
 							}}
@@ -105,7 +102,6 @@ const Login = () => {
 					</Grid>
 					<Grid item xs={12} className="login-form">
 						<TextField
-							id="input-with-icon-textfield"
 							label="סיסמא"
 							className="text-field"
 							type="password"
@@ -116,7 +112,7 @@ const Login = () => {
 							InputProps={{
 								startAdornment: (
 									<InputAdornment className="text-field" position="start">
-										<LockOpenIcon />
+										<LockOpen />
 									</InputAdornment>
 								),
 							}}
@@ -145,7 +141,7 @@ const Login = () => {
 								render={(renderProps) => (
 									<Button
 										variant="contained"
-										startIcon={<FacebookIcon />}
+										startIcon={<Facebook />}
 										onClick={renderProps.onClick}
 									>
 										פייסבוק

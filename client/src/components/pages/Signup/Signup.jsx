@@ -220,41 +220,6 @@ const Signup = () => {
 							}}
 						/>
 					</Grid>
-					<Grid item xs={12} className="small-text">
-						<SearchLocationInput
-							onChange={() => null}
-							label="כתובת"
-							className="text-field"
-							error={addressError.length > 0}
-							helperText={addressError.length > 0 ? addressError : ' '}
-							InputProps={{
-								startAdornment: (
-									<InputAdornment className="text-field" position="start">
-										<ImLocation />
-									</InputAdornment>
-								),
-							}}
-						/>
-					</Grid>
-					<Grid item xs={12} className="small-text">
-						<TextField
-							id="input-with-icon-textfield"
-							label="גיל"
-							type="number"
-							value={Number(age)}
-							onChange={onAgeChange}
-							className="text-field"
-							error={ageError.length > 0}
-							helperText={ageError.length > 0 ? ageError : ' '}
-							InputProps={{
-								startAdornment: (
-									<InputAdornment className="text-field" position="start">
-										<GiPlayerTime />
-									</InputAdornment>
-								),
-							}}
-						/>
-					</Grid>
 					<Grid item xs={12} className="signup-form">
 						<Button variant="contained" type="submit" onClick={onSubmit}>
 							הרשם

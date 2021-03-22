@@ -53,7 +53,7 @@ const createProduct = async (req, res) => {
     });
   }
   logger.info('added product successfully', product);
-  return res.send('added product successfully');
+  return res.send('המוצר נשמר בהצלחה');
 };
 
 const getProducts = async (req, res) => {
@@ -170,7 +170,7 @@ const updateProduct = async (req, res) => {
   }
   logger.info(`Product with ${id} id was updated`, result);
   return res.status(200).json({
-    message: 'successfully updated the product',
+    message: 'המוצר עודכן בהצלחה',
   });
 };
 
@@ -188,12 +188,12 @@ const deleteProduct = async (req, res) => {
   if (!result) {
     logger.error('Failed to find and delete the product');
     return res.status(404).json({
-      message: 'Failed to find and delete the product',
+      message: 'מחיקת המוצר נכשלה',
     });
   }
   logger.info(`Product with ${id} id was deleted`, result);
   return res.status(200).json({
-    message: 'successfully deleted the product',
+    message: 'המוצר נמחק בהצלחה',
   });
 };
 

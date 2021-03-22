@@ -4,6 +4,7 @@
 
 .category-page{
   background-color: $white-grey;
+  height: 100%;
   .new-product-btn{
     display: flex;
     justify-content: space-between;
@@ -50,6 +51,11 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  .text-field-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
   img{
     width: 100%;
   }
@@ -64,6 +70,14 @@
 .btn-container{
   .btn{
     margin-left: 3%;
+    display: flex;
+    justify-content: space-around;
+    &.clear{
+      width: 14%
+    }
+    &.add{
+      width: 20%
+    }
   }
 }
 .popover-title{

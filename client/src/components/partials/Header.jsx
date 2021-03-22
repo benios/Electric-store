@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import get from 'lodash/get';
 import {
@@ -27,6 +27,7 @@ import {
 	Print,
 	SportsEsports,
 } from '@material-ui/icons';
+import { clearCurrentUserAction } from '../../store/actions/currentUserAction';
 import doesHttpOnlyCookieExist from '../../utils/doesCookieExist';
 import logo from '../../assests/images/logo.png';
 import API from '../../utils/api';
@@ -37,6 +38,7 @@ const Header = () => {
 	const [token, setToken] = useState(false);
 
 	const history = useHistory();
+	const dispatch = useDispatch();
 
 	const user = useSelector(
 		(state) => get(state, 'currentUserReducer.user', {}),
@@ -82,7 +84,8 @@ const Header = () => {
 		API.logout();
 		setAnchorEl(null);
 		setToken(false);
-	}, [history]);
+		dispatch(clearCurrentUserAction());
+	}, [dispatch]);
 
 	const onOrders = useCallback(() => {
 		history.push('/orders');
@@ -152,27 +155,27 @@ const Header = () => {
 				<MenuList className="menu-list">
 					<MenuItem className="MenuItem" onClick={onTvCategory}>
 						טלוויזיות
-						<Tv fontSize="small" color="white" />
+						<Tv fontSize="small" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onPhoneCategory}>
 						פלאפונים
-						<PhoneAndroid fontSize="small" color="white" />
+						<PhoneAndroid fontSize="small" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onCamCategory}>
 						מצלמות
-						<PhotoCamera fontSize="small" color="white" />
+						<PhotoCamera fontSize="small" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onPrintCategory}>
 						מדפסות
-						<Print fontSize="small" color="white" />
+						<Print fontSize="small" />
 					</MenuItem>
 					<Divider />
 					<MenuItem className="MenuItem" onClick={onConsoleCategory}>
 						קונסולות
-						<SportsEsports fontSize="small" color="white" />
+						<SportsEsports fontSize="small" />
 					</MenuItem>
 				</MenuList>
 			</div>
@@ -206,11 +209,10 @@ const Header = () => {
 						</Typography>
 						<Typography className="user-txt">{user.userName}</Typography>
 					</div>
-					<Button onClick={onOrders} className="order-btn">ההזמנות שלי</Button>
+					<Button onClick={onOrders} className="order-btn" variant="contained">ההזמנות שלי</Button>
 					<Button
-						className="signout-btn"
+						className="order-btn"
 						variant="contained"
-						color="secondary"
 						onClick={onLogout}
 					>
 						התנתק

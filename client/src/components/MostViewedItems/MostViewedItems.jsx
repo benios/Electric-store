@@ -61,7 +61,7 @@ const MostViewedItems = ({ title }) => {
 							img={product.pictureUrl}
 							price={product.price}
 							title={product.name}
-							alt={title.category}
+							alt={product.name}
 							views={product.views}
 						/>
 					</Grid>

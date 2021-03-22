@@ -11,7 +11,9 @@ import {
 	DialogContent, TextField, DialogActions, InputAdornment,
 } from '@material-ui/core';
 import { AiOutlineRight, AiOutlineLeft } from 'react-icons/ai';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaUndo, FaSave } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from '../../partials/Header';
 import ProductCard from '../../ProductCard/ProductCard';
 import CategoryTitle from '../../partials/CategoryTitle/CategoryTitle';
@@ -30,7 +32,8 @@ const Categories = () => {
 	const onPriceChange = useCallback((e) => setPrice(+e.target.value), []);
 	const [quantity, setQuantity] = useState('');
 	const onQuantityChange = useCallback((e) => setQuantity(+e.target.value), []);
-	const [pictureUrl, setPictureUrl] = useState('/img/products/upload-img.png');
+	const [pictureUrl, setPictureUrl] = useState('');
+	const onPictureUrlChange = useCallback((e) => setPictureUrl(e.target.value), []);
 	const [description, setDescription] = useState('');
 	const onDescriptionChange = useCallback((e) => setDescription(e.target.value), []);
 
@@ -65,18 +68,28 @@ const Categories = () => {
 		setOpen(false);
 	};
 
-	const onPictureUrlChange = (e) => {
-		const reader = new FileReader();
-		reader.onload = () => {
-			if (reader.readyState === 2) {
-				setPictureUrl(reader.result);
-			}
-		};
-		reader.readAsDataURL(e.target.files[0]);
-	};
+	const success = (msg) => toast(msg);
+	const error = () => toast('Error!');
 
 	const onAdd = useCallback(async () => {
-		await API.createProduct(name, price, title.category, quantity, pictureUrl, description);
+		let response;
+		try {
+			response = await API.createProduct(
+				name, price, title.category, quantity, pictureUrl, description,
+			);
+		} catch (err) {
+			error();
+		}
+		success(response);
+		handleClose();
+	}, [description, name, pictureUrl, price, quantity, title.category]);
+
+	const onClear = useCallback(async () => {
+		setName('');
+		setPrice('');
+		setQuantity('');
+		setPictureUrl('/img/products/upload-img.png');
+		setDescription('');
 	}, []);
 
 	return (
@@ -91,69 +104,70 @@ const Categories = () => {
 					</Button>
 				)
 				: null}
-			<Dialog open={open} onClose={handleClose} fullWidth="true" maxWidth="sm" aria-labelledby="form-dialog-title">
+			<Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" aria-labelledby="form-dialog-title">
 				<DialogTitle id="form-dialog-title" className="popover-title">הוספת מוצר חדש</DialogTitle>
 				<DialogContent className="dialog-container">
-					<Grid container direction="row" xs={12}>
-						<Grid xs={5}>
-							<input name="image-upload" accept="image/*" id="icon-button-file" type="file" onChange={onPictureUrlChange} className="img-input" />
-							<label htmlFor="icon-button-file">
-								<Button aria-label="upload picture" component="span">
-									<img src={pictureUrl} alt="upload-img" />
-								</Button>
-							</label>
-						</Grid>
-						<Grid container direction="column" xs={7} justify="space-around">
-							<TextField
-								id="standard-helperText"
-								label="שם"
-								className="dialog-txt-field"
-								value={name}
-								onChange={onNameChange}
-								variant="filled"
-							/>
-							<TextField
-								id="standard-helperText"
-								label="מחיר"
-								className="dialog-txt-field"
-								value={price}
-								onChange={onPriceChange}
-								variant="filled"
-								InputProps={{
-									endAdornment: <InputAdornment className="input-text" position="end">₪</InputAdornment>,
-								}}
-							/>
-							<TextField
-								id="standard-helperText"
-								label="כמות"
-								className="dialog-txt-field"
-								value={quantity}
-								onChange={onQuantityChange}
-								variant="filled"
-								type="number"
-							/>
-						</Grid>
+					<Grid container className="text-field-container">
 						<TextField
 							id="standard-helperText"
-							label="תאור"
+							label="שם"
 							className="dialog-txt-field"
-							value={description}
-							onChange={onDescriptionChange}
+							value={name}
+							onChange={onNameChange}
 							variant="filled"
-							multiline
-							rows={4}
+						/>
+						<TextField
+							id="standard-helperText"
+							label="כתובת תמונה(url)"
+							className="dialog-txt-field"
+							value={pictureUrl}
+							onChange={onPictureUrlChange}
+							variant="filled"
+						/>
+						<TextField
+							id="standard-helperText"
+							label="מחיר"
+							className="dialog-txt-field"
+							value={price}
+							onChange={onPriceChange}
+							variant="filled"
+							InputProps={{
+								endAdornment: <InputAdornment className="input-text" position="end">₪</InputAdornment>,
+							}}
+						/>
+						<TextField
+							id="standard-helperText"
+							label="כמות"
+							className="dialog-txt-field"
+							value={quantity}
+							onChange={onQuantityChange}
+							variant="filled"
+							type="number"
 						/>
 					</Grid>
+					<TextField
+						id="standard-helperText"
+						label="תאור"
+						className="dialog-txt-field"
+						value={description}
+						onChange={onDescriptionChange}
+						variant="filled"
+						multiline
+						rows={4}
+					/>
 				</DialogContent>
 				<DialogActions className="btn-container">
-					<Button onClick={handleClose} variant="contained" className="btn">
+					<Button onClick={onClear} variant="contained" className="btn clear">
 						נקה
+						<FaUndo />
 					</Button>
 					<Button onClick={onAdd} variant="contained" color="primary" className="btn add">
 						הוסף מוצר
+						<FaSave />
 					</Button>
 				</DialogActions>
 			</Dialog>
+			<ToastContainer />
 			{	width > 600 ? (
 				<Grid container className="grid-container" spacing={2}>
 					{products.map((product) => (

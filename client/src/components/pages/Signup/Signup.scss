@@ -3,6 +3,8 @@
 
 .MuiGrid-spacing-xs-3 {
   .signup-container {
+    display: flex;
+    flex-direction: column;
   @media only screen and (max-width: $sm) {
     height: 100vh;
     box-shadow: none;
@@ -11,7 +13,7 @@
   }
   box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.2);
   background-color: white;
-  height: 103vh;
+  height: 90vh;
   border-radius: 30px;
   width: 35%;
   &.MuiGrid-item {
@@ -40,7 +42,6 @@
     }
     .small-text {
       text-align: center;
-      margin-top: 15px;
     }
     .button-container {
       margin-top: 10px;

@@ -3,7 +3,7 @@ import get from 'lodash/get';
 
 const API = {
 	// USER
-	signup: async (userName, password, firstName, lastName, address, age) => {
+	signup: async (userName, password, firstName, lastName) => {
 		let response;
 		try {
 			response = await axios.post('/user', {
@@ -11,8 +11,6 @@ const API = {
 				password,
 				firstName,
 				lastName,
-				address,
-				age,
 			});
 			return get(response, 'data.foundUser');
 		} catch (error) {
@@ -42,16 +40,35 @@ const API = {
 
 	// Product
 	createProduct: async (name, price, category, quantity, pictureUrl, description) => {
-		let response;
+		let product;
 		try {
-			response = await axios.post('/product', {
+			product = await axios.post('/product', {
 				name, price, category, quantity, pictureUrl, description,
 			});
 		} catch (error) {
 			return error;
 		}
-		console.log(response);
-		return get(response, 'data.foundUser');
+		return get(product, 'data');
+	},
+
+	updateProduct: async (productId, updateProps) => {
+		let product;
+		try {
+			product = await axios.patch(`/product/${productId}`, { ...updateProps });
+		} catch (error) {
+			return error;
+		}
+		return get(product, 'data');
+	},
+
+	deleteProduct: async (productId) => {
+		let product;
+		try {
+			product = await axios.delete(`/product/${productId}`);
+		} catch (error) {
+			return error;
+		}
+		return get(product, 'data');
 	},
 
 	getProductByViews: async () => {

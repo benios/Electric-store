@@ -46,7 +46,7 @@ const ProductCard = ({
 };
 
 ProductCard.propTypes = {
-	productId: PropTypes.number.isRequired,
+	productId: PropTypes.string.isRequired,
 	img: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 	price: PropTypes.number.isRequired,

@@ -41,6 +41,7 @@ const Orders = () => {
 			<Header />
 			<Typography variant="h1" className="orders-title">
 				ההזמנות של
+				{' '}
 				{user.firstName}
 			</Typography>
 			<TableContainer>

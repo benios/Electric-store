@@ -13,7 +13,6 @@ router.get('/', controller.getProducts);
 
 router.get('/:productId', controller.getProductById);
 
-
 router.get('/categories/:category', controller.getProductByCategory);
 
 router.patch('/productUpdate/:productId', controller.updateProduct);

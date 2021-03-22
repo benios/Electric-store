@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState, useCallback } from 'react';
 import get from 'lodash/get';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
 	Button, Typography,
 	Table,
@@ -11,8 +13,6 @@ import {
 	TableRow,
 	Paper,
 	IconButton,
-	Popover,
-	Fade,
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
@@ -21,7 +21,6 @@ import { useHistory } from 'react-router-dom';
 import './Cart.scss';
 
 import { FiMinus } from 'react-icons/fi';
-import { FaCheckCircle } from 'react-icons/fa';
 import { clearCartAction, clearProduct } from '../../../store/actions/cartAction';
 import useWindowDimensions from '../../../assests/hooks/useWindowDimensions';
 import Header from '../../partials/Header';
@@ -31,7 +30,6 @@ const DELIVERY_COST = 15;
 
 const Cart = () => {
 	const [sum, setSum] = useState(0);
-	const [isSuccessfull, setIsSuccessfull] = useState(false);
 
 	const { width } = useWindowDimensions();
 	const dispatch = useDispatch();
@@ -58,71 +56,31 @@ const Cart = () => {
 		return { id: cartItem.product._id, quantity: newQuantity };
 	});
 
-	const handleClose = () => {
-		setIsSuccessfull(false);
-	};
+	const success = () => toast('ההזמנה בוצעה בהצלחה');
 
 	const onHome = useCallback(() => {
 		history.push('/');
 	}, [history]);
 
+	const onClear = () => {
+		dispatch(clearCartAction());
+	};
+
 	const onSubmit = () => {
 		API.createOrder(user.userName, cartItems);
 		quantityUpdate.forEach((item) => API.quantityUpdate(item));
-		setIsSuccessfull(true);
-	};
-
-	const onOk = useCallback(() => {
-		history.push('/');
-		dispatch(clearCartAction());
-	}, []);
-	const onClear = () => {
-		dispatch(clearCartAction());
+		success();
+		onClear();
 	};
 
 	const onProductClear = (name) => {
 		dispatch(clearProduct(name));
 	};
 
-	const open = isSuccessfull;
-	const id = open ? 'simple-popover' : undefined;
-
-	const successfullOrder = (
-		<Popover
-			id={id}
-			className="popover"
-			open={open}
-			anchorEl={isSuccessfull}
-			anchorReference="anchorPosition"
-			anchorPosition={{ top: 200, left: 800 }}
-		>
-			<Fade in={open}>
-				<Grid item className="popover-container">
-					<IconButton
-						onClick={handleClose}
-					>
-						<FaCheckCircle className="check" />
-					</IconButton>
-					<Typography variant="h5" className="text">
-						ההזמנה בוצעה בהצלחה
-					</Typography>
-					<Button
-						size="small"
-						className="home-btn"
-						variant="contained"
-						onClick={onOk}
-					>
-						אישור
-					</Button>
-				</Grid>
-			</Fade>
-		</Popover>
-	);
-
 	return (
 		<div>
 			{cartItems.length > 0 ? (
-				<div className={open ? 'blurred' : null}>
+				<div>
 					<Header />
 					<Grid
 						container
@@ -239,7 +197,7 @@ const Cart = () => {
 					</Button>
 				</div>
 			)}
-			{successfullOrder}
+			<ToastContainer />
 		</div>
 	);
 };

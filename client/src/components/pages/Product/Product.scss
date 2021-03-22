@@ -5,10 +5,22 @@
 	background-color: $blue-join-button;
 	height: 90vh;
 	padding: 100px 40px 0px;
-	.right-side {
+	.product-container {
+		position: relative;
+		.edit-btn{
+			position: absolute;
+			right: 10%;
+			font-size: 3rem;
+			background-color: $red-google;
+			color: white;
+			border-radius: 50px;
+		}
 		display: flex;
 		flex-direction: column;
-		align-items: flex-end;
+		align-items: center;
+		.product-img{
+			width: 40%;
+		}
 		.price {
 			color: white;
 			margin-top: 0;
@@ -22,18 +34,20 @@
 			margin-top: 50px;
 			width: 50%;
 			color: $white-grey;
-			height: 40vh;
 		}
 		.add-to-cart-container {
 			display: flex;
-			justify-content: flex-end;
+			justify-content: center;
 			align-items: center;
 			color: $white-grey;
+			margin-top: 3%;
+			margin-bottom: 3%;
 			.add-btn {
 				min-width: 30px;
 				height: 50%;
 				border-color: $white-grey;
 				color: $white-grey;
+				font-size: 1.7rem;
 			}
 			.quantity {
 				display: flex;
@@ -52,12 +66,19 @@
 		.add-to-cart {
 			margin-top: 20px;
 			width: 50%;
+			.icon{
+				font-size: large;
+				margin-right: 5px;
+			}
 		}
-	}
-	.left-side {
-		height: 600%;
-		width: 60%;
-		padding-right: 30px;
+		.delete-btn{
+			margin-top: 20px;
+			width: 50%;
+			.icon{
+				font-size: large;
+				margin-right: 5px;
+			}
+		}
 	}
 	.error-msg {
 		margin-top: 20px;

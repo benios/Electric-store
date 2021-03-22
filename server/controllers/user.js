@@ -32,12 +32,6 @@ const newUserValidation = (user) => {
   if (!user.lastName) {
     throw new Error('lastName field is empty');
   }
-  if (!user.address) {
-    throw new Error('address field is empty');
-  }
-  if ((typeof (user.age) !== 'number') || (user.age < 0)) {
-    throw new Error('age is not a number');
-  }
 };
 
 const logout = async (req, res) => {
@@ -100,8 +94,6 @@ const createUser = async (req, res) => {
     password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    address: req.body.address,
-    age: req.body.age,
     role: role.User,
   };
   logger.info('handling create a user request', currUser);

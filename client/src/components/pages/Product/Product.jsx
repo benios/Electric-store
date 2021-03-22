@@ -1,19 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useParams } from 'react-router';
+import get from 'lodash/get';
 import {
 	Typography,
-	FormControl,
-	OutlinedInput,
 	CardMedia,
 	Popover,
 	Fade,
 	IconButton,
+	TextField,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	InputAdornment,
+	DialogActions,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import { IoAddCircleSharp, IoRemoveCircleSharp } from 'react-icons/io5';
+import { FaSave } from 'react-icons/fa';
+import { MdModeEdit, MdDelete, MdAddShoppingCart } from 'react-icons/md';
+import { ToastContainer, toast } from 'react-toastify';
 import API from '../../../utils/api';
 import doesCookieExist from '../../../utils/doesCookieExist';
 import './Product.scss';
@@ -26,8 +35,24 @@ import Header from '../../partials/Header';
 const Product = () => {
 	const [product, setProduct] = useState({});
 	const [quantity, setQuantity] = useState(0);
-	const [error, setError] = useState('');
 	const [isSigned, setIsSigned] = useState(false);
+	const [openEdit, setOpenEdit] = useState(false);
+
+	const user = useSelector(
+		(state) => get(state, 'currentUserReducer.user', {}),
+		shallowEqual,
+	);
+
+	const [name, setName] = useState('');
+	const onNameChange = useCallback((e) => setName(e.target.value), []);
+	const [price, setPrice] = useState('');
+	const onPriceChange = useCallback((e) => setPrice(+e.target.value), []);
+	const [productQuantity, setProductQuantity] = useState('');
+	const onProductQuantityChange = useCallback((e) => setProductQuantity(+e.target.value), []);
+	const [pictureUrl, setPictureUrl] = useState('');
+	const onPictureUrlChange = useCallback((e) => setPictureUrl(e.target.value), []);
+	const [description, setDescription] = useState('');
+	const onDescriptionChange = useCallback((e) => setDescription(e.target.value), []);
 
 	const dispatch = useDispatch();
 
@@ -39,10 +64,17 @@ const Product = () => {
 		const getProducts = async () => {
 			setProduct(await API.getProductById(productId));
 		};
+
 		if (productId) {
 			getProducts();
+			setName(product.name);
+			setPrice(product.price);
+			setProductQuantity(product.quantity);
+			setPictureUrl(product.pictureUrl);
+			setDescription(product.description);
 		}
-	}, [productId]);
+	}, [product.description, product.name, product.pictureUrl,
+		product.price, product.quantity, productId]);
 
 	const handleClose = () => {
 		setIsSigned(false);
@@ -101,31 +133,19 @@ const Product = () => {
 		</Popover>
 	);
 
-	const onQuantityChange = useCallback(
-		(e) => {
-			if (+e.target.value > product.quantity) {
-				setError(
-					`הכמות שבחרת לא נמצאת כרגע בחנות אתה יכול לבחור עד ל${product.quantity} יחידות`,
-				);
-				setQuantity(product.quantity);
-			} else {
-				setQuantity(+e.target.value);
-			}
-		},
-		[product.quantity],
-	);
-
 	const onQuantityAdd = useCallback(() => {
 		let val = quantity;
 		if (quantity < product.quantity) {
 			val = quantity + 1;
+			setQuantity(val);
+		} else {
+			setQuantity(product.quantity);
 		}
-		setQuantity(val);
 	}, [product.quantity, quantity]);
 
 	const onQuantitySubtract = useCallback(() => {
 		let val = quantity;
-		if (quantity >= 0) {
+		if (quantity > 0) {
 			val = quantity - 1;
 		}
 		setQuantity(val);
@@ -139,6 +159,43 @@ const Product = () => {
 		}
 	}, [dispatch, product, quantity]);
 
+	const success = (msg) => toast(msg);
+	const updateError = () => toast('Error!');
+
+	const handleClickOpen = () => {
+		setOpenEdit(true);
+	};
+
+	const handleEditClose = () => {
+		setOpenEdit(false);
+	};
+
+	const onAdd = useCallback(async () => {
+		let response;
+		try {
+			response = await API.updateProduct(
+				productId, {
+					name, price, productQuantity, pictureUrl, description,
+				},
+			);
+		} catch (err) {
+			updateError();
+		}
+		success(response.message);
+		handleEditClose();
+	}, [description, name, pictureUrl, price, productId, productQuantity]);
+
+	const deleteProduct = useCallback(async () => {
+		let response;
+		try {
+			response = await API.deleteProduct(productId);
+		} catch (err) {
+			updateError();
+		}
+		success(response.message);
+		history.goBack();
+	}, [history, productId]);
+
 	return (
 		<div className="product-page">
 			<Header />
@@ -149,7 +206,74 @@ const Product = () => {
 				justify="center"
 				className={open ? 'blurred' : null}
 			>
-				<Grid item md={6} className="right-side">
+				<Grid item md={6} className="product-container">
+					{user.role === 'Admin'
+						? (
+							<Button className="edit-btn" title="ערוך מוצר" onClick={handleClickOpen}>
+								<MdModeEdit />
+							</Button>
+						)
+						: null}
+					<Dialog open={openEdit} onClose={handleEditClose} fullWidth maxWidth="sm" aria-labelledby="form-dialog-title">
+						<DialogTitle id="form-dialog-title" className="popover-title">הוספת מוצר חדש</DialogTitle>
+						<DialogContent className="dialog-container">
+							<Grid container className="text-field-container">
+								<TextField
+									id="standard-helperText"
+									label="שם"
+									className="dialog-txt-field"
+									value={name}
+									onChange={onNameChange}
+									variant="filled"
+								/>
+								<TextField
+									id="standard-helperText"
+									label="כתובת תמונה(url)"
+									className="dialog-txt-field"
+									value={pictureUrl}
+									onChange={onPictureUrlChange}
+									variant="filled"
+								/>
+								<TextField
+									id="standard-helperText"
+									label="מחיר"
+									className="dialog-txt-field"
+									value={price}
+									onChange={onPriceChange}
+									variant="filled"
+									InputProps={{
+										endAdornment: <InputAdornment className="input-text" position="end">₪</InputAdornment>,
+									}}
+								/>
+								<TextField
+									id="standard-helperText"
+									label="כמות"
+									className="dialog-txt-field"
+									value={productQuantity}
+									onChange={onProductQuantityChange}
+									variant="filled"
+									type="number"
+								/>
+							</Grid>
+							<TextField
+								id="standard-helperText"
+								label="תאור"
+								className="dialog-txt-field"
+								value={description}
+								onChange={onDescriptionChange}
+								variant="filled"
+								multiline
+								rows={4}
+							/>
+						</DialogContent>
+						<DialogActions className="btn-container">
+							<Button onClick={onAdd} variant="contained" color="primary" className="btn add">
+								עדכן
+								<FaSave />
+							</Button>
+						</DialogActions>
+					</Dialog>
+					<ToastContainer />
 					<Typography variant="h1" className="title" gutterBottom>
 						{product.name}
 					</Typography>
@@ -160,59 +284,53 @@ const Product = () => {
 					<Typography variant="subtitle1" className="description">
 						{product.description}
 					</Typography>
+					<CardMedia
+						component="img"
+						alt={product.name}
+						image={product.pictureUrl}
+						title={product.name}
+						className="product-img"
+					/>
 					<Grid container direction="row" className="add-to-cart-container">
 						<Typography variant="subtitle1" className="choose-quantity">
 							בחר כמות:
 						</Typography>
 						<div className="space-small" />
-						<Button
-							variant="outlined"
-							size="small"
-							className="add-btn"
-							onClick={onQuantityAdd}
-						>
-							+
+						<Button onClick={onQuantityAdd} className="add-btn">
+							<IoAddCircleSharp />
 						</Button>
-						<FormControl
-							fullWidth
-							className="quantity"
-							variant="outlined"
-							color="primary"
-						>
-							<OutlinedInput
-								type="text"
-								value={quantity}
-								onChange={onQuantityChange}
-							/>
-						</FormControl>
+						<Typography variant="h3" className="quantity">
+							{quantity}
+						</Typography>
 						<Button
-							variant="outlined"
-							size="small"
 							className="add-btn"
 							onClick={onQuantitySubtract}
 						>
-							-
+							<IoRemoveCircleSharp />
 						</Button>
 						<div className="space" />
 					</Grid>
-					<Typography variant="subtitle1" className="error-msg">
-						{error}
-					</Typography>
 					<Button
 						variant="contained"
 						className="add-to-cart"
 						onClick={onAddToCart}
 					>
 						הוסף לסל
+						<MdAddShoppingCart className="icon" />
 					</Button>
-				</Grid>
-				<Grid item md={6} className="left-side">
-					<CardMedia
-						component="img"
-						alt={product.name}
-						image={product.pictureUrl}
-						title={product.name}
-					/>
+					{user.role === 'Admin'
+						? (
+							<Button
+								variant="contained"
+								className="delete-btn"
+								color="secondary"
+								onClick={deleteProduct}
+							>
+								מחק מוצר
+								<MdDelete className="icon" />
+							</Button>
+						)
+						: null}
 				</Grid>
 			</Grid>
 			{notSigned}
