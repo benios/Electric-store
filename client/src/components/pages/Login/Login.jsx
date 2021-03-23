@@ -29,25 +29,47 @@ const Login = () => {
 
 	const history = useHistory();
 
-	const responseFacebook = useCallback((response) => {
+	const responseFacebook = useCallback(async (response) => {
 		setError('');
-		console.log(response);
 		if (response.accessToken) {
-			history.push('/');
-		} else {
-			setError('התחברות דרך חשבון הפייסבוק נכשלה');
+			const facebookUser = await API.loginWithThirdPartyApp(response.userID, 'Facebook');
+			const name = response.name.split(' ');
+			dispatch(currentUserAction({
+				firstName: name[0],
+				lastName: name[1],
+				source: { facebookUser },
+				sourceId: { facebookUser },
+				role: { facebookUser },
+			}));
+			const token = doesCookieExist('token');
+			if (token) {
+				history.goBack();
+			} else {
+				setError('התחברות דרך חשבון הפייסבוק נכשלה');
+			}
 		}
-	}, [history]);
+	}, [dispatch, history]);
 
-	const responseGoogle = useCallback((response) => {
-		console.log(response.googleId);
+	const responseGoogle = useCallback(async (response) => {
 		setError('');
 		if (response.accessToken) {
-			history.push('/');
-		} else {
-			setError('התחברות דרך חשבון הגוגל נכשלה');
+			const googleUser = await API.loginWithThirdPartyApp(response.googleId, 'Google');
+			const googleProfile = response.profileObj;
+			dispatch(currentUserAction({
+				firstName: googleProfile.givenName,
+				lastName: googleProfile.familyName,
+				source: { googleUser },
+				sourceId: { googleUser },
+				role: { googleUser },
+			}));
+			const token = doesCookieExist('token');
+			if (token) {
+				history.goBack();
+			} else {
+				setError('התחברות דרך חשבון הגוגל נכשלה');
+			}
 		}
-	}, [history]);
+	}, [dispatch, history]);
 
 	const onSubmit = useCallback(async () => {
 		setError('');

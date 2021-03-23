@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -72,9 +71,9 @@ const loginUser = async (req, res) => {
     });
   }
   if (result === true) {
-    const token = jsonwebtoken.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '1h' });
+    const token = jsonwebtoken.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
     logger.info('logged in successfully', foundUser);
-    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60});
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7});
     return res.status(200).json({
       message: 'User details',
       foundUser,
@@ -86,6 +85,45 @@ const loginUser = async (req, res) => {
   });
 };
 
+const loginNonMemberUser = async (req, res) => {
+  const { userId } = req.body;
+  const { source } = req.body;
+  let foundUser;
+  try {
+    foundUser = await User.findOne({ sourceId: userId }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+
+  if (!foundUser) {
+    const currUser = new User({
+      _id: new mongoose.Types.ObjectId(),
+      source: source,
+      sourceId: userId,
+      role: role.User,
+    });
+    logger.info('handling create a user request', currUser);
+    try {
+      await currUser.save();
+    } catch (err) {
+      logger.error(err);
+      return res.status(500).json({
+        message: err.message,
+      });
+    }
+  }
+  const token = jsonwebtoken.sign({ userId: userId, role: role.User }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
+    logger.info('logged in successfully', foundUser);
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+    return res.status(200).json({
+      message: 'User details',
+      foundUser,
+    });
+};
+
 const createUser = async (req, res) => {
   let isUserExist;
   const currUser = {
@@ -94,6 +132,7 @@ const createUser = async (req, res) => {
     password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    source: 'Local',
     role: role.User,
   };
   logger.info('handling create a user request', currUser);
@@ -125,9 +164,9 @@ const createUser = async (req, res) => {
         });
       }
 
-      const token = jsonwebtoken.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '1h' });
+      const token = jsonwebtoken.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
       logger.info('user created successfully', user);
-      res.cookie('token', token, { httpOnly: true });
+      res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7});
       return res.status(200).json({
         message: 'user created successfully',
         user,
@@ -168,5 +207,6 @@ module.exports = {
   deleteUser,
   createUser,
   loginUser,
-  logout
+  logout,
+  loginNonMemberUser
 };

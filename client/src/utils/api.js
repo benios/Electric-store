@@ -28,6 +28,16 @@ const API = {
 		return get(response, 'data.foundUser');
 	},
 
+	loginWithThirdPartyApp: async (userId, source) => {
+		let response;
+		try {
+			response = await axios.post('/user/third-party-login', { userId, source });
+		} catch (error) {
+			return error;
+		}
+		return get(response, 'data.foundUser');
+	},
+
 	logout: async () => {
 		let response;
 		try {
@@ -135,10 +145,10 @@ const API = {
 		return response;
 	},
 
-	getOrdersByUsername: async (userName) => {
+	getUserOrders: async () => {
 		let orders;
 		try {
-			orders = await axios.get(`/order/usersOrders/${userName}`);
+			orders = await axios.get('/order/userOrders');
 		} catch (error) {
 			return error;
 		}

@@ -103,11 +103,11 @@ const getOrder = async (req, res) => {
   });
 };
 
-const getOrdersByUsername = async (req, res) => {
-  const username = req.params.user;
+const getUserOrders = async (req, res) => {
+  const { userId } = req.userData;
   let foundOrders;
   try {
-    foundOrders = await Order.find({ userName: username }).sort([['date', -1]]).exec();
+    foundOrders = await Order.findById(userId).sort([['date', -1]]).exec();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
@@ -130,6 +130,6 @@ const getOrdersByUsername = async (req, res) => {
 module.exports = {
   getOrder,
   getAllOrders,
-  getOrdersByUsername,
+  getUserOrders,
   createOrder,
 };

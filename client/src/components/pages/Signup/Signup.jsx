@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -8,9 +7,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import PersonIcon from '@material-ui/icons/Person';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import Button from '@material-ui/core/Button';
-import { ImLocation } from 'react-icons/im';
-import { GiPlayerTime } from 'react-icons/gi';
-import SearchLocationInput from '../../partials/SearchLocationInput';
 import API from '../../../utils/api';
 import './Signup.scss';
 
@@ -25,12 +21,9 @@ const Signup = () => {
 	const [firstnameError, setFirstnameError] = useState('');
 	const [lastname, setLastname] = useState('');
 	const [lastnameError, setLastnameError] = useState('');
-	const [address, setAddress] = useState('');
-	const [addressError, setAddressError] = useState('');
-	const [age, setAge] = useState(0);
-	const [ageError, setAgeError] = useState('');
 
-	const handleSelect = useCallback(async (value) => {}, []);
+	const history = useHistory();
+
 	const onUsernameChange = useCallback((e) => {
 		setUsername(e.target.value);
 	}, []);
@@ -44,8 +37,6 @@ const Signup = () => {
 		[],
 	);
 	const onLastnameChange = useCallback((e) => setLastname(e.target.value), []);
-	const onAddressChange = useCallback((e) => setAddress(e.target.value), []);
-	const onAgeChange = useCallback((e) => setAge(+e.target.value), []);
 
 	const validate = useCallback(() => {
 		let isError = false;
@@ -89,27 +80,16 @@ const Signup = () => {
 			return isError;
 		}
 		setLastnameError('');
-		if (!address) {
-			setAddressError('שדה הכתובת ריק! עליך למלא את כל השדות');
-			isError = true;
-			return isError;
-		}
-		setAddressError('');
-		if (typeof age !== 'number' || age < 0) {
-			setAgeError('שדה הגיל אינו תקין! עליך לרשום את הגיל במספרים');
-			isError = true;
-			return isError;
-		}
-		setAgeError('');
 		return isError;
-	}, [address, age, firstname, lastname, password, passwordAgain, username]);
+	}, [firstname, lastname, password, passwordAgain, username]);
 
 	const onSubmit = useCallback(() => {
 		const err = validate();
 		if (!err) {
-			API.signup(username, password, firstname, lastname, address, age);
+			API.signup(username, password, firstname, lastname);
+			history.push('/');
 		}
-	}, [address, age, firstname, lastname, password, username, validate]);
+	}, [firstname, history, lastname, password, username, validate]);
 
 	return (
 		<>
@@ -119,7 +99,6 @@ const Signup = () => {
 				direction="column"
 				justify="center"
 				alignItems="center"
-				maxWidth="sm"
 				spacing={3}
 			>
 				<Grid item className="signup-container">

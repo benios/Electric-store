@@ -25,8 +25,8 @@ const Orders = () => {
 		shallowEqual,
 	);
 
-	const getOrders = useCallback(async (userName) => {
-		const foundOrders = await API.getOrdersByUsername(userName);
+	const getOrders = useCallback(async () => {
+		const foundOrders = await API.getUserOrders();
 		setOrders(foundOrders);
 	}, []);
 

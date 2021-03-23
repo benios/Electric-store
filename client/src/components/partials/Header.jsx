@@ -275,7 +275,9 @@ const Header = () => {
 						</IconButton>
 					</div>
 					<IconButton onClick={handleClick}>
-						<FiUser />
+						{token
+							? <Button>y</Button>
+							: <FiUser />}
 					</IconButton>
 
 					<IconButton onClick={onCart}>
