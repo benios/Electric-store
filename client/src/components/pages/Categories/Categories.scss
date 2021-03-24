@@ -4,12 +4,12 @@
 
 .category-page{
   background-color: $white-grey;
-  height: 100%;
+  min-height: 110vh;
   .new-product-btn{
     display: flex;
     justify-content: space-between;
     font-family: "Secular One", sans-serif;
-    width: 8%;
+    width: 150px;
     background-color: $button-purple;
     &:hover{
       background-color: $button-purple-hover;

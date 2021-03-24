@@ -128,9 +128,10 @@ const getProductById = async (req, res) => {
 
 const getProductByCategory = async (req, res) => {
   const category = req.params.category;
+  const page = req.query.page;
   let foundProducts;
   try {
-    foundProducts = await Product.find({ category: category }).sort([['date', -1]]).exec();
+    foundProducts = await Product.find({ category: category }).sort([['date', -1]]).skip(page*6).limit(6).exec();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({

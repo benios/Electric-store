@@ -1,5 +1,5 @@
 import React, {
-	useEffect, useState, useCallback, useRef,
+	useEffect, useState, useCallback,
 } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
@@ -7,10 +7,9 @@ import {
 } from 'react-router';
 import get from 'lodash/get';
 import {
-	Container, Grid, Fab, Button, Dialog, DialogTitle,
+	Grid, Button, Dialog, DialogTitle,
 	DialogContent, TextField, DialogActions, InputAdornment,
 } from '@material-ui/core';
-import { AiOutlineRight, AiOutlineLeft } from 'react-icons/ai';
 import { FaPlus, FaUndo, FaSave } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,13 +17,15 @@ import Header from '../../partials/Header';
 import ProductCard from '../../ProductCard/ProductCard';
 import CategoryTitle from '../../partials/CategoryTitle/CategoryTitle';
 import API from '../../../utils/api';
-import useWindowDimensions from '../../../assests/hooks/useWindowDimensions';
 import './Categories.scss';
 
 const Categories = () => {
 	const title = useParams();
 	const [products, setProducts] = useState([]);
 	const [open, setOpen] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [page, setPage] = useState(0);
+	const [hasMore, setHasMore] = useState(true);
 	// Add new product credentials
 	const [name, setName] = useState('');
 	const onNameChange = useCallback((e) => setName(e.target.value), []);
@@ -37,23 +38,37 @@ const Categories = () => {
 	const [description, setDescription] = useState('');
 	const onDescriptionChange = useCallback((e) => setDescription(e.target.value), []);
 
-	const { width } = useWindowDimensions();
-	const ref = useRef(null);
-	const scroll = useCallback((isNegative) => {
-		const operator = isNegative ? -1 : 1;
-		ref.current.scrollLeft += (width * operator) / 2;
-	}, [width]);
+	const handleScroll = () => {
+		if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+			setPage((prev) => prev + 1);
+		}
+	};
 
-	const scrollRight = () => { scroll(false); };
-	const scrollLeft = () => { scroll(true); };
+	useEffect(() => {
+		window.addEventListener('scroll', handleScroll, {
+			passive: true,
+		});
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+	// Fetching the products
 	useEffect(() => {
 		const getProducts = async () => {
-			setProducts(await API.getProductByCategory(title.category));
+			setLoading(true);
+			const newProducts = await API.getProductByCategory(title.category, page);
+			if (newProducts.length === 0) {
+				setHasMore(false);
+			}
+			setProducts((prev) => [...prev, ...newProducts]);
+			setLoading(false);
 		};
-		if (title.category) {
+		if (title.category && hasMore) {
 			getProducts();
 		}
-	}, [title.category]);
+	}, [title.category, page, hasMore]);
 
 	const user = useSelector(
 		(state) => get(state, 'currentUserReducer.user', {}),
@@ -71,6 +86,14 @@ const Categories = () => {
 	const success = (msg) => toast(msg);
 	const error = () => toast('Error!');
 
+	const onClear = useCallback(async () => {
+		setName('');
+		setPrice('');
+		setQuantity('');
+		setPictureUrl('');
+		setDescription('');
+	}, []);
+
 	const onAdd = useCallback(async () => {
 		let response;
 		try {
@@ -82,15 +105,8 @@ const Categories = () => {
 		}
 		success(response);
 		handleClose();
-	}, [description, name, pictureUrl, price, quantity, title.category]);
-
-	const onClear = useCallback(async () => {
-		setName('');
-		setPrice('');
-		setQuantity('');
-		setPictureUrl('/img/products/upload-img.png');
-		setDescription('');
-	}, []);
+		onClear();
+	}, [description, name, onClear, pictureUrl, price, quantity, title.category]);
 
 	return (
 		<div className="category-page">
@@ -168,48 +184,21 @@ const Categories = () => {
 				</DialogActions>
 			</Dialog>
 			<ToastContainer />
-			{	width > 600 ? (
-				<Grid container className="grid-container" spacing={2}>
-					{products.map((product) => (
-						<Grid className="card-container" key={product._id} item xs={12} lg={2} md={4} sm={5}>
-							<ProductCard
-								productId={product._id}
-								img={product.pictureUrl}
-								price={product.price}
-								title={product.name}
-								alt={title.category}
-								views={product.views}
-							/>
-						</Grid>
-					))}
-				</Grid>
-			)
-				: (
-					<Container maxWidth={false} className="hot-products-container">
-						<Grid item xs={12} className="scroll-btn">
-							<Fab onClick={scrollRight} className="scroll-btn-right" color="secondary" size="medium">
-								<AiOutlineRight />
-							</Fab>
-							<Fab onClick={scrollLeft} className="scroll-btn-left" color="secondary" size="medium">
-								<AiOutlineLeft />
-							</Fab>
-						</Grid>
-						<Grid container className="products-slider" ref={ref} spacing={3}>
-							{products.map((product) => (
-								<Grid className="card-container" item xs={12} lg={3} md={4} sm={5} key={product._id}>
-									<ProductCard
-										productId={product._id}
-										img={product.pictureUrl}
-										price={product.price}
-										title={product.name}
-										alt={title.category}
-										views={product.views}
-									/>
-								</Grid>
-							))}
-						</Grid>
-					</Container>
-				)}
+			<Grid container className="grid-container" spacing={2}>
+				{products.map((product) => (
+					<Grid className="card-container" key={product._id} item xs={12} lg={2} md={4} sm={5}>
+						<ProductCard
+							productId={product._id}
+							img={product.pictureUrl}
+							price={product.price}
+							title={product.name}
+							alt={title.category}
+							views={product.views}
+						/>
+					</Grid>
+				))}
+				{loading && <div>Loading...</div>}
+			</Grid>
 		</div>
 	);
 };

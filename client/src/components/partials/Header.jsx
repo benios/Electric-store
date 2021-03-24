@@ -240,7 +240,7 @@ const Header = () => {
 	}, [handleScroll]);
 
 	return (
-		<div className="root">
+		<div className="header-container">
 			<AppBar
 				className={didScroll ? 'appbar-style scrolled-down' : 'appbar-style'}
 				position="fixed"
@@ -274,12 +274,13 @@ const Header = () => {
 							<FiSearch />
 						</IconButton>
 					</div>
-					<IconButton onClick={handleClick}>
-						{token
-							? <Button>y</Button>
-							: <FiUser />}
-					</IconButton>
-
+					{token
+						? <IconButton className="loggedin-btn" onClick={handleClick}>{`${user.firstName.split('')[0]}${user.lastName.split('')[0]}`}</IconButton>
+						: (
+							<IconButton onClick={handleClick}>
+								<FiUser />
+							</IconButton>
+						)}
 					<IconButton onClick={onCart}>
 						<Badge badgeContent={itemNum} className="badge" color="error">
 							<FiShoppingCart />

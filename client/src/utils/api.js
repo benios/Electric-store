@@ -92,10 +92,10 @@ const API = {
 		return hotProducts;
 	},
 
-	getProductByCategory: async (category) => {
+	getProductByCategory: async (category, page) => {
 		let products;
 		try {
-			products = await axios.get(`/product/categories/${category}`);
+			products = await axios.get(`/product/categories/${category}?page=${page}`);
 		} catch (error) {
 			return error;
 		}

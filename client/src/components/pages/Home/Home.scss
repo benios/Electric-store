@@ -6,12 +6,12 @@
 	background-color: white;
 	color: $dark-text;
 	font-family: "Secular One", sans-serif;
-	.Item-banner-container {	
+	.Item-banner-container {
 		@media only screen and (min-width: $md) {
 			height: 90vh;
 		}
 		position: relative;
-		.category-btn-container{
+		.category-btn-container {
 			position: absolute;
 			bottom: 0px;
 		}
@@ -76,7 +76,7 @@
 }
 
 //Header
-.root {
+.header-container {
 	flex-grow: 1;
 	z-index: 99;
 	.appbar-style {
@@ -84,33 +84,41 @@
 			.MuiButton-root {
 				font-size: 0.5rem;
 			}
-			.MuiIconButton-root{
+			.MuiIconButton-root {
 				font-size: 1rem;
 			}
 		}
 		@media only screen and (max-width: $md) {
-			.MuiToolbar-gutters{
+			.MuiToolbar-gutters {
 				padding-right: 0px;
 			}
 			.appbar-button {
-				&.MuiButton-root{
+				&.MuiButton-root {
 					min-width: 40px;
 				}
 			}
 		}
-
+		.loggedin-btn {
+			border-radius: 50%;
+			width: 45px;
+			height:	45px;
+			background-color:rgba(0, 0, 0, 0.54);;
+			color: $blue-join-button;
+			margin-right: 0.5%;
+			font-size: 1.5rem;
+		}
 		.search-container {
 			background-color: $search-background-color;
 			border-radius: 40px;
 			display: flex;
-			 &:hover {
-			 	background-color: $search-background-color-hover;
-			 }
-			.MuiInputBase-input{
+			&:hover {
+				background-color: $search-background-color-hover;
+			}
+			.MuiInputBase-input {
 				padding-right: 10px;
 				@media only screen and (max-width: $sm) {
 					font-size: 0.8rem;
-				}	
+				}
 			}
 		}
 		.MuiButton-root {
@@ -129,10 +137,10 @@
 		.space {
 			flex-grow: 1;
 		}
-		.badge{
-			.MuiBadge-anchorOriginTopRightRectangle{
-    		top: 90%;
-    		padding: 0 4px;
+		.badge {
+			.MuiBadge-anchorOriginTopRightRectangle {
+				top: 90%;
+				padding: 0 4px;
 			}
 		}
 		color: $dark-text;
@@ -140,14 +148,13 @@
 		background-color: transparent;
 		@media only screen and (max-width: $md) {
 			background-color: $blue-join-button;
-		}	
+		}
 		@media only screen and (min-width: $md) {
-		&.scrolled-down {
-			background: $blue-join-button;
+			&.scrolled-down {
+				background: $blue-join-button;
+			}
 		}
 	}
-	}
-	
 }
 
 .user-menu {
@@ -163,17 +170,17 @@
 			justify-content: space-evenly;
 			align-items: center;
 			height: 100%;
-			.profile{
+			.profile {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				background-color:white;
+				background-color: white;
 				padding-top: 8px;
 				padding-bottom: 8px;
-				border-radius: 6px;;
+				border-radius: 6px;
 				width: 90%;
 				.user-icon {
-					font-size: 4rem;;
+					font-size: 4rem;
 					color: $blue-join-button;
 				}
 				.user-txt {
@@ -181,20 +188,20 @@
 					color: $dark-text;
 				}
 			}
-			.order-btn{
-				background-color:white;
+			.order-btn {
+				background-color: white;
 				padding-top: 6px;
 				height: 20%;
 				padding-bottom: 6px;
-				border-radius: 6px;;
+				border-radius: 6px;
 				width: 90%;
 				font-family: "Secular One", sans-serif;
 				color: $dark-text;
-				&:hover{
-					background-color:$white-btn-hover;
+				&:hover {
+					background-color: $white-btn-hover;
 				}
 			}
-			.signout-btn{
+			.signout-btn {
 				padding-top: 6px;
 				padding-bottom: 6px;
 				border-radius: 6px;
@@ -202,31 +209,29 @@
 				width: 90%;
 				font-family: "Secular One", sans-serif;
 			}
-			
-			
 		}
 	}
 }
 
 .category-menu {
 	.user-menu-container {
-    background-color: $blue-join-button;
+		background-color: $blue-join-button;
 		width: 120px;
 		height: 200px;
 		.menu-list {
-			display:flex;
+			display: flex;
 			flex-direction: column;
-			color:white;
+			color: white;
 			margin-top: 0px;
-			.MenuItem{
-				display:flex;
+			.MenuItem {
+				display: flex;
 				justify-content: space-between;
 			}
 		}
 	}
 }
 
-.button-progress{
+.button-progress {
 	color: green;
 	position: absolute;
 	top: 50%;
