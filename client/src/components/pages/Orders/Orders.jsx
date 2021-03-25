@@ -26,9 +26,15 @@ const Orders = () => {
 	);
 
 	const getOrders = useCallback(async () => {
-		const foundOrders = await API.getUserOrders();
+		let userId;
+		if (user.source === 'Google' || user.source === 'Facebook') {
+			userId = user.sourceId;
+		} else {
+			userId = user._id;
+		}
+		const foundOrders = await API.getUserOrders(userId);
 		setOrders(foundOrders);
-	}, []);
+	}, [user._id, user.source, user.sourceId]);
 
 	useEffect(() => {
 		if (user.userName) {
@@ -55,7 +61,7 @@ const Orders = () => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{orders.map((order) => {
+						{orders.length > 0 && orders.map((order) => {
 							const date = new Date(order.date);
 							const dateString = date.toLocaleDateString('he-IL', {
 								timeZone: 'Asia/Jerusalem',

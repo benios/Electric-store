@@ -5,8 +5,8 @@ const checkAuth = require('../middleware/check-auth');
 const logger = new Logger('app');
 
 const newOrderValidation = (order) => {
-  if (!order.userName) {
-    throw new Error('username not found');
+  if (!order.userId) {
+    throw new Error('userId not found');
   }
   if (!order.products) {
     throw new Error('products not found');
@@ -40,7 +40,7 @@ const getAllOrders = async (req, res) => {
 const createOrder = async (req, res) => {
   const { body } = req;
   const order = new Order({
-    userName: body.userName,
+    userId: body.userId,
     products: body.products,
     date: Date.now(),
   });
@@ -107,7 +107,7 @@ const getUserOrders = async (req, res) => {
   const { userId } = req.userData;
   let foundOrders;
   try {
-    foundOrders = await Order.findById(userId).sort([['date', -1]]).exec();
+    foundOrders = await Order.find({ userId: userId }).sort([['date', -1]]).exec();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({

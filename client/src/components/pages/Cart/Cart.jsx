@@ -67,7 +67,13 @@ const Cart = () => {
 	};
 
 	const onSubmit = () => {
-		API.createOrder(user.userName, cartItems);
+		let userId;
+		if (user.source === 'Google' || user.source === 'Facebook') {
+			userId = user.sourceId;
+		} else {
+			userId = user._id;
+		}
+		API.createOrder(userId, cartItems);
 		quantityUpdate.forEach((item) => API.quantityUpdate(item));
 		success();
 		onClear();

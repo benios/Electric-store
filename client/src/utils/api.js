@@ -135,20 +135,20 @@ const API = {
 
 	// Order
 
-	createOrder: async (userName, products) => {
+	createOrder: async (userId, products) => {
 		let response;
 		try {
-			response = await axios.post('/order', { userName, products });
+			response = await axios.post('/order', { userId, products });
 		} catch (error) {
 			return error;
 		}
 		return response;
 	},
 
-	getUserOrders: async () => {
+	getUserOrders: async (userId) => {
 		let orders;
 		try {
-			orders = await axios.get('/order/userOrders');
+			orders = await axios.get(`/order/userOrders?id=${userId}`);
 		} catch (error) {
 			return error;
 		}

@@ -32,7 +32,7 @@ function authUser(req, res, next) {
 
 function userPermissionByID(req, res, next) {
   const { userId } = req.userData;
-  const id = req.params.userId;
+  const id = req.query.id;;
   if (id !== userId) {
     logger.error('Permission denied');
     return res.status(400).json({
