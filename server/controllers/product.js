@@ -198,6 +198,31 @@ const deleteProduct = async (req, res) => {
   });
 };
 
+const searchProducts = async (req, res) => {
+  const word = req.query.word;
+  let foundProducts;
+  const regex = new RegExp(`${word}`);
+  try {
+    foundProducts = await Product.find({ name: regex }).sort([['views', -1]]).limit(7).exec()
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'Products details',
+    foundProducts,
+  });
+};
+
 module.exports = {
   deleteProduct,
   createProduct,
@@ -206,4 +231,5 @@ module.exports = {
   getProducts,
   getProductByCategory,
   getProductByViews,
+  searchProducts
 };

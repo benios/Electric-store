@@ -9,6 +9,8 @@ router.post('/', checkAuth.authUser, checkAuth.authRole(role.Admin), controller.
 
 router.get('/products', controller.getProductByViews);
 
+router.get('/search', controller.searchProducts);
+
 router.get('/', controller.getProducts);
 
 router.get('/:productId', controller.getProductById);

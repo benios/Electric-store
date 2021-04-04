@@ -108,7 +108,7 @@ const Cart = () => {
 							className="table-container"
 							spacing={1}
 						>
-							<Grid item md={8} className="right-side">
+							<Grid item md={8} xs={10} className="right-side">
 								<TableContainer component={Paper}>
 									<Table>
 										<TableHead>
@@ -151,7 +151,7 @@ const Cart = () => {
 									</Table>
 								</TableContainer>
 							</Grid>
-							<Grid item md={4} className="left-side">
+							<Grid item md={4} xs={10} className="left-side">
 								<TableContainer component={Paper}>
 									<Table>
 										<TableHead>

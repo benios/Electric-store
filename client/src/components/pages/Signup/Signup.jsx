@@ -100,6 +100,7 @@ const Signup = () => {
 				justify="center"
 				alignItems="center"
 				spacing={3}
+				className="page-container"
 			>
 				<Grid item className="signup-container">
 					<Grid item xs={12} className="signup-title">

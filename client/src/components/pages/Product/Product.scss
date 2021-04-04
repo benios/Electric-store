@@ -3,7 +3,7 @@
 
 .product-page {
 	background-color: $blue-join-button;
-	height: 90vh;
+	height: calc(100vh - 100px);
 	padding: 100px 40px 0px;
 	.product-container {
 		position: relative;
@@ -29,6 +29,9 @@
 		.title {
 			color: white;
 			margin-bottom: 0;
+			@media only screen and (max-width: $sm) {
+				font-size: 5rem;
+			}
 		}
 		.description {
 			margin-top: 50px;
@@ -48,6 +51,9 @@
 				border-color: $white-grey;
 				color: $white-grey;
 				font-size: 1.7rem;
+				@media only screen and (max-width: $sm) {
+					font-size: 1rem;
+				}
 			}
 			.quantity {
 				display: flex;
@@ -55,6 +61,11 @@
 				align-items: center;
 				margin: auto 5px;
 				width: 50px;
+				@media only screen and (max-width: $sm) {
+					&.MuiTypography-h3{
+						font-size: 2rem;
+					}
+				}
 				.MuiInputBase-input {
 					color: $white-grey;
 				}
@@ -69,6 +80,11 @@
 			.icon{
 				font-size: large;
 				margin-right: 5px;
+			}
+			.choose-quantity{
+				@media only screen and (max-width: $sm) {
+					font-size: 0.8rem;
+				}
 			}
 		}
 		.delete-btn{
@@ -89,6 +105,9 @@
 	}
 	.space-small {
 		flex-grow: 0.1;
+		@media only screen and (max-width: $sm) {
+			flex-grow: 0;
+		}
 	}
 }
 

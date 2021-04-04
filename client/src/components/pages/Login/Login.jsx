@@ -96,6 +96,7 @@ const Login = () => {
 				justify="center"
 				alignItems="center"
 				spacing={3}
+				className="page-container"
 			>
 				<Grid item className="login-container">
 					<Grid item className="image-container" xs={12}>

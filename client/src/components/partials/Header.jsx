@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+	useCallback, useEffect, useState, useRef,
+} from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import get from 'lodash/get';
+import { get, debounce } from 'lodash';
 import {
 	Divider,
 	Typography,
-	InputBase,
 	MenuList,
 	MenuItem,
 	Popover,
@@ -14,6 +15,7 @@ import {
 	Toolbar,
 	AppBar,
 	Badge,
+	InputBase,
 } from '@material-ui/core';
 import '../pages/Home/Home.scss';
 
@@ -36,6 +38,9 @@ const Header = () => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [categoryPopList, setCategoryPopList] = useState(null);
 	const [token, setToken] = useState(false);
+	const [products, setProducts] = useState([]);
+	const [display, setDisplay] = useState(false);
+	const [query, setQuery] = useState('');
 
 	const history = useHistory();
 	const dispatch = useDispatch();
@@ -50,6 +55,23 @@ const Header = () => {
 		shallowEqual,
 	);
 	const [itemNum, setItemNum] = useState(0);
+
+	function useOutsideAlerter(ref) {
+		useEffect(() => {
+			function handleClickOutside(event) {
+				if (ref.current && !ref.current.contains(event.target)) {
+					setDisplay(false);
+				}
+			}
+			document.addEventListener('mousedown', handleClickOutside);
+			return () => {
+				document.removeEventListener('mousedown', handleClickOutside);
+			};
+		}, [ref]);
+	}
+
+	const wrapperRef = useRef(null);
+	useOutsideAlerter(wrapperRef);
 
 	useEffect(() => {
 		if (doesHttpOnlyCookieExist('token')) {
@@ -134,6 +156,36 @@ const Header = () => {
 	const onContact = useCallback(() => {
 		history.push('/contact');
 	}, [history]);
+
+	const onProduct = (productId, views) => {
+		API.viewsUpdate(productId, views);
+		history.push(`/products/${productId}`);
+	};
+
+	const onSearch = useCallback(() => {
+		const getProducts = async () => {
+			if (query === '') {
+				setProducts([]);
+				setDisplay(false);
+			}	else	{
+				setProducts(await API.searchProduct(query));
+			}
+		};
+		getProducts();
+	}, [query]);
+
+	const delayedQuery = debounce(onSearch, 3000);
+
+	const onQueryChange = useCallback((event) => {
+		setProducts([]);
+		setDisplay(true);
+		setQuery(event.target.value);
+	}, []);
+
+	useEffect(() => {
+		delayedQuery();
+		return delayedQuery.cancel;
+	}, [query, delayedQuery]);
 
 	const categorysMenu = (
 		<Popover
@@ -267,13 +319,35 @@ const Header = () => {
 					<div className="space" />
 					<div className="search-container">
 						<InputBase
+							className="search-field"
 							placeholder="חיפוש..."
-							inputProps={{ 'aria-label': 'search' }}
+							onChange={onQueryChange}
+							value={query}
+							inputProps={{ 'aria-label': 'naked' }}
 						/>
-						<IconButton>
+						<IconButton disabled>
 							<FiSearch />
 						</IconButton>
 					</div>
+					{display && (
+						<div className="autoContainer">
+							{products.length === 0
+								? (
+									<div className="product">
+										<p>מחפש...</p>
+									</div>
+								)
+								:	products.map((product) => (
+									<div ref={wrapperRef}>
+										<Button className="product" onClick={() => onProduct(product._id, product.views)}>
+											<img src={product.pictureUrl} alt={product.name} className="product-img" />
+											<span>{product.name}</span>
+										</Button>
+										<Divider />
+									</div>
+								))}
+						</div>
+					)}
 					{token
 						? <IconButton className="loggedin-btn" onClick={handleClick}>{`${user.firstName.split('')[0]}${user.lastName.split('')[0]}`}</IconButton>
 						: (

@@ -10,6 +10,7 @@ import {
 	TableContainer,
 	Table,
 	TableHead,
+	Paper,
 } from '@material-ui/core';
 import Header from '../../partials/Header';
 import API from '../../../utils/api';
@@ -50,7 +51,7 @@ const Orders = () => {
 				{' '}
 				{user.firstName}
 			</Typography>
-			<TableContainer>
+			<TableContainer component={Paper} className="table-container">
 				<Table>
 					<TableHead>
 						<TableRow>
@@ -74,7 +75,12 @@ const Orders = () => {
 							return (
 								<TableRow key={order._id}>
 									<TableCell component="th" scope="row">
-										{order._id}
+										<div
+											className="text-container"
+											title={order._id}
+										>
+											{order._id}
+										</div>
 									</TableCell>
 									<TableCell align="right">{dateString}</TableCell>
 									<TableCell align="right">

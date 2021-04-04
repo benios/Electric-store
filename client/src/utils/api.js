@@ -92,6 +92,18 @@ const API = {
 		return hotProducts;
 	},
 
+	searchProduct: async (word) => {
+		let products;
+		if	(!word) return [];
+		try {
+			products = await axios.get(`/product/search?word=${word}`);
+		} catch (error) {
+			return error;
+		}
+		const foundProducts = get(products, 'data.foundProducts');
+		return foundProducts;
+	},
+
 	getProductByCategory: async (category, page) => {
 		let products;
 		try {
