@@ -2,6 +2,7 @@ import React, {
 	useCallback, useRef, useEffect, useState,
 } from 'react';
 import PropTypes from 'prop-types';
+import Loader from 'react-loaders';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Fab from '@material-ui/core/Fab';
@@ -54,18 +55,20 @@ const MostViewedItems = ({ title }) => {
 				</Fab>
 			</Grid>
 			<Grid container className="products-slider" ref={ref} spacing={3}>
-				{products.length > 0 && products.map((product) => (
-					<Grid item key={product._id} className="card-container">
-						<ProductCard
-							productId={product._id}
-							img={product.pictureUrl}
-							price={product.price}
-							title={product.name}
-							alt={product.name}
-							views={product.views}
-						/>
-					</Grid>
-				))}
+				{products.length > 0
+					?	products.map((product) => (
+						<Grid item key={product._id} className="card-container">
+							<ProductCard
+								productId={product._id}
+								img={product.pictureUrl}
+								price={product.price}
+								title={product.name}
+								alt={product.name}
+								views={product.views}
+							/>
+						</Grid>
+					))
+					: <Loader type="ball-spin-fade-loader" color="rgb(114, 193, 244)" className="loader-active" />}
 			</Grid>
 		</Container>
 	);

@@ -10,6 +10,7 @@ import {
 	Grid, Button, Dialog, DialogTitle,
 	DialogContent, TextField, DialogActions, InputAdornment,
 } from '@material-ui/core';
+import Loader from 'react-loaders';
 import { FaPlus, FaUndo, FaSave } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -197,7 +198,7 @@ const Categories = () => {
 						/>
 					</Grid>
 				))}
-				{loading && <div>Loading...</div>}
+				{loading && <Loader type="ball-pulse" color="rgb(114, 193, 244)" className="loader-active" />}
 			</Grid>
 		</div>
 	);

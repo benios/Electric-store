@@ -16,7 +16,6 @@ import Signup from './components/pages/Signup/Signup';
 import Login from './components/pages/Login/Login';
 import Home from './components/pages/Home/Home';
 import Categories from './components/pages/Categories/Categories';
-import About from './components/pages/About/About';
 import Contact from './components/pages/Contact/Contact';
 import Product from './components/pages/Product/Product';
 import Cart from './components/pages/Cart/Cart';
@@ -46,9 +45,6 @@ const App = () => (
 							</Route>
 							<Route path="/categories/:category">
 								<Categories />
-							</Route>
-							<Route exact path="/about">
-								<About />
 							</Route>
 							<Route exact path="/contact">
 								<Contact />

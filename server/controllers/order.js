@@ -11,6 +11,9 @@ const newOrderValidation = (order) => {
   if (!order.products) {
     throw new Error('products not found');
   }
+  if (!order.address) {
+    throw new Error('address not found');
+  }
 };
 
 const getAllOrders = async (req, res) => {
@@ -41,6 +44,7 @@ const createOrder = async (req, res) => {
   const { body } = req;
   const order = new Order({
     userId: body.userId,
+    address: body.address,
     products: body.products,
     date: Date.now(),
   });
