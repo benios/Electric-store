@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
-  userName: { type: String, required: true, index: true },
-  password: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  address: { type: String, required: true },
-  age: { type: Number, required: true },
+  userName: { type: String, index: true },
+  password: { type: String },
+  firstName: { type: String },
+  lastName: { type: String },
+  source: { type: String },
+  sourceId: { type: String },
   role: { type: String, required: true },
 });
 

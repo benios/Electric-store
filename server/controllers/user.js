@@ -1,10 +1,8 @@
-/* eslint-disable no-underscore-dangle */
-require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('express-jwt');
+const jsonwebtoken = require('jsonwebtoken');
 const User = require('../model/user');
 const Logger = require('../services/logger_services');
 const role = require('../helpers/role');
@@ -13,8 +11,7 @@ const app = express();
 
 const logger = new Logger('app');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(jwt({ secret: process.env.JWT_KEY || "my_secret", algorithms: ['HS256'] }));
 
 const newUserValidation = (user) => {
   const userNameValidationRegEx = /^([a-z]|[0-9]|-|_)+$/;
@@ -34,12 +31,16 @@ const newUserValidation = (user) => {
   if (!user.lastName) {
     throw new Error('lastName field is empty');
   }
-  if (!user.address) {
-    throw new Error('address field is empty');
-  }
-  if ((typeof (user.age) !== 'number') || (user.age < 0)) {
-    throw new Error('address field is empty');
-  }
+};
+
+const logout = async (req, res) => {
+  res.cookie('token', 'none', {
+      expires: new Date(Date.now() + 5 * 1000),
+      httpOnly: true,
+  })
+  res
+      .status(200)
+      .json({ success: true, message: 'User logged out successfully' })
 };
 
 const loginUser = async (req, res) => {
@@ -70,18 +71,57 @@ const loginUser = async (req, res) => {
     });
   }
   if (result === true) {
-    const token = jwt.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+    const token = jsonwebtoken.sign({ username: foundUser.userName, userId: foundUser._id, role: foundUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
     logger.info('logged in successfully', foundUser);
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7});
     return res.status(200).json({
       message: 'User details',
       foundUser,
-      token,
     });
   }
   logger.error('Incorrect username or password');
   return res.status(401).json({
     message: 'Incorrect username or password',
   });
+};
+
+const loginNonMemberUser = async (req, res) => {
+  const { userId } = req.body;
+  const { source } = req.body;
+  let foundUser;
+  try {
+    foundUser = await User.findOne({ sourceId: userId }).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+
+  if (!foundUser) {
+    const currUser = new User({
+      _id: new mongoose.Types.ObjectId(),
+      source: source,
+      sourceId: userId,
+      role: role.User,
+    });
+    logger.info('handling create a user request', currUser);
+    try {
+      await currUser.save();
+    } catch (err) {
+      logger.error(err);
+      return res.status(500).json({
+        message: err.message,
+      });
+    }
+  }
+  const token = jsonwebtoken.sign({ userId: userId, role: role.User }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
+    logger.info('logged in successfully', foundUser);
+    res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+    return res.status(200).json({
+      message: 'User details',
+      foundUser,
+    });
 };
 
 const createUser = async (req, res) => {
@@ -92,8 +132,7 @@ const createUser = async (req, res) => {
     password: req.body.password,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    address: req.body.address,
-    age: req.body.age,
+    source: 'Local',
     role: role.User,
   };
   logger.info('handling create a user request', currUser);
@@ -124,12 +163,13 @@ const createUser = async (req, res) => {
           message: err.message,
         });
       }
-      const token = jwt.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY, { expiresIn: '1h' });
+
+      const token = jsonwebtoken.sign({ username: currUser.userName, userId: currUser._id, role: currUser.role }, process.env.JWT_KEY || "my_secret", { expiresIn: '7d' });
       logger.info('user created successfully', user);
+      res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7});
       return res.status(200).json({
         message: 'user created successfully',
         user,
-        token,
       });
     });
   } catch (err) {
@@ -167,4 +207,6 @@ module.exports = {
   deleteUser,
   createUser,
   loginUser,
+  logout,
+  loginNonMemberUser
 };

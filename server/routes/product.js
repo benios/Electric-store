@@ -7,9 +7,17 @@ const router = express.Router();
 
 router.post('/', checkAuth.authUser, checkAuth.authRole(role.Admin), controller.createProduct);
 
+router.get('/products', controller.getProductByViews);
+
+router.get('/search', controller.searchProducts);
+
 router.get('/', controller.getProducts);
 
 router.get('/:productId', controller.getProductById);
+
+router.get('/categories/:category', controller.getProductByCategory);
+
+router.patch('/productUpdate/:productId', controller.updateProduct);
 
 router.patch('/:productId', checkAuth.authUser, checkAuth.authRole(role.Admin), controller.updateProduct);
 

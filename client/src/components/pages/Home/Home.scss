@@ -1,0 +1,267 @@
+@import "../../../styles/config.scss";
+@import "../../../styles/colors.scss";
+@import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
+
+.home-styling {
+	background-color: white;
+	color: $dark-text;
+	font-family: "Secular One", sans-serif;
+	.Item-banner-container {
+		@media only screen and (min-width: $md) {
+			height: 90vh;
+		}
+		position: relative;
+		.category-btn-container {
+			position: absolute;
+			bottom: 0px;
+		}
+		.appbar-container {
+			top: 0px;
+			z-index: 99;
+		}
+		.left-side {
+			display: flex;
+			height: 100%;
+			background-color: $blue-join-button;
+			justify-content: center;
+			align-items: center;
+			@media only screen and (max-width: $md) {
+				height: 90vh;
+				padding-top: 0px;
+			}
+			.big-image {
+				position: absolute;
+				top: 70px;
+				background-color: transparent;
+				width: 620px;
+				height: 460px;
+			}
+		}
+
+		.right-side {
+			@media only screen and (max-width: $md) {
+				height: 90vh;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+			@media only screen and (max-width: $sm) {
+				margin-top: 65px;
+				height: 90vh;
+				padding-right: 10px;
+			}
+			font-weight: 100;
+			padding-right: 50px;
+			Button {
+				margin-top: 10px;
+				height: 50px;
+				background-color: $blue-join-button;
+				width: 200px;
+				color: white;
+			}
+		}
+		.title {
+			margin-bottom: 0px;
+			&.MuiTypography-h1 {
+				font-family: "Secular One", sans-serif;
+			}
+			@media only screen and (max-width: $sm) {
+				&.MuiTypography-h1 {
+					font-size: 4rem;
+				}
+			}
+		}
+	}
+}
+
+//Header
+.header-container {
+	flex-grow: 1;
+	z-index: 99;
+	position: relative;
+	.appbar-style {
+		@media only screen and (max-width: $md) {
+			.MuiButton-root {
+				font-size: 0.5rem;
+			}
+			.MuiIconButton-root {
+				font-size: 1rem;
+			}
+		}
+		@media only screen and (max-width: $md) {
+			.MuiToolbar-gutters {
+				padding-right: 0px;
+			}
+			.appbar-button {
+				&.MuiButton-root {
+					min-width: 40px;
+				}
+			}
+		}
+		.loggedin-btn {
+			border-radius: 50%;
+			width: 45px;
+			height:	45px;
+			background-color:rgba(0, 0, 0, 0.54);;
+			color: $blue-join-button;
+			margin-right: 0.5%;
+			font-size: 1.5rem;
+		}
+		.autoContainer {
+			position: absolute;
+			left: 100px;
+			background-color: $blue-popover;
+			top: 58px;
+			width: 300px;
+			border-radius: 10px;
+			.product{
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+				width: 300px;
+				.product-img{
+					width: 100px;
+				}
+			}
+		}
+		.search-container {
+			background-color: $search-background-color;
+			border-radius: 40px;
+			height:	45px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			.search-field{
+				width: 200px;
+			}
+			&:hover {
+				background-color: $search-background-color-hover;
+			}
+			.MuiInputBase-input {
+				padding-right: 10px;
+				@media only screen and (max-width: $sm) {
+					font-size: 0.8rem;
+				}
+			}
+			@media only screen and (max-width: 500px) {
+				display: none;
+			}
+		}
+		.MuiButton-root {
+			font-family: "Secular One", sans-serif;
+		}
+		.logo {
+			width: 50px;
+			height: 50px;
+			padding: 0px 30px;
+			@media only screen and (max-width: $md) {
+				width: 30px;
+				height: 30px;
+				padding: 0px 0px;
+			}
+		}
+		.space {
+			flex-grow: 1;
+		}
+		.badge {
+			.MuiBadge-anchorOriginTopRightRectangle {
+				top: 90%;
+				padding: 0 4px;
+			}
+		}
+		color: $dark-text;
+		font-family: "Secular One", sans-serif;
+		background-color: transparent;
+		@media only screen and (max-width: $md) {
+			background-color: $blue-join-button;
+		}
+		@media only screen and (min-width: $md) {
+			&.scrolled-down {
+				background: $blue-join-button;
+			}
+		}
+	}
+}
+
+.user-menu {
+	.user-menu-container {
+		background-color: $white-grey;
+		width: 250px;
+		height: 300px;
+		.signin {
+			padding-left: 5px;
+			padding-right: 5px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+			align-items: center;
+			height: 100%;
+			.profile {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				background-color: white;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				border-radius: 6px;
+				width: 90%;
+				.user-icon {
+					font-size: 4rem;
+					color: $blue-join-button;
+				}
+				.user-txt {
+					font-family: "Secular One", sans-serif;
+					color: $dark-text;
+				}
+			}
+			.order-btn {
+				background-color: white;
+				padding-top: 6px;
+				height: 20%;
+				padding-bottom: 6px;
+				border-radius: 6px;
+				width: 90%;
+				font-family: "Secular One", sans-serif;
+				color: $dark-text;
+				&:hover {
+					background-color: $white-btn-hover;
+				}
+			}
+			.signout-btn {
+				padding-top: 6px;
+				padding-bottom: 6px;
+				border-radius: 6px;
+				height: 15%;
+				width: 90%;
+				font-family: "Secular One", sans-serif;
+			}
+		}
+	}
+}
+
+.category-menu {
+	.user-menu-container {
+		background-color: $blue-join-button;
+		width: 120px;
+		height: 200px;
+		.menu-list {
+			display: flex;
+			flex-direction: column;
+			color: white;
+			margin-top: 0px;
+			.MenuItem {
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+	}
+}
+
+.button-progress {
+	color: green;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -12;
+	margin-left: -12;
+}

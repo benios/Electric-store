@@ -1,23 +1,15 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const Order = require('../model/order');
 const emailNotification = require('../services/email_services');
 const Logger = require('../services/logger_services');
 const checkAuth = require('../middleware/check-auth');
-
-const app = express();
-
 const logger = new Logger('app');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 const newOrderValidation = (order) => {
-  if (!order.userName) {
-    throw new Error('username field is empty');
+  if (!order.userId) {
+    throw new Error('userId not found');
   }
-  if (!order.product) {
-    throw new Error('product field is empty');
+  if (!order.products) {
+    throw new Error('products not found');
   }
 };
 
@@ -48,8 +40,8 @@ const getAllOrders = async (req, res) => {
 const createOrder = async (req, res) => {
   const { body } = req;
   const order = new Order({
-    userName: body.userName,
-    product: body.product,
+    userId: body.userId,
+    products: body.products,
     date: Date.now(),
   });
 
@@ -111,12 +103,11 @@ const getOrder = async (req, res) => {
   });
 };
 
-const getOrdersByUsername = async (req, res) => {
-  const username = req.params.user;
-
+const getUserOrders = async (req, res) => {
+  const { userId } = req.userData;
   let foundOrders;
   try {
-    foundOrders = await Order.find({ userName: username }).sort([['date', -1]]).exec();
+    foundOrders = await Order.find({ userId: userId }).sort([['date', -1]]).exec();
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
@@ -139,6 +130,6 @@ const getOrdersByUsername = async (req, res) => {
 module.exports = {
   getOrder,
   getAllOrders,
-  getOrdersByUsername,
+  getUserOrders,
   createOrder,
 };

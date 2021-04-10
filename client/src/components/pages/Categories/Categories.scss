@@ -1,0 +1,89 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+
+.category-page{
+  background-color: $white-grey;
+  min-height: 110vh;
+  .new-product-btn{
+    display: flex;
+    justify-content: space-between;
+    font-family: "Secular One", sans-serif;
+    width: 150px;
+    background-color: $button-purple;
+    &:hover{
+      background-color: $button-purple-hover;
+    }
+    color: white;
+    margin-top: 0.5%;
+    margin-right: 1%;
+  }
+  .grid-container{
+    display: flex;
+    justify-content: space-evenly;
+    &.MuiGrid-spacing-xs-2{
+      margin-top: 0.5%;
+      width: 100%;
+    }
+    .card-container{
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .scroll-btn {
+    position: relative;
+    z-index: 99;
+    .scroll-btn-right{
+        position: absolute;
+        right: 5px;
+        top: 130px;
+    }
+    .scroll-btn-left{
+        position: absolute;
+        left: 5px;
+        top: 130px;
+    }
+}
+}
+
+//Dialog
+.dialog-container{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .text-field-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  img{
+    width: 100%;
+  }
+  .img-input{
+    display: none;
+  }
+  .dialog-txt-field{
+    width: 100%;
+    font-size: 2rem;
+  }
+}
+.btn-container{
+  .btn{
+    margin-left: 3%;
+    display: flex;
+    justify-content: space-around;
+    &.clear{
+      width: 14%
+    }
+    &.add{
+      width: 20%
+    }
+  }
+}
+.popover-title{
+  .MuiTypography-h6{
+    font-family: "Secular One", sans-serif;
+    font-size: 2rem;
+    color: $blue-join-button;
+  }
+}

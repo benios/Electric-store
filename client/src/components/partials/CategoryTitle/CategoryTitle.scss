@@ -1,0 +1,19 @@
+@import "../../../styles/config.scss";
+@import "../../../styles/colors.scss";
+@import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
+
+
+.title-container{
+  height: 50vh;
+  width: 100%;
+  background-color: $blue-join-button;
+  display: flex;
+  justify-content: center;
+  @media only screen and (max-width: $md) {
+    padding-top: 20px;
+  }
+  .cameras-title{
+    width: 60%;
+    height: 100%;
+  }
+}

@@ -1,14 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const Product = require('../model/product');
 const Logger = require('../services/logger_services');
 
-const app = express();
-
 const logger = new Logger('app');
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 const newProductValidation = (product) => {
   if (!product.name) {
@@ -23,6 +16,9 @@ const newProductValidation = (product) => {
   if (!product.pictureUrl) {
     throw new Error('pictureUrl field is empty');
   }
+  if (!product.category) {
+    throw new Error('category field is empty');
+  }
   if (!product.description) {
     throw new Error('description field is empty');
   }
@@ -32,9 +28,11 @@ const createProduct = async (req, res) => {
   const product = new Product({
     name: req.body.name,
     price: req.body.price,
+    category: req.body.category,
     quantity: req.body.quantity,
     pictureUrl: req.body.pictureUrl,
     description: req.body.description,
+    views: 0,
     date: Date.now(),
   });
 
@@ -55,13 +53,36 @@ const createProduct = async (req, res) => {
     });
   }
   logger.info('added product successfully', product);
-  return res.send('added product successfully');
+  return res.send('המוצר נשמר בהצלחה');
 };
 
 const getProducts = async (req, res) => {
   let foundProducts;
   try {
     foundProducts = await Product.find().exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'Products details',
+    foundProducts,
+  });
+};
+
+const getProductByViews = async (req, res) => {
+  let foundProducts;
+  try {
+    foundProducts = await Product.find({}).sort([['views', -1]]).limit(10).exec()
   } catch (err) {
     logger.error(err);
     return res.status(500).json({
@@ -105,6 +126,31 @@ const getProductById = async (req, res) => {
   });
 };
 
+const getProductByCategory = async (req, res) => {
+  const category = req.params.category;
+  const page = req.query.page;
+  let foundProducts;
+  try {
+    foundProducts = await Product.find({ category: category }).sort([['date', -1]]).skip(page*6).limit(6).exec();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'products details',
+    foundProducts,
+  });
+};
+
 const updateProduct = async (req, res) => {
   const id = req.params.productId;
   const props = req.body;
@@ -125,7 +171,7 @@ const updateProduct = async (req, res) => {
   }
   logger.info(`Product with ${id} id was updated`, result);
   return res.status(200).json({
-    message: 'successfully updated the product',
+    message: 'המוצר עודכן בהצלחה',
   });
 };
 
@@ -143,12 +189,37 @@ const deleteProduct = async (req, res) => {
   if (!result) {
     logger.error('Failed to find and delete the product');
     return res.status(404).json({
-      message: 'Failed to find and delete the product',
+      message: 'מחיקת המוצר נכשלה',
     });
   }
   logger.info(`Product with ${id} id was deleted`, result);
   return res.status(200).json({
-    message: 'successfully deleted the product',
+    message: 'המוצר נמחק בהצלחה',
+  });
+};
+
+const searchProducts = async (req, res) => {
+  const word = req.query.word;
+  let foundProducts;
+  const regex = new RegExp(`${word}`);
+  try {
+    foundProducts = await Product.find({ name: regex }).sort([['views', -1]]).limit(7).exec()
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+  if (!foundProducts) {
+    logger.error('There are no products to fetch');
+    return res.status(404).json({
+      message: 'There are no products to fetch',
+    });
+  }
+  logger.info('Fetching all products');
+  return res.status(200).json({
+    message: 'Products details',
+    foundProducts,
   });
 };
 
@@ -158,4 +229,7 @@ module.exports = {
   updateProduct,
   getProductById,
   getProducts,
+  getProductByCategory,
+  getProductByViews,
+  searchProducts
 };

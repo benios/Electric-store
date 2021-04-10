@@ -1,3 +1,4 @@
+
 const jwt = require('jsonwebtoken');
 const Logger = require('../services/logger_services');
 
@@ -17,8 +18,8 @@ function authRole(role) {
 
 function authUser(req, res, next) {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const { token } = req.cookies;
+    const decoded = jwt.verify(token, process.env.JWT_KEY || "my_secret");
     req.userData = decoded;
     return next();
   } catch (err) {
@@ -31,7 +32,7 @@ function authUser(req, res, next) {
 
 function userPermissionByID(req, res, next) {
   const { userId } = req.userData;
-  const id = req.params.userId;
+  const id = req.query.id;;
   if (id !== userId) {
     logger.error('Permission denied');
     return res.status(400).json({

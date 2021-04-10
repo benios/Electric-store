@@ -1,0 +1,14 @@
+@import '../../../styles/config.scss';
+@import '../../../styles/colors.scss';
+
+.carousel-container {
+  .carousel-item {
+    background-color: transparent;
+    @media only screen and (max-width: $md) {
+    height: 30vh;
+    }
+      .banner-img {
+        width: 100%;
+      }
+  }
+}
