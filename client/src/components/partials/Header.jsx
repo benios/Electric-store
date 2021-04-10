@@ -1,9 +1,11 @@
 import React, {
-	useCallback, useEffect, useState, useRef,
+	useCallback, useEffect, useState, useRef, useMemo,
 } from 'react';
+import Loader from 'react-loaders';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { get, debounce } from 'lodash';
+import PropTypes from 'prop-types';
 import {
 	Divider,
 	Typography,
@@ -33,6 +35,26 @@ import { clearCurrentUserAction } from '../../store/actions/currentUserAction';
 import doesHttpOnlyCookieExist from '../../utils/doesCookieExist';
 import logo from '../../assests/images/logo.png';
 import API from '../../utils/api';
+
+const UserProfile = ({ onClick }) => {
+	const user = useSelector(
+		(state) => get(state, 'currentUserReducer.user', {}),
+		shallowEqual,
+	);
+	return user.source === 'Google' ? (
+		<IconButton className="loggedin-btn" onClick={onClick}>
+			<img src={user.imageUrl} alt="user" className="image-btn" />
+		</IconButton>
+	) : (
+		<IconButton className="loggedin-btn" onClick={onClick}>
+			{`${user.firstName.split('')[0]}${user.lastName.split('')[0]}`}
+		</IconButton>
+	);
+};
+
+UserProfile.propTypes = {
+	onClick: PropTypes.func.isRequired,
+};
 
 const Header = () => {
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -85,13 +107,13 @@ const Header = () => {
 		setItemNum(cartItems.length);
 	}, [cartItems]);
 
-	const handleClick = (event) => {
-		if (!token) {
-			history.push('/login');
-		} else {
-			setAnchorEl(event.currentTarget);
-		}
+	const openUserMenu = (event) => {
+		setAnchorEl(event.currentTarget);
 	};
+
+	const redirectToLogin = useCallback(() => {
+		history.push('/login');
+	}, [history]);
 
 	const handleClose = () => {
 		setAnchorEl(null);
@@ -149,10 +171,6 @@ const Header = () => {
 		setCategoryPopList(null);
 	};
 
-	const onAbout = useCallback(() => {
-		history.push('/about');
-	}, [history]);
-
 	const onContact = useCallback(() => {
 		history.push('/contact');
 	}, [history]);
@@ -162,30 +180,26 @@ const Header = () => {
 		history.push(`/products/${productId}`);
 	};
 
-	const onSearch = useCallback(() => {
+	const onSearch = useCallback((searchQuery) => {
 		const getProducts = async () => {
-			if (query === '') {
+			if (searchQuery === '') {
 				setProducts([]);
 				setDisplay(false);
 			}	else	{
-				setProducts(await API.searchProduct(query));
+				setProducts(await API.searchProduct(searchQuery));
 			}
 		};
 		getProducts();
-	}, [query]);
+	}, []);
 
-	const delayedQuery = debounce(onSearch, 3000);
+	const delayedOnSearch = useMemo(() => debounce(onSearch, 800), [onSearch]);
 
 	const onQueryChange = useCallback((event) => {
 		setProducts([]);
 		setDisplay(true);
 		setQuery(event.target.value);
-	}, []);
-
-	useEffect(() => {
-		delayedQuery();
-		return delayedQuery.cancel;
-	}, [query, delayedQuery]);
+		delayedOnSearch(event.target.value);
+	}, [delayedOnSearch]);
 
 	const categorysMenu = (
 		<Popover
@@ -310,9 +324,6 @@ const Header = () => {
 						קטגוריות
 					</Button>
 					{categorysMenu}
-					<Button size="medium" className="appbar-button" onClick={onAbout}>
-						אודות
-					</Button>
 					<Button size="medium" className="appbar-button" onClick={onContact}>
 						צור קשר
 					</Button>
@@ -333,9 +344,7 @@ const Header = () => {
 						<div className="autoContainer">
 							{products.length === 0
 								? (
-									<div className="product">
-										<p>מחפש...</p>
-									</div>
+									<Loader type="ball-pulse" color="rgb(114, 193, 244)" className="loader-active" />
 								)
 								:	products.map((product) => (
 									<div ref={wrapperRef}>
@@ -349,9 +358,9 @@ const Header = () => {
 						</div>
 					)}
 					{token
-						? <IconButton className="loggedin-btn" onClick={handleClick}>{`${user.firstName.split('')[0]}${user.lastName.split('')[0]}`}</IconButton>
+						? <UserProfile onClick={openUserMenu} />
 						: (
-							<IconButton onClick={handleClick}>
+							<IconButton onClick={redirectToLogin}>
 								<FiUser />
 							</IconButton>
 						)}

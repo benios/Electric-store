@@ -1,6 +1,6 @@
 @import '../../../styles/config.scss';
 @import '../../../styles/colors.scss';
-
+@import 'loaders.css/src/animations/ball-pulse.scss';
 
 .category-page{
   background-color: $white-grey;
@@ -28,6 +28,9 @@
     .card-container{
       display: flex;
       justify-content: center;
+    }
+    .loader-active {
+      display: block;
     }
   }
   .scroll-btn {

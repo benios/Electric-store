@@ -1,6 +1,8 @@
 @import "../../../styles/config.scss";
 @import "../../../styles/colors.scss";
 @import url("https://fonts.googleapis.com/css2?family=Secular+One&display=swap");
+@import 'loaders.css/src/animations/ball-pulse.scss';
+
 
 .home-styling {
 	background-color: white;
@@ -100,20 +102,34 @@
 		}
 		.loggedin-btn {
 			border-radius: 50%;
-			width: 45px;
-			height:	45px;
+			width: 35px;
+			height:	35px;
 			background-color:rgba(0, 0, 0, 0.54);;
 			color: $blue-join-button;
 			margin-right: 0.5%;
 			font-size: 1.5rem;
+			.image-btn{
+				width: 35px;
+				height:	35px;
+				border-radius: 50%;
+			}
 		}
 		.autoContainer {
 			position: absolute;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 			left: 100px;
-			background-color: $blue-popover;
+			background-color: white;
+			box-shadow: 0 0 11px rgba(33,33,33,.2);
 			top: 58px;
 			width: 300px;
+			min-height: 70px;
 			border-radius: 10px;
+			.loader-active {
+				display: block;
+			}
 			.product{
 				display: flex;
 				align-items: center;

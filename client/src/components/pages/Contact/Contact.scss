@@ -1,0 +1,69 @@
+@import "../../../styles/config.scss";
+@import "../../../styles/colors.scss";
+
+.contact-page{
+  height: 100vh;
+  background: linear-gradient($blue-join-button 60%,  $white-grey 40%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .title{
+    font-family: "Secular One", sans-serif;
+    color: white;
+    margin-top: 10%;
+    @media only screen and (max-width: $md) {
+      margin-top: 30%;
+    }
+  }
+  .text{
+    font-family: "Secular One", sans-serif;
+    color: white;
+    margin-top: 1%;
+    text-align: center;
+    @media only screen and (max-width: 500px) {
+      margin-top: 4%;
+    }
+  }
+  .cards-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 40%;
+    margin-top: 10%;
+    @media only screen and (max-width: $md) {
+      width: 90%;
+      margin-top: 20%;
+    }
+    @media only screen and (max-width: 500px) {
+      flex-direction: column;
+      align-items: center;
+      margin-top: 5%;
+    }
+    .card{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      width: 250px;
+      height: 300px;
+      box-shadow: 0 0 11px rgba(33,33,33,.2);
+      @media only screen and (max-width: 500px) {
+        margin-bottom: 8%;
+      }
+      .icon{
+        font-size: 2.5rem;
+        color: $blue-join-button;
+      }
+      .card-text{
+        color: $blue-join-button;
+        font-family: "Secular One", sans-serif;
+        text-align: center;
+      }
+    }
+    .mail-card{
+      width: 250px;
+      height: 300px;
+      box-shadow: 0 0 11px rgba(33,33,33,.2); 
+    }
+  }
+}

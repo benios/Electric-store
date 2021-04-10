@@ -68,23 +68,15 @@
     }
     .button-container {
       margin-top: 10px;
-    }
-    .right-button {
-      text-align: end;
-      margin-top: 2px;
-      Button {
-        background-color: $purple-facebook;
-        width: 100px;
-        color: white;
-      }
-    }
-    .left-button {
-      text-align: start; 
-      margin-top: 2px;
-      Button {
-        background-color: $red-google;
-        width: 100px;
-        color: white;
+      .left-button {
+        margin: 2px auto 2px;
+        display: flex;
+        Button {
+          background-color: $red-google;
+          width: 100px;
+          color: white;
+          margin: 0px auto 0px;
+        }
       }
     }
     .signup-link {

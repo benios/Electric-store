@@ -147,10 +147,10 @@ const API = {
 
 	// Order
 
-	createOrder: async (userId, products) => {
+	createOrder: async (userId, address, products) => {
 		let response;
 		try {
-			response = await axios.post('/order', { userId, products });
+			response = await axios.post('/order', { userId, address, products });
 		} catch (error) {
 			return error;
 		}

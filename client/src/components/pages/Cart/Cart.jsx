@@ -13,6 +13,8 @@ import {
 	TableRow,
 	Paper,
 	IconButton,
+	Tooltip,
+	Divider,
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
@@ -20,7 +22,8 @@ import { useHistory } from 'react-router-dom';
 
 import './Cart.scss';
 
-import { FiMinus } from 'react-icons/fi';
+import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
+import SearchLocationInput from '../../partials/SearchLocationInput';
 import { clearCartAction, clearProduct } from '../../../store/actions/cartAction';
 import useWindowDimensions from '../../../assests/hooks/useWindowDimensions';
 import Header from '../../partials/Header';
@@ -30,6 +33,17 @@ const DELIVERY_COST = 15;
 
 const Cart = () => {
 	const [sum, setSum] = useState(0);
+	const [address, setAddress] = useState('');
+	const [isAddress, setIsAddress] = useState(false);
+	const onAddressChange = useCallback((e) => {
+		setAddress(e.target.value);
+	}, []);
+
+	useEffect(() => {
+		if (address.length > 0) {
+			setIsAddress(true);
+		}
+	}, [address.length]);
 
 	const { width } = useWindowDimensions();
 	const dispatch = useDispatch();
@@ -73,7 +87,7 @@ const Cart = () => {
 		} else {
 			userId = user._id;
 		}
-		API.createOrder(userId, cartItems);
+		API.createOrder(userId, address, cartItems);
 		quantityUpdate.forEach((item) => API.quantityUpdate(item));
 		success();
 		onClear();
@@ -142,7 +156,9 @@ const Cart = () => {
 													</TableCell>
 													<TableCell>
 														<IconButton size="small" onClick={() => onProductClear(cartItem.product.name)}>
-															<FiMinus />
+															<Tooltip title="remove">
+																<HighlightOffOutlinedIcon />
+															</Tooltip>
 														</IconButton>
 													</TableCell>
 												</TableRow>
@@ -152,31 +168,35 @@ const Cart = () => {
 								</TableContainer>
 							</Grid>
 							<Grid item md={4} xs={10} className="left-side">
-								<TableContainer component={Paper}>
-									<Table>
-										<TableHead>
-											<TableRow>
-												<TableCell>סיכום ההזמנה</TableCell>
-												<TableCell />
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											<TableRow>
-												<TableCell>סכום</TableCell>
-												<TableCell>{`${sum} ₪`}</TableCell>
-											</TableRow>
-											<TableRow>
-												<TableCell>משלוח</TableCell>
-												<TableCell>{`${DELIVERY_COST} ₪`}</TableCell>
-											</TableRow>
-											<TableRow>
-												<TableCell>סכום כולל</TableCell>
-												<TableCell>{`${sum + DELIVERY_COST} ₪`}</TableCell>
-											</TableRow>
-										</TableBody>
-									</Table>
-								</TableContainer>
-								<Button variant="contained" color="primary" className="order-btn" onClick={onSubmit}>
+								<Paper className="sum-container">
+									<Grid className="row">
+										סיכום ההזמנה
+									</Grid>
+									<Divider />
+									<Grid className="row">
+										<Grid>סכום</Grid>
+										<Grid>{`${sum} ₪`}</Grid>
+									</Grid>
+									<Divider />
+									<Grid className="row">
+										<Grid>משלוח</Grid>
+										<Grid>{`${DELIVERY_COST} ₪`}</Grid>
+									</Grid>
+									<Divider />
+									<Grid className="row">
+										<Grid>סכום כולל</Grid>
+										<Grid>{`${sum + DELIVERY_COST} ₪`}</Grid>
+									</Grid>
+									<Divider />
+									<Grid className="row">
+										<SearchLocationInput
+											handleChange={onAddressChange}
+											query={address}
+											setQuery={setAddress}
+										/>
+									</Grid>
+								</Paper>
+								<Button variant="contained" color="primary" className="order-btn" onClick={onSubmit} disabled={!isAddress}>
 									בצע הזמנה
 								</Button>
 								<Button variant="contained" color="secondary" className="order-btn" onClick={onClear}>

@@ -1,5 +1,11 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+	useEffect, useRef,
+} from 'react';
+
+import { TextField, InputAdornment } from '@material-ui/core';
+import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 
 let autoComplete;
 
@@ -36,26 +42,33 @@ function handleScriptLoad(updateQuery, autoCompleteRef) {
 	autoComplete.addListener('place_changed', () =>	handlePlaceSelect(updateQuery));
 }
 
-function SearchLocationInput(props) {
-	const [query, setQuery] = useState('');
+function SearchLocationInput({ handleChange, query, setQuery }) {
 	const autoCompleteRef = useRef(null);
 
 	useEffect(() => {
 		loadScript(
-			`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`,
+			'https://maps.googleapis.com/maps/api/js?key=AIzaSyCS4VAfn2dAjdlV3SjZgTU4mLSrwd5pd90&libraries=places',
 			() => handleScriptLoad(setQuery, autoCompleteRef),
 		);
-	}, []);
+	}, [setQuery]);
 
 	return (
 		<div className="search-location-input">
-			<input
-				{...props}
-				ref={autoCompleteRef}
-				onChange={(event) => setQuery(event.target.value)}
+			<TextField
+				fullWidth
+				inputRef={autoCompleteRef}
+				onChange={handleChange}
 				value={query}
+				label="כתובת למשלוח"
+				placeholder=""
+				InputProps={{
+					startAdornment: (
+						<InputAdornment className="text-field" position="start">
+							<LocationOnOutlinedIcon />
+						</InputAdornment>
+					),
+				}}
 			/>
-
 		</div>
 	);
 }
